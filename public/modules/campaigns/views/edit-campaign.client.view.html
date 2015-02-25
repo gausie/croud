@@ -1,0 +1,49 @@
+<section data-ng-controller="CampaignsController" data-ng-init="findOne()">
+    <div class="page-header">
+        <h1>Edit Campaign</h1>
+    </div>
+    <div class="col-md-12">
+        <form class="form-horizontal" data-ng-submit="update()" novalidate>
+          <h2>Information</h2>
+          <fieldset>
+            <div class="form-group">
+                <label class="control-label" for="name">Campaign Name</label>
+                <div class="controls">
+                    <input type="text" data-ng-model="campaign.name" id="name" class="form-control" placeholder="Name" required>
+                </div>
+            </div>
+          </fieldset>
+          <h2>Fields</h2>
+          <button type="button" class="btn btn-link" data-ng-click="addField()"><i class="glyphicon glyphicon-plus"></i> Add a new field</button>
+          <fieldset class="campaigns-fields-field" data-ng-repeat="field in campaign.fields">
+            <div class="form-group">
+              <input type="text" data-ng-model="field.name" class="form-control" placeholder="Field name" required />
+            </div>
+            <div class="form-group">
+              <select class="form-control" data-ng-model="field.type">
+                <option value="null">Select field type...</option>
+                <option value="text">Text</option>
+                <option value="number">Number</option>
+                <!-- <option value="select">Multiple Choice</option> -->
+                <option value="boolean">Boolean</option>
+                <option value="image">Image</option>
+              </select>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" data-ng-model="field.required" /> Required?
+              </label>
+            </div>
+            <button type="button" class="btn btn-link" data-ng-click="removeField($index)"><i class="glyphicon glyphicon-remove"></i> Remove field</button>
+          </fieldset>
+          <fieldset>
+            <div class="form-group">
+                <input type="submit" class="btn btn-default" value="Update">
+            </div>
+            <div data-ng-show="error" class="text-danger">
+              <strong data-ng-bind="error"></strong>
+            </div>
+          </fieldset>
+        </form>
+    </div>
+</section>
