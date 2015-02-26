@@ -16,6 +16,9 @@ var CampaignSchema = new Schema({
 		required: 'Please fill Campaign name',
 		trim: true
 	},
+  fields: {
+    type: Schema.Types.Mixed
+  },
 	created: {
 		type: Date,
 		default: Date.now
@@ -23,10 +26,7 @@ var CampaignSchema = new Schema({
 	user: {
 		type: Schema.ObjectId,
 		ref: 'User'
-	},
-  fields: {
-    type: Schema.Types.Mixed
-  }
+	}
 });
 
 mongoose.model('Campaign', CampaignSchema);

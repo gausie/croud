@@ -21,12 +21,12 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         type: 'null',
         required: false
       });
-    }
+    };
     
     // Remove field from Campaign.
     $scope.removeField = function(index) { 
       $scope.campaign.fields.splice(index, 1);
-    }
+    };
 
 		// Create new Campaign
 		$scope.create = function() {
