@@ -1,6 +1,6 @@
 'use strict';
 
-// Configuring the Articles module
+// Configuring the Campaigns module
 angular.module('campaigns').run(['Menus',
 	function(Menus) {
 		// Set top bar menu items
