@@ -8,7 +8,7 @@
                 <div class="form-group">
                   <label class="control-label" for="name">Campaign</label>
                   <div class="controls">
-                    <select class="form-control" data-ng-options="campaign._id as campaign.name for campaign in campaigns" data-ng-model="campaign">
+                    <select class="form-control" data-ng-options="campaign as campaign.name for campaign in campaigns" data-ng-model="campaign">
                       <option value="">Select a campaign...</option>
                     </select>
                   </div>
@@ -20,8 +20,9 @@
                       <leaflet center="center" markers="markers" event-broadcast="events" class="form-control" height="200px"></leaflet>
                     </div>
                   </div>
+                  <form-generator schema="campaign.fields" results="fields"></form-generator>
                   <div class="form-group">
-                      <input type="submit" class="btn btn-default">
+                      <input type="submit" value="Create" class="btn btn-default">
                   </div>
                 </div>
                 <div data-ng-show="error" class="text-danger">

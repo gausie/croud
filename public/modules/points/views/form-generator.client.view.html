@@ -1,0 +1,33 @@
+<div class="form-horizontal">
+  <div class="form-group" data-ng-repeat="field in schema" data-ng-switch="field.type">
+    
+    <div data-ng-switch-when="text">
+      <label class="col-sm-2 control-label">{{field.name}}</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" data-ng-model="results[field.name]" />
+      </div>
+    </div>
+    
+    <div data-ng-switch-when="number">
+      <label class="col-sm-2 control-label">{{field.name}}</label>
+      <div class="col-sm-10">
+        <input type="number" class="form-control" data-ng-model="results[field.name]" />
+      </div>
+    </div>
+    
+    <div data-ng-switch-when="boolean">
+      <label class="col-sm-2 control-label">{{field.name}}</label>
+      <div class="col-sm-10 checkbox">
+        <input type="checkbox" style="margin-left: 0" data-ng-model="results[field.name]" />
+      </div>
+    </div>
+    
+    <div data-ng-switch-when="image">
+      <label class="col-sm-2 control-label">{{field.name}}</label>
+      <div class="col-sm-10 checkbox">
+          <input type="file" class="form-control" data-ng-model="results[field.name]" />
+      </div>
+    </div>
+    
+  </div>
+</div>

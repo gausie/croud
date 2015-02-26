@@ -5,6 +5,8 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 	function($scope, $stateParams, $location, Authentication, Points, Campaigns) {
 		$scope.authentication = Authentication;
 
+    $scope.fields = {};
+
     // Default settings for Leaflet.js map.
     angular.extend($scope, {
       center: {
@@ -17,7 +19,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
     });
     
     // Set map marker on click.
-    $scope.$on("leafletDirectiveMap.click", function(event, args){
+    $scope.$on('leafletDirectiveMap.click', function(event, args){
       var leafEvent = args.leafletEvent;
       
       var marker = {
