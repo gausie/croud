@@ -20,7 +20,7 @@ angular.module('points').controller('MapController', ['$scope', 'leafletData',
       // This needs to be emptied so the reference to parent is left 
       // intact.
       for (var i in $scope.marker) delete $scope.marker[i];
-    }
+    };
     
     resetMap();
     

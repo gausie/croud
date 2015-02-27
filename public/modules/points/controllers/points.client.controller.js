@@ -18,15 +18,15 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       
       // Validate that a location has been supplied.
       if (this.marker.lat === undefined) {
-        errors.push("You must specify a location.");
+        errors.push('You must specify a location.');
       }
       
       // Validate custom fields.
       this.campaign.fields.forEach(function(field) {
         console.dir(field);
         if (field.required) {
-          if (self.fields[field.name] === undefined || self.fields[field.name] === "") {
-            errors.push("'" + field.name + "' is a required field.");
+          if (self.fields[field.name] === undefined || self.fields[field.name] === '') {
+            errors.push('"' + field.name + '" is a required field.');
           }
         }
       });
