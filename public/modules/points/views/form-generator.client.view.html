@@ -4,14 +4,14 @@
     <div data-ng-switch-when="text">
       <label class="col-sm-2 control-label">{{field.name}}</label>
       <div class="col-sm-10">
-        <input type="text" class="form-control" data-ng-model="results[field.name]" />
+        <input type="text" class="form-control" data-ng-model="results[field.name]" data-ng-required="field.required" />
       </div>
     </div>
     
     <div data-ng-switch-when="number">
       <label class="col-sm-2 control-label">{{field.name}}</label>
       <div class="col-sm-10">
-        <input type="number" class="form-control" data-ng-model="results[field.name]" />
+        <input type="number" class="form-control" data-ng-model="results[field.name]" data-ng-required="field.required" />
       </div>
     </div>
     
@@ -25,7 +25,7 @@
     <div data-ng-switch-when="image">
       <label class="col-sm-2 control-label">{{field.name}}</label>
       <div class="col-sm-10 checkbox">
-          <input type="file" class="form-control" data-ng-model="results[field.name]" />
+          <input type="file" class="form-control" data-ng-model="results[field.name]" data-ng-required="field.required" />
       </div>
     </div>
     
