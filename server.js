@@ -3,9 +3,9 @@
  * Module dependencies.
  */
 var init = require('./config/init')(),
-	config = require('./config/config'),
-	mongoose = require('mongoose'),
-	chalk = require('chalk');
+  config = require('./config/config'),
+  mongoose = require('mongoose'),
+  chalk = require('chalk');
 
 /**
  * Main application entry file.
@@ -14,10 +14,10 @@ var init = require('./config/init')(),
 
 // Bootstrap db connection
 var db = mongoose.connect(config.db, function(err) {
-	if (err) {
-		console.error(chalk.red('Could not connect to MongoDB!'));
-		console.log(chalk.red(err));
-	}
+  if (err) {
+    console.error(chalk.red('Could not connect to MongoDB!'));
+    console.log(chalk.red(err));
+  }
 });
 
 // Init the express application

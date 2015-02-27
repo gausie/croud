@@ -2,7 +2,7 @@
 
 // Map controller
 angular.module('points').controller('MapController', ['$scope', 'leafletData', 
-	function($scope, leafletData) {
+  function($scope, leafletData) {
     // Default settings for Leaflet.js map.
     var defaultCenter = {
       lat: 40.87,
@@ -59,5 +59,5 @@ angular.module('points').controller('MapController', ['$scope', 'leafletData',
         });
       });
     };
-	}
+  }
 ]);
