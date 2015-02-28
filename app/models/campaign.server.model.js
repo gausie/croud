@@ -18,7 +18,7 @@ var CampaignSchema = new Schema({
   },
   location: {
     type: [Number],
-    index: '2d'
+    index: '2dsphere'
   },
   fields: {
     type: Schema.Types.Mixed

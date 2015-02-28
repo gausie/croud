@@ -37,7 +37,7 @@ angular.module('core').directive('locationPicker', [
           var marker = {
             lat: coords.lat,
             lng: coords.lng,
-            array: [coords.lat, coords.lng]
+            array: [coords.lng, coords.lat]
           };
           
           // Either create or update a single marker.
