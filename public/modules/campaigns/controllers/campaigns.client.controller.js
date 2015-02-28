@@ -33,6 +33,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       // Create new Campaign object
       var campaign = new Campaigns ({
         name: this.campaign.name,
+        location: this.campaign.location.array,
         fields: this.campaign.fields
       });
 

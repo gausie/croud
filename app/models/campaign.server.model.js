@@ -16,6 +16,10 @@ var CampaignSchema = new Schema({
     required: 'Please fill Campaign name',
     trim: true
   },
+  location: {
+    type: [Number],
+    index: '2d'
+  },
   fields: {
     type: Schema.Types.Mixed
   },
