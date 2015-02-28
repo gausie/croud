@@ -8,6 +8,9 @@ angular.module('points').directive('formGenerator', [
       scope: {
         schema: '=',
         results: '='
+      },
+      controller: function($scope) {
+        $scope.results = {};
       }
     };
   }

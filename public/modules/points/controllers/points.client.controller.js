@@ -4,10 +4,7 @@
 angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Points', 'Campaigns', 
   function($scope, $stateParams, $location, Authentication, Points, Campaigns) {
     $scope.authentication = Authentication;
-    $scope.fields = {};
-    
-    // This will be inherited and altered by MapController.
-    $scope.marker = {};
+    $scope.point = {};
 
     // Create new Point
     $scope.create = function() {
@@ -17,15 +14,14 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       var errors = [];
       
       // Validate that a location has been supplied.
-      if (this.marker.lat === undefined) {
+      if (!this.point.location) {
         errors.push('You must specify a location.');
       }
       
       // Validate custom fields.
       this.campaign.fields.forEach(function(field) {
-        console.dir(field);
         if (field.required) {
-          if (self.fields[field.name] === undefined || self.fields[field.name] === '') {
+          if (self.point.fields === undefined || self.point.fields[field.name] === undefined || self.point.fields[field.name] === '') {
             errors.push('"' + field.name + '" is a required field.');
           }
         }
@@ -40,8 +36,8 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       // Create new Point object
       var point = new Points ({
         campaign: this.campaign._id,
-        location: this.marker.array,
-        data: this.fields
+        location: this.point.location.array,
+        data: this.point.fields
       });
 
       // Redirect after save

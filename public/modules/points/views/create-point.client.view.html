@@ -14,26 +14,11 @@
                   </div>
                 </div>
                 <div data-ng-show="campaign" class="slider">
-                  <div class="form-group" data-ng-controller="MapController">
+                  <div class="form-group">
                     <label class="control-label">Position</label>
-                    <div class="panel panel-default">
-                      <leaflet center="center" markers="markers" event-broadcast="events" class="panel-body"></leaflet>
-                      <div class="form-inline panel-footer">
-                        <div class="form-group">
-                          <button type="button" class="btn btn-default btn-sm" data-ng-click="dropPin()">Detect location</button>
-                        </div>
-                        <div class="form-group input-group">
-                          <div class="input-group-addon">&lambda;</div>
-                          <input type="number" step="any" class="form-control input-sm" placeholder="Latitude" data-ng-model="markers[0].lat" />
-                        </div>
-                        <div class="form-group input-group">
-                          <div class="input-group-addon">&phi;</div>
-                          <input type="number" step="any" class="form-control input-sm" placeholder="Longitude" data-ng-model="markers[0].lng" />
-                        </div>
-                      </div>
-                    </div>
+                    <location-picker location="point.location"></location-picker>
                   </div>
-                  <form-generator schema="campaign.fields" results="fields"></form-generator>
+                  <form-generator schema="campaign.fields" results="point.fields"></form-generator>
                   <div class="form-group">
                       <input type="submit" value="Create" class="btn btn-default">
                   </div>
