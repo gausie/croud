@@ -5,8 +5,7 @@ angular.module('core').filter('mongogeo', [
 		return function(input, direction) {
       if (!input) {
         return undefined;
-      }
-			if (direction === 'in') {
+      } else if (direction === 'in') {
         return [input.lng, input.lat];
       } else {
         return {
