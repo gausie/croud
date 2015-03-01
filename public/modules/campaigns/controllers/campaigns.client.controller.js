@@ -44,6 +44,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       var campaign = new Campaigns ({
         name: this.campaign.name,
         location: (this.campaign.location) ? this.campaign.location.array : null,
+        zoom: (this.campaign.location) ? this.campaign.location.zoom : null,
         fields: this.campaign.fields,
         start: this.campaign.start,
         end: this.campaign.end,
@@ -81,7 +82,6 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     // Update existing Campaign
     $scope.update = function() {
       var campaign = $scope.campaign;
-      console.dir(campaign);
       campaign.$update(function() {
         $location.path('campaigns/' + campaign._id);
       }, function(errorResponse) {
@@ -98,7 +98,14 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     $scope.findOne = function() {
       $scope.campaign = Campaigns.get({
         campaignId: $stateParams.campaignId
+      }, function() {
+        $scope.campaign.location = {
+          'lng': $scope.campaign.location[0],
+          'lat': $scope.campaign.location[1],
+          'zoom': $scope.campaign.zoom
+        };
       });
+
     };
   }
 ]);

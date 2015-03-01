@@ -20,6 +20,9 @@ var CampaignSchema = new Schema({
     type: [Number],
     index: '2dsphere'
   },
+  zoom: {
+    type: Number
+  },
   fields: {
     type: Schema.Types.Mixed
   },
