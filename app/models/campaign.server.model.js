@@ -23,6 +23,12 @@ var CampaignSchema = new Schema({
   fields: {
     type: Schema.Types.Mixed
   },
+  start: {
+    type: Date
+  },
+  end: {
+    type: Date
+  },
   created: {
     type: Date,
     default: Date.now

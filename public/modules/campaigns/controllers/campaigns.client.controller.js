@@ -4,17 +4,27 @@
 angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns',
   function($scope, $stateParams, $location, Authentication, Campaigns) {
     $scope.authentication = Authentication;
-    
+
     // Start with empty Campaign.
     $scope.campaign = {};
-    
+
+    // Calendar stuff
+    $scope.today = new Date();
+    $scope.openCalendar = function ($event, field) {
+      $event.preventDefault();
+      $event.stopPropagation();
+
+      $scope.openedCalendar = {};
+      $scope.openedCalendar[field] = true;
+    };
+
     // Add field to Campaign.
     $scope.addField = function() {
       // Create fields array if one doesn't exist.
       if ($scope.campaign.fields === undefined) {
         $scope.campaign.fields = [];
       }
-      
+
       // Add a new default blank field
       $scope.campaign.fields.push({
         name: '',
@@ -22,9 +32,9 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         required: false
       });
     };
-    
+
     // Remove field from Campaign.
-    $scope.removeField = function(index) { 
+    $scope.removeField = function(index) {
       $scope.campaign.fields.splice(index, 1);
     };
 
@@ -33,8 +43,10 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       // Create new Campaign object
       var campaign = new Campaigns ({
         name: this.campaign.name,
-        location: this.campaign.location.array,
-        fields: this.campaign.fields
+        location: (this.campaign.location) ? this.campaign.location.array : null,
+        fields: this.campaign.fields,
+        start: this.campaign.start,
+        end: this.campaign.end
       });
 
       // Redirect after save
@@ -50,7 +62,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
 
     // Remove existing Campaign
     $scope.remove = function(campaign) {
-      if ( campaign ) { 
+      if ( campaign ) {
         campaign.$remove();
 
         for (var i in $scope.campaigns) {
@@ -83,7 +95,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
 
     // Find existing Campaign
     $scope.findOne = function() {
-      $scope.campaign = Campaigns.get({ 
+      $scope.campaign = Campaigns.get({
         campaignId: $stateParams.campaignId
       });
     };
