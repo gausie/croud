@@ -29,6 +29,9 @@ var CampaignSchema = new Schema({
   end: {
     type: Date
   },
+  approvalRequired: {
+    type: Boolean
+  },
   created: {
     type: Date,
     default: Date.now

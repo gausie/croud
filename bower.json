@@ -14,7 +14,8 @@
     "angular-bootstrap": "~0.11.2",
     "angular-ui-utils": "~0.1.1",
     "angular-ui-router": "~0.2.11",
-    "angular-leaflet-directive": "~0.7.11"
+    "angular-leaflet-directive": "~0.7.11",
+    "angular-bootstrap-checkbox": "~0.3.1"
   },
   "resolutions": {
     "angular": "~1.2"

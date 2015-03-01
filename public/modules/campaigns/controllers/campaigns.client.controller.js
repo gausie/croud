@@ -46,7 +46,8 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         location: (this.campaign.location) ? this.campaign.location.array : null,
         fields: this.campaign.fields,
         start: this.campaign.start,
-        end: this.campaign.end
+        end: this.campaign.end,
+        approvalRequired: this.campaign.approvalRequired
       });
 
       // Redirect after save
