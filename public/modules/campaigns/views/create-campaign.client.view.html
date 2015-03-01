@@ -60,10 +60,8 @@
                       <option value="image">Image</option>
                     </select>
                   </div>
-                  <div class="checkbox">
-                    <label>
-                      <input type="checkbox" data-ng-model="field.required" /> Required?
-                    </label>
+                  <div class="form-group" data-ng-if="field.type !== 'boolean'">
+                    <checkbox data-ng-model="field.required"></checkbox> Required?
                   </div>
                 </fieldset>
               </div>
