@@ -7,9 +7,7 @@ angular.module('core').directive('locationPicker', [
       restrict: 'E',
       scope: {
         defaultCenter: '=?',
-        defaultZoom: '=?',
-        location: '=',
-        zoom: '=?'
+        location: '='
       },
       controller: function ($scope, leafletData) {
         // The inbuilt default center is the center of the world according
@@ -20,29 +18,16 @@ angular.module('core').directive('locationPicker', [
           zoom: 1
         };
 
-        var defaultZoom = 1;
-
         // If user does not specify a default center, pick a
         // default default center.
         if (!$scope.defaultCenter) {
           $scope.defaultCenter = defaultCenter;
-        } else if (Array.isArray($scope.defaultCenter)) {
-          $scope.defaultCenter = {
-            lng: $scope.defaultCenter[0],
-            lat: $scope.defaultCenter[1]
-          }
-        }
-
-        if (!$scope.defaultZoom) {
-          $scope.defaultZoom = defaultZoom;
+        } else {
+          $scope.defaultCenter = angular.extend({}, defaultCenter, $scope.defaultCenter);
         }
 
         // Set initial values.
-        $scope.center = {
-            lng: $scope.defaultCenter.lng,
-            lat: $scope.defaultCenter.lat,
-            zoom: $scope.defaultZoom
-        };
+        $scope.center = $scope.defaultCenter;
 
         // Reset the map.
         $scope.resetMap = function() {
@@ -88,11 +73,7 @@ angular.module('core').directive('locationPicker', [
             $scope.center = v;
           } else {
             $scope.markers = [];
-            $scope.center = {
-                lng: $scope.defaultCenter.lng,
-                lat: $scope.defaultCenter.lat,
-                zoom: $scope.defaultZoom
-            };
+            $scope.center = $scope.defaultCenter;
           }
         }, true);
 

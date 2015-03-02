@@ -7,6 +7,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
 
     // Start with empty Campaign.
     $scope.campaign = {};
+    $scope.center = {};
 
     // Calendar stuff
     $scope.today = new Date();
@@ -40,11 +41,16 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
 
     // Create new Campaign
     $scope.create = function() {
+      // Validation
+      if (!this.campaign.name) {
+        $scope.error = 'Campaign name is required.';
+        return;
+      }
+
       // Create new Campaign object
       var campaign = new Campaigns ({
         name: this.campaign.name,
-        location: (this.campaign.location) ? this.campaign.location.array : null,
-        zoom: (this.campaign.location) ? this.campaign.location.zoom : null,
+        location: this.campaign.location,
         fields: this.campaign.fields,
         start: this.campaign.start,
         end: this.campaign.end,
@@ -82,9 +88,6 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     // Update existing Campaign
     $scope.update = function() {
       var campaign = $scope.campaign;
-      // Change into Mongo-acceptable format
-      campaign.zoom = campaign.location.zoom;
-      campaign.location = [campaign.location.lng, campaign.location.lat];
       campaign.$update(function() {
         $location.path('campaigns/' + campaign._id);
       }, function(errorResponse) {
@@ -102,11 +105,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       $scope.campaign = Campaigns.get({
         campaignId: $stateParams.campaignId
       }, function() {
-        $scope.campaign.location = {
-          'lng': $scope.campaign.location[0],
-          'lat': $scope.campaign.location[1],
-          'zoom': $scope.campaign.zoom
-        };
+        $scope.center = $scope.campaign.location;
       });
     };
 

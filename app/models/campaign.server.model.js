@@ -17,11 +17,13 @@ var CampaignSchema = new Schema({
     trim: true
   },
   location: {
+    lng: { type: Number },
+    lat: { type: Number },
+    zoom: { type: Number }
+  },
+  locationArray: {
     type: [Number],
     index: '2dsphere'
-  },
-  zoom: {
-    type: Number
   },
   fields: {
     type: Schema.Types.Mixed
@@ -43,6 +45,11 @@ var CampaignSchema = new Schema({
     type: Schema.ObjectId,
     ref: 'User'
   }
+});
+
+CampaignSchema.pre('save', function (next) {
+  this.locationArray = [this.location.lng, this.location.lat];
+  next();
 });
 
 mongoose.model('Campaign', CampaignSchema);

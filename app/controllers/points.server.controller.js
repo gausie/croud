@@ -73,7 +73,7 @@ exports.delete = function(req, res) {
  * List of Points
  */
 exports.list = function(req, res) {
-  var query = Point.find()
+  var query = Point.find();
 
   if (req.query.campaign) {
     query.where('campaign').equals(req.query.campaign);
@@ -82,7 +82,7 @@ exports.list = function(req, res) {
   //  Only return Points within a certain bounds if needed.
   if (req.query.bounds) {
     var b = req.query.bounds.split(',');
-    query.where('location').within().box(b.slice(0,2), b.slice(2,4));
+    query.where('locationArray').within().box(b.slice(0,2), b.slice(2,4));
   }
 
   query.sort('-created').populate('user', 'displayName').exec(function(err, points) {
