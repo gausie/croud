@@ -1,7 +1,7 @@
 'use strict';
 
 // Points controller
-angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Points', 'Campaigns', 
+angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Points', 'Campaigns',
   function($scope, $stateParams, $location, Authentication, Points, Campaigns) {
     $scope.authentication = Authentication;
     $scope.point = {};
@@ -9,40 +9,42 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
     // Create new Point
     $scope.create = function() {
       var self = this;
-      
+
       // Start validation.
       var errors = [];
-      
+
       // Validate that a location has been supplied.
       if (!this.point.location) {
         errors.push('You must specify a location.');
       }
-      
+
       // Validate custom fields.
-      this.campaign.fields.forEach(function(field) {
-        if (field.required) {
-          if (self.point.fields === undefined || self.point.fields[field.name] === undefined || self.point.fields[field.name] === '') {
-            errors.push('"' + field.name + '" is a required field.');
+      if (this.campaign.fields) {
+        this.campaign.fields.forEach(function(field) {
+          if (field.required) {
+            if (self.point.fields === undefined || self.point.fields[field.name] === undefined || self.point.fields[field.name] === '') {
+              errors.push('"' + field.name + '" is a required field.');
+            }
           }
-        }
-      });
-      
+        });
+      }
+
       // Finish validation
       if (errors.length > 0) {
           $scope.errors = errors;
           return;
       }
-      
+
       // Create new Point object
       var point = new Points ({
         campaign: this.campaign._id,
-        location: this.point.location.array,
+        location: [this.point.location.lng, this.point.location.lat],
         data: this.point.fields
       });
 
       // Redirect after save
       point.$save(function(response) {
-        $location.path('points/' + response._id);
+        $location.path('points/create');
 
         // Reset the form
         $scope.campaign = null;
@@ -59,7 +61,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
     // Remove existing Point
     $scope.remove = function(point) {
-      if ( point ) { 
+      if ( point ) {
         point.$remove();
 
         for (var i in $scope.points) {
@@ -92,11 +94,11 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
     // Find existing Point
     $scope.findOne = function() {
-      $scope.point = Points.get({ 
+      $scope.point = Points.get({
         pointId: $stateParams.pointId
       });
     };
-    
+
     // Find a list of Campaigns
     $scope.findCampaigns = function() {
       $scope.campaigns = Campaigns.query();

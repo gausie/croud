@@ -7,31 +7,42 @@ angular.module('core').directive('locationPicker', [
       restrict: 'E',
       scope: {
         defaultCenter: '=?',
+        defaultZoom: '=?',
         location: '=',
         zoom: '=?'
       },
       controller: function ($scope, leafletData) {
         // The inbuilt default center is the center of the world according
         // to the somewhat racist Western understanding of the world map.
-        $scope._defaultCenter = {
+        var defaultCenter = {
           lat: 40.87,
           lng: 34.57,
           zoom: 1
         };
 
+        var defaultZoom = 1;
+
         // If user does not specify a default center, pick a
         // default default center.
         if (!$scope.defaultCenter) {
-          $scope.defaultCenter = $scope._defaultCenter;
+          $scope.defaultCenter = defaultCenter;
+        } else if (Array.isArray($scope.defaultCenter)) {
+          $scope.defaultCenter = {
+            lng: $scope.defaultCenter[0],
+            lat: $scope.defaultCenter[1]
+          }
         }
 
-        if (!$scope.location) {
-          //$scope.location = {};
+        if (!$scope.defaultZoom) {
+          $scope.defaultZoom = defaultZoom;
         }
 
         // Set initial values.
-        $scope.events = {};
-        $scope.center = $scope.defaultCenter;
+        $scope.center = {
+            lng: $scope.defaultCenter.lng,
+            lat: $scope.defaultCenter.lat,
+            zoom: $scope.defaultZoom
+        };
 
         // Reset the map.
         $scope.resetMap = function() {
@@ -48,7 +59,7 @@ angular.module('core').directive('locationPicker', [
           };
 
           // Either create or update a single marker.
-          if ($scope.markers.length < 1) {
+          if (!$scope.markers || $scope.markers.length < 1) {
             $scope.markers = [marker];
           } else {
             $scope.markers[0] = marker;
@@ -73,12 +84,15 @@ angular.module('core').directive('locationPicker', [
       link: function postLink ($scope, element, attrs) {
         $scope.$watch('location', function (v) {
           if (v) {
-            $scope.location.array = [v.lng, v.lat];
             $scope.moveMarker(v);
             $scope.center = v;
           } else {
             $scope.markers = [];
-            $scope.center = $scope.defaultCenter;
+            $scope.center = {
+                lng: $scope.defaultCenter.lng,
+                lat: $scope.defaultCenter.lat,
+                zoom: $scope.defaultZoom
+            };
           }
         }, true);
 

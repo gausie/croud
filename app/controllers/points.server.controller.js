@@ -72,8 +72,20 @@ exports.delete = function(req, res) {
 /**
  * List of Points
  */
-exports.list = function(req, res) { 
-  Point.find().sort('-created').populate('user', 'displayName').exec(function(err, points) {
+exports.list = function(req, res) {
+  var query = Point.find()
+
+  if (req.query.campaign) {
+    query.where('campaign').equals(req.query.campaign);
+  }
+
+  //  Only return Points within a certain bounds if needed.
+  if (req.query.bounds) {
+    var b = req.query.bounds.split(',');
+    query.where('location').within().box(b.slice(0,2), b.slice(2,4));
+  }
+
+  query.sort('-created').populate('user', 'displayName').exec(function(err, points) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
@@ -87,7 +99,7 @@ exports.list = function(req, res) {
 /**
  * Point middleware
  */
-exports.pointByID = function(req, res, next, id) { 
+exports.pointByID = function(req, res, next, id) {
   Point.findById(id).populate('user', 'displayName').exec(function(err, point) {
     if (err) return next(err);
     if (! point) return next(new Error('Failed to load Point ' + id));

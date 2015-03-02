@@ -8,10 +8,10 @@ angular.module('core').filter('mongogeo', [
       } else if (direction === 'in') {
         return [input.lng, input.lat];
       } else {
+        console.dir(input);
         return {
           lng: input[0],
-          lat: input[1],
-          zoom: 8
+          lat: input[1]
         };
       }
 		};

@@ -16,7 +16,7 @@
                 <div data-ng-if="campaign" class="slider">
                   <div class="form-group">
                     <label class="control-label">Position</label>
-                    <location-picker location="point.location" default-center="campaign.location | mongogeo"></location-picker>
+                    <location-picker location="point.location" default-center="campaign.location" default-zoom="campaign.zoom"></location-picker>
                   </div>
                   <form-generator schema="campaign.fields" results="point.fields"></form-generator>
                   <div class="form-group">

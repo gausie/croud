@@ -1,8 +1,8 @@
 'use strict';
 
 // Campaigns controller
-angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns',
-  function($scope, $stateParams, $location, Authentication, Campaigns) {
+angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns', 'Points', 'leafletData',
+  function($scope, $stateParams, $location, Authentication, Campaigns, Points, leafletData) {
     $scope.authentication = Authentication;
 
     // Start with empty Campaign.
@@ -82,6 +82,9 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     // Update existing Campaign
     $scope.update = function() {
       var campaign = $scope.campaign;
+      // Change into Mongo-acceptable format
+      campaign.zoom = campaign.location.zoom;
+      campaign.location = [campaign.location.lng, campaign.location.lat];
       campaign.$update(function() {
         $location.path('campaigns/' + campaign._id);
       }, function(errorResponse) {
@@ -105,7 +108,28 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
           'zoom': $scope.campaign.zoom
         };
       });
+    };
 
+    $scope.loadPoints = function() {
+      $scope.markers = {};
+      $scope.$on('leafletDirectiveMap.moveend', function() {
+        leafletData.getMap().then(function(map) {
+          var bounds = map.getBounds();
+          Points.query({
+            campaign: $scope.campaign._id,
+            bounds: bounds.toBBoxString()
+          }, function(points) {
+            var markers = {};
+            points.forEach(function(point) {
+              markers[point._id] = {
+                'lng': point.location[0],
+                'lat': point.location[1]
+              };
+            });
+            $scope.markers = markers;
+          });
+        });
+      });
     };
   }
 ]);
