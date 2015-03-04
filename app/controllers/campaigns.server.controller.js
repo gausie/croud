@@ -120,15 +120,41 @@ exports.delete = function(req, res) {
  * List of Campaigns
  */
 exports.list = function(req, res) {
-  var query;
+  var query = Campaign.find();
+  /**
+   * We may want to only return Campaigns of which the current user is
+   * a member.
+   */
   if (req.query.mine) {
-    query = Campaign.find({
+    query.where({
       '_id': {
         '$in': req.user.memberships
       }
     });
-  } else {
-    query = Campaign.find();
+  }
+
+  /**
+   * Unless we are explicitly including closed campaigns, we want to
+   * limit the results to currently open campaigns, or campaigns with
+   * no time limitation.
+   */
+  if (!req.query.includeClosed) {
+    console.dir("not including closed ones");
+    var now = new Date();
+    query.or([
+      {
+        'duration.start': {
+          $lt: now
+        },
+        'duration.end': {
+          $gt: now
+        }
+      },
+      {
+        'duration.start': null,
+        'duration.end': null
+      }
+    ]);
   }
 
   query.sort('-created').populate('user', 'displayName').exec(function(err, campaigns) {

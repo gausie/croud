@@ -28,11 +28,13 @@ var CampaignSchema = new Schema({
   fields: {
     type: Schema.Types.Mixed
   },
-  start: {
-    type: Date
-  },
-  end: {
-    type: Date
+  duration: {
+    start: {
+      type: Date
+    },
+    end: {
+      type: Date
+    }
   },
   approvalRequired: {
     type: Boolean
@@ -44,6 +46,25 @@ var CampaignSchema = new Schema({
   user: {
     type: Schema.ObjectId,
     ref: 'User'
+  }
+}, {
+  toJSON: {
+    virtuals: true
+  }
+});
+
+CampaignSchema.virtual('duration.open').get(function() {
+  var now = new Date();
+  var d = this.duration;
+  if (!d.start || !d.end) {
+    // No start or end defined.
+    return true;
+  } else if(d.start < now && d.end > now) {
+    // Within start and end.
+    return true;
+  } else {
+    // Not within start and end.
+    return false;
   }
 });
 

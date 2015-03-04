@@ -104,7 +104,8 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     $scope.findJoined = function() {
       if ($scope.authentication) {
         $scope.joinedCampaigns = Campaigns.query({
-          mine: true
+          mine: true,
+          includeClosed: true
         });
       } else {
         $scope.joinedCampaigns = [];
