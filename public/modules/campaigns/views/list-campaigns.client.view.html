@@ -13,7 +13,7 @@
           <h4 class="list-group-item-heading" data-ng-bind="campaign.name"></h4>
         </a>
     </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!joinedCampaigns.$resolved || joinedCampaigns.length">
+    <div class="alert alert-warning text-center" data-ng-show="joinedCampaigns.$resolved && !joinedCampaigns.length">
     	You haven't joined any campaigns yet!
     </div>
     <h2>Discover</h2>
@@ -28,5 +28,8 @@
           </small>
           <h4 class="list-group-item-heading" data-ng-bind="campaign.name"></h4>
         </a>
+    </div>
+    <div class="alert alert-warning text-center" data-ng-show="campaigns.$resolved && !campaigns.length">
+      There are no campaigns. Why don't you <a href="#!/campaigns/create">create one</a>?
     </div>
 </section>

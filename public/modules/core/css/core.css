@@ -29,3 +29,10 @@
 .list-group-item > .label-as-badge + .label-as-badge {
   margin-right: 5px;
 }
+
+/**
+ * Remove top margin from headers within an alert
+ */
+h1.alert-header, h2.alert-header, h3.alert-header, h4.alert-header {
+  margin-top: 0px;
+}
