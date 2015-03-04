@@ -139,6 +139,11 @@ module.exports = function(grunt) {
       unit: {
         configFile: 'karma.conf.js'
       }
+    },
+    bump: {
+      options: {
+        pushTo: 'origin'
+      }
     }
   });
 
