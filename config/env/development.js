@@ -1,5 +1,9 @@
 'use strict';
 
+var mongoose = require('mongoose');
+
+mongoose.set('debug', true);
+
 module.exports = {
   db: 'mongodb://localhost/croud-dev',
   app: {
