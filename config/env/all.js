@@ -32,7 +32,9 @@ module.exports = {
         'public/lib/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js',
         'public/lib/leaflet/dist/leaflet-src.js',
         'public/lib/angular-leaflet-directive/dist/angular-leaflet-directive.js',
-        'public/lib/angular-ui-select/dist/select.js'
+        'public/lib/angular-ui-select/dist/select.js',
+        'public/lib/moment/moment.js',
+        'public/lib/angular-moment/angular-moment.js'
       ]
     },
     css: [

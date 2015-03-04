@@ -4,7 +4,7 @@
 var ApplicationConfiguration = (function() {
   // Init module configuration options
   var applicationModuleName = 'croud';
-  var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'ui.checkbox', 'leaflet-directive', 'ui.select'];
+  var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'ui.checkbox', 'leaflet-directive', 'ui.select', 'angularMoment'];
 
   // Add a new vertical module
   var registerModule = function(moduleName, dependencies) {

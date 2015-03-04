@@ -20,7 +20,7 @@
               <label class="control-label">Duration</label>
               <div class="form-inline">
                 <div class="form-group input-group">
-                  <input placeholder="Start Date" type="text" data-ng-model="campaign.start" min-date="today" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.startDate" show-weeks="false" />
+                  <input placeholder="Start Date" type="text" data-ng-model="campaign.duration.start" min-date="today" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.startDate" show-weeks="false" />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'startDate')"><i class="fa fa-calendar"></i></button>
                   </span>
@@ -29,7 +29,7 @@
                   <i class="fa fa-arrow-right"></i>
                 </div>
                 <div class="form-group input-group">
-                  <input placeholder="End Date" type="text" data-ng-model="campaign.end" min-date="campaign.start" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.endDate" show-weeks="false" />
+                  <input placeholder="End Date" type="text" data-ng-model="campaign.duration.end" min-date="campaign.duration.start" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.endDate" show-weeks="false" />
                   <span class="input-group-btn">
                     <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'endDate')"><i class="fa fa-calendar"></i></button>
                   </span>

@@ -1,8 +1,8 @@
 'use strict';
 
 // Campaigns controller
-angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns', 'Points', 'Users', 'leafletData',
-  function($scope, $stateParams, $location, Authentication, Campaigns, Points, Users, leafletData) {
+angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns', 'Points', 'Users', 'leafletData', 'moment',
+  function($scope, $stateParams, $location, Authentication, Campaigns, Points, Users, leafletData, moment) {
     $scope.authentication = Authentication;
 
     // Start with empty Campaign.
@@ -17,6 +17,12 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
 
       $scope.openedCalendar = {};
       $scope.openedCalendar[field] = true;
+    };
+
+    $scope.soonerThanFiveDays = function(date) {
+      if (!date) return false;
+      var diff = moment(date).diff(moment(), 'days');
+      return diff <= 5;
     };
 
     // Add field to Campaign.

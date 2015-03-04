@@ -21,6 +21,7 @@
     <div class="list-group">
         <a data-ng-repeat="campaign in campaigns" data-ng-href="#!/campaigns/{{campaign._id}}" class="list-group-item">
           <span data-ng-if="authentication.user.memberships.indexOf(campaign._id) >= 0" class="label label-success label-as-badge"><i class="fa fa-check"></i> Joined</span>
+          <span data-ng-if="soonerThanFiveDays(campaign.duration.end)" class="label label-warning label-as-badge"><i class="fa fa-clock-o"></i> Ending soon</span>
           <small class="list-group-item-text">
             Posted on
             <span data-ng-bind="campaign.created | date:'medium'"></span>

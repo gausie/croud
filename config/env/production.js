@@ -24,7 +24,9 @@ module.exports = {
         'public/lib/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js',
         'public/lib/leaflet/dist/leaflet.js',
         'public/lib/angular-leaflet-directive/dist/angular-leaflet-directive.min.js',
-        'public/lib/angular-ui-select/dist/select.min.js'
+        'public/lib/angular-ui-select/dist/select.min.js',
+        'public/lib/moment/min/moment.min.js',
+        'public/lib/angular-moment/angular-moment.min.js'
       ]
     },
     css: 'public/dist/application.min.css',
