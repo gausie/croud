@@ -8,6 +8,11 @@ var init = require('./config/init')(),
   chalk = require('chalk');
 
 /**
+ * Hooray ES6 for the whole project!
+ */
+require('es6-shim');
+
+/**
  * Main application entry file.
  * Please note that the order of loading is important.
  */
