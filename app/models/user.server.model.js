@@ -119,13 +119,6 @@ UserSchema.methods.hashPassword = function(password) {
 };
 
 /**
- * Create instance method for authenticating user
- */
-UserSchema.methods.authenticate = function(password) {
-  return this.password === this.hashPassword(password);
-};
-
-/**
  * Find possible not used username
  */
 UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
@@ -145,6 +138,22 @@ UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
       callback(null);
     }
   });
+};
+
+/**
+ * Find all users who are members of a given campaign.
+ */
+UserSchema.statics.findUsersInCampaign = function(campaign, callback) {
+  this.find({
+      memberships: campaign
+  }, callback);
+};
+
+/**
+ * Create instance method for authenticating user
+ */
+UserSchema.methods.authenticate = function(password) {
+  return this.password === this.hashPassword(password);
 };
 
 /**

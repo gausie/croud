@@ -6,7 +6,9 @@
 var mongoose = require('mongoose'),
   errorHandler = require('./errors.server.controller'),
   Campaign = mongoose.model('Campaign'),
-  _ = require('lodash');
+  User = mongoose.model('User'),
+  _ = require('lodash'),
+  async = require('async');
 
 /**
  * Create a Campaign
@@ -15,15 +17,29 @@ exports.create = function(req, res) {
   var campaign = new Campaign(req.body);
   campaign.user = req.user;
 
-  campaign.save(function(err) {
+  // Create the campaign and make creator "join" it.
+  async.parallel({
+    campaign: function(done) {
+      campaign.save(function(err, result) {
+        done(err, result);
+      });
+    },
+    user: function(done) {
+      req.user.joinCampaign(campaign, function(err, result) {
+        done(err, result);
+      });
+    }
+  }, function(err, results) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(campaign);
+      // Return the Campaign object.
+      res.jsonp(results.campaign);
     }
   });
+
 };
 
 /**
@@ -53,20 +69,51 @@ exports.update = function(req, res) {
 };
 
 /**
- * Delete an Campaign
+ * Delete an Campaign.
+ *
+ * Also unjoins all joined Users.
  */
 exports.delete = function(req, res) {
   var campaign = req.campaign ;
 
-  campaign.remove(function(err) {
+  // Start an object of tasks to be carried out.
+  var tasks = {};
+
+  // Delete the campaign.
+  tasks.campaign = function(done) {
+    campaign.remove(function(err, result) {
+      done(err, result);
+    });
+  };
+
+  User.findUsersInCampaign(campaign, function(err, users) {
     if (err) {
       return res.status(400).send({
         message: errorHandler.getErrorMessage(err)
       });
     } else {
-      res.jsonp(campaign);
+      // Add task to leave every joined user from the group.
+      users.forEach(function(user) {
+        tasks[user._id] = function(done) {
+          user.leaveCampaign(campaign, function(err, result) {
+            done(err, result);
+          });
+        };
+      });
+
+      // Carry out all the tasks in parallel.
+      async.parallel(tasks, function(err, results) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          res.jsonp(results.campaign);
+        }
+      });
     }
   });
+
 };
 
 /**
