@@ -99,9 +99,11 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       });
     };
 
-    // Find a list of Campaigns
+    // Find a list of Campaigns of which the User is a member.
     $scope.findCampaigns = function() {
-      $scope.campaigns = Campaigns.query();
+      $scope.campaigns = Campaigns.query({
+          mine: true
+      });
     };
   }
 ]);

@@ -100,6 +100,17 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       $scope.campaigns = Campaigns.query();
     };
 
+    // Find a list of Campaigns User has joined.
+    $scope.findJoined = function() {
+      if ($scope.authentication) {
+        $scope.joinedCampaigns = Campaigns.query({
+          mine: true
+        });
+      } else {
+        $scope.joinedCampaigns = [];
+      }
+    };
+
     // Find existing Campaign
     $scope.findOne = function() {
       $scope.campaign = Campaigns.get({

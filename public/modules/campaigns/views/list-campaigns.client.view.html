@@ -1,19 +1,32 @@
-<section data-ng-controller="CampaignsController" data-ng-init="find()">
+<section data-ng-controller="CampaignsController" data-ng-init="find();findJoined();">
     <div class="page-header">
         <h1>Campaigns</h1>
     </div>
     <div class="list-group">
-        <a data-ng-repeat="campaign in campaigns" data-ng-href="#!/campaigns/{{campaign._id}}" class="list-group-item">
-			<small class="list-group-item-text">
-				Posted on
-				<span data-ng-bind="campaign.created | date:'medium'"></span>
-				by
-				<span data-ng-bind="campaign.user.displayName"></span>
-			</small>
-			<h4 class="list-group-item-heading" data-ng-bind="campaign.name"></h4>
+        <a data-ng-repeat="campaign in joinedCampaigns" data-ng-href="#!/campaigns/{{campaign._id}}" class="list-group-item">
+          <small class="list-group-item-text">
+            Posted on
+            <span data-ng-bind="campaign.created | date:'medium'"></span>
+            by
+            <span data-ng-bind="campaign.user.displayName"></span>
+          </small>
+          <h4 class="list-group-item-heading" data-ng-bind="campaign.name"></h4>
         </a>
     </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!campaigns.$resolved || campaigns.length">
-    	No Campaigns yet, why don't you <a href="/#!/campaigns/create">create one</a>?
+    <div class="alert alert-warning text-center" data-ng-hide="!joinedCampaigns.$resolved || joinedCampaigns.length">
+    	You haven't joined any campaigns yet!
+    </div>
+    <h2>Discover</h2>
+    <div class="list-group">
+        <a data-ng-repeat="campaign in campaigns" data-ng-href="#!/campaigns/{{campaign._id}}" class="list-group-item">
+          <span data-ng-if="authentication.user.memberships.indexOf(campaign._id) >= 0" class="label label-success label-as-badge"><i class="fa fa-user"></i></span>
+          <small class="list-group-item-text">
+            Posted on
+            <span data-ng-bind="campaign.created | date:'medium'"></span>
+            by
+            <span data-ng-bind="campaign.user.displayName"></span>
+          </small>
+          <h4 class="list-group-item-heading" data-ng-bind="campaign.name"></h4>
+        </a>
     </div>
 </section>

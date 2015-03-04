@@ -13,3 +13,19 @@
 .ng-valid.ng-dirty {
 	border-color: #78FA89;
 }
+
+
+/**
+ * Allow badges with label-like colour options...
+ * or labels with badge-like borders and floating.
+ */
+.label-as-badge {
+  border-radius: 1em;
+}
+
+.list-group-item > .label-as-badge {
+  float: right;
+}
+.list-group-item > .label-as-badge + .label-as-badge {
+  margin-right: 5px;
+}
