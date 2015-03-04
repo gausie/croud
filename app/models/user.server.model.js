@@ -59,6 +59,10 @@ var UserSchema = new Schema({
     default: '',
     validate: [validateLocalStrategyPassword, 'Password should be longer']
   },
+  memberships: [{
+      type: Schema.ObjectId,
+      ref: 'Campaign',
+  }],
   salt: {
     type: String
   },
@@ -141,6 +145,48 @@ UserSchema.statics.findUniqueUsername = function(username, suffix, callback) {
       callback(null);
     }
   });
+};
+
+/**
+ * Join user to campaign.
+ */
+UserSchema.methods.joinCampaign = function(campaign, callback) {
+  var index = this.memberships.findIndex(function (membership) {
+    return membership.equals(campaign._id);
+  });
+  if (index < 0) {
+    this.memberships.push(campaign);
+    this.save(callback);
+  } else {
+    callback({
+      errors: {
+        alreadyMember: {
+          message: 'User is already a member of that campaign'
+        }
+      }
+    });
+  }
+};
+
+/**
+ * Leave user from campaign.
+ */
+UserSchema.methods.leaveCampaign = function(campaign, callback) {
+  var index = this.memberships.findIndex(function (membership) {
+    return membership.equals(campaign._id);
+  });
+  if (index >= 0) {
+    this.memberships.splice(index, 1);
+    this.save(callback);
+  } else {
+    callback({
+      errors: {
+        noMember: {
+          message: 'User is not a member of that campaign'
+        }
+      }
+    });
+  }
 };
 
 mongoose.model('User', UserSchema);

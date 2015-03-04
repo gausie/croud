@@ -6,6 +6,14 @@ angular.module('users').factory('Users', ['$resource',
     return $resource('users', {}, {
       update: {
         method: 'PUT'
+      },
+      join: {
+        method: 'PUT',
+        url: 'users/memberships/:campaignId'
+      },
+      leave: {
+        method: 'DELETE',
+        url: 'users/memberships/:campaignId'
       }
     });
   }

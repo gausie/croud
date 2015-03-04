@@ -20,6 +20,9 @@ exports.update = function(req, res) {
   // For security measurement we remove the roles from the req.body object
   delete req.body.roles;
 
+  // There are other fields of which we don't allow direct modification.
+  delete req.body.memberships;
+
   if (user) {
     // Merge existing user
     user = _.extend(user, req.body);
@@ -46,6 +49,40 @@ exports.update = function(req, res) {
       message: 'User is not signed in'
     });
   }
+};
+
+/**
+ * Join a campaign.
+ */
+exports.joinCampaign = function(req, res) {
+  var user = req.user;
+  var campaign = req.campaign;
+  user.joinCampaign(campaign, function(err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.json(user);
+    }
+  });
+};
+
+/**
+ * Leave a campaign.
+ */
+exports.leaveCampaign = function(req, res) {
+  var user = req.user;
+  var campaign = req.campaign;
+  user.leaveCampaign(campaign, function(err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.json(user);
+    }
+  });
 };
 
 /**

@@ -1,8 +1,8 @@
 'use strict';
 
 // Campaigns controller
-angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns', 'Points', 'leafletData',
-  function($scope, $stateParams, $location, Authentication, Campaigns, Points, leafletData) {
+angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns', 'Points', 'Users', 'leafletData',
+  function($scope, $stateParams, $location, Authentication, Campaigns, Points, Users, leafletData) {
     $scope.authentication = Authentication;
 
     // Start with empty Campaign.
@@ -106,6 +106,39 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         campaignId: $stateParams.campaignId
       }, function() {
         $scope.center = $scope.campaign.location;
+
+        // Determine which controls to display
+        $scope.$watch('authentication.user', function(user) {
+          if (user) {
+            if (user._id === $scope.campaign.user._id) {
+              $scope.controls = 'owner';
+            } else if (user.memberships.indexOf($scope.campaign._id) > -1) {
+              $scope.controls = 'member';
+            } else {
+              $scope.controls = 'user';
+            }
+          } else {
+            $scope.controls = 'none';
+          }
+        });
+      });
+    };
+
+    $scope.join = function() {
+      var user = new Users(Authentication.user);
+      user.$join({
+        campaignId: $scope.campaign._id
+      }, function(response) {
+        $scope.authentication.user = response;
+      });
+    };
+
+    $scope.leave = function() {
+      var user = new Users(Authentication.user);
+      user.$leave({
+        campaignId: $scope.campaign._id
+      }, function(response) {
+        $scope.authentication.user = response;
       });
     };
 
