@@ -1,5 +1,5 @@
 <section data-ng-controller="CampaignsController" data-ng-init="findOne();loadPoints();">
-	<div class="page-header">
+  <div class="page-header">
     <div class="pull-right" data-ng-switch="controls">
       <div data-ng-switch-when="owner">
         <a class="btn btn-primary" href="/#!/campaigns/{{campaign._id}}/edit">
@@ -26,8 +26,8 @@
         <p data-ng-model="controls"></p>
       </div>
     </div>
-		<h1 data-ng-bind="campaign.name"></h1>
-	</div>
+    <h1 data-ng-bind="campaign.name"></h1>
+  </div>
 
   <leaflet center="center" markers="markers" width="100%" height="300px"></leaflet>
 </section>
