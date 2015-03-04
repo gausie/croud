@@ -37,7 +37,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
       // Create new Point object
       var point = new Points ({
-        campaign: this.campaign._id,
+        campaign: this.point.campaign._id,
         location: [this.point.location.lng, this.point.location.lat],
         data: this.point.fields
       });

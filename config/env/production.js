@@ -8,7 +8,8 @@ module.exports = {
         'public/lib/bootstrap/dist/css/bootstrap.min.css',
         'public/lib/bootstrap/dist/css/bootstrap-theme.min.css',
         'public/lib/leaflet/dist/leaflet.css',
-        'public/lib/font-awesome/css/font-awesome.min.css'
+        'public/lib/font-awesome/css/font-awesome.min.css',
+        'public/lib/angular-ui-select/dist/select.min.css'
       ],
       js: [
         'public/lib/angular/angular.min.js',
@@ -22,7 +23,8 @@ module.exports = {
         'public/lib/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'public/lib/angular-bootstrap-checkbox/angular-bootstrap-checkbox.js',
         'public/lib/leaflet/dist/leaflet.js',
-        'public/lib/angular-leaflet-directive/dist/angular-leaflet-directive.min.js'
+        'public/lib/angular-leaflet-directive/dist/angular-leaflet-directive.min.js',
+        'public/lib/angular-ui-select/dist/select.min.js'
       ]
     },
     css: 'public/dist/application.min.css',

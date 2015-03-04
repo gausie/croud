@@ -8,15 +8,16 @@
                 <div class="form-group">
                   <label class="control-label" for="name">Campaign</label>
                   <div class="controls">
-                    <select class="form-control" data-ng-options="campaign as campaign.name for campaign in campaigns" data-ng-model="campaign">
-                      <option value="">Select a campaign...</option>
-                    </select>
+                    <ui-select data-theme="bootstrap" data-ng-model="point.campaign" data-search-enabled="false">
+                      <ui-select-match placeholder="Select a campaign...">{{$select.selected.name}}</ui-select-match>
+                      <ui-select-choices repeat="aCampaign in campaigns" >{{aCampaign.name}}</ui-select-choices>
+                    </ui-select>
                   </div>
                 </div>
-                <div data-ng-if="campaign" class="slider">
+                <div data-ng-if="point.campaign" class="slider">
                   <div class="form-group">
                     <label class="control-label">Position</label>
-                    <location-picker location="point.location" default-center="campaign.location" default-zoom="campaign.zoom"></location-picker>
+                    <location-picker location="point.location" default-center="point.campaign.location"></location-picker>
                   </div>
                   <form-generator schema="campaign.fields" results="point.fields"></form-generator>
                   <div class="form-group">
