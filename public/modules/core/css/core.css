@@ -39,3 +39,11 @@
 h1.alert-header, h2.alert-header, h3.alert-header, h4.alert-header {
   margin-top: 0px;
 }
+
+/**
+ * Buttons in the navbar need to be spaced out a bit because they look
+ * weird when their neighbour is "active".
+ */
+.navbar-nav > li.button {
+    padding: 0 10px 0 10px;
+}
