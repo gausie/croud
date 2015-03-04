@@ -139,7 +139,6 @@ exports.list = function(req, res) {
    * no time limitation.
    */
   if (!req.query.includeClosed) {
-    console.dir("not including closed ones");
     var now = new Date();
     query.or([
       {
