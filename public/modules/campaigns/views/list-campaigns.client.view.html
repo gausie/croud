@@ -2,7 +2,7 @@
     <div class="page-header">
         <h1>Campaigns</h1>
     </div>
-    <div class="list-group">
+    <div class="list-group" data-ng-if="authentication">
         <a data-ng-repeat="campaign in joinedCampaigns" data-ng-href="#!/campaigns/{{campaign._id}}" class="list-group-item">
           <small class="list-group-item-text">
             Posted on
@@ -13,7 +13,7 @@
           <h4 class="list-group-item-heading" data-ng-bind="campaign.name"></h4>
         </a>
     </div>
-    <div class="alert alert-warning text-center" data-ng-show="joinedCampaigns.$resolved && !joinedCampaigns.length">
+    <div class="alert alert-warning text-center" data-ng-show="authentication && joinedCampaigns.$resolved && !joinedCampaigns.length">
       You haven't joined any campaigns yet!
     </div>
     <h2>Discover</h2>
