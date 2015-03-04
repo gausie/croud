@@ -19,8 +19,8 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       }
 
       // Validate custom fields.
-      if (this.campaign.fields) {
-        this.campaign.fields.forEach(function(field) {
+      if (this.point.campaign.fields) {
+        this.point.campaign.fields.forEach(function(field) {
           if (field.required) {
             if (self.point.fields === undefined || self.point.fields[field.name] === undefined || self.point.fields[field.name] === '') {
               errors.push('"' + field.name + '" is a required field.');
@@ -38,7 +38,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       // Create new Point object
       var point = new Points ({
         campaign: this.point.campaign._id,
-        location: [this.point.location.lng, this.point.location.lat],
+        location: this.point.location,
         data: this.point.fields
       });
 
@@ -47,7 +47,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
         $location.path('points/create');
 
         // Reset the form
-        $scope.campaign = null;
+        $scope.point = {};
         $scope.$broadcast('resetMap');
 
       }, function(errorResponse) {

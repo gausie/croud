@@ -164,10 +164,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
           }, function(points) {
             var markers = {};
             points.forEach(function(point) {
-              markers[point._id] = {
-                'lng': point.location[0],
-                'lat': point.location[1]
-              };
+              markers[point._id] = point.location;
             });
             $scope.markers = markers;
           });
