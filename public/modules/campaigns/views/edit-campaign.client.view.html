@@ -22,16 +22,16 @@
                 <div class="form-group input-group">
                   <input placeholder="Start Date" type="text" data-ng-model="campaign.start" min-date="today" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.startDate" show-weeks="false" />
                   <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'startDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'startDate')"><i class="fa fa-calendar"></i></button>
                   </span>
                 </div>
                 <div class="form-group text-center">
-                  <i class="glyphicon glyphicon-arrow-right"></i>
+                  <i class="fa fa-arrow-right"></i>
                 </div>
                 <div class="form-group input-group">
                   <input placeholder="End Date" type="text" data-ng-model="campaign.end" min-date="campaign.start" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.endDate" show-weeks="false" />
                   <span class="input-group-btn">
-                    <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'endDate')"><i class="glyphicon glyphicon-calendar"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'endDate')"><i class="fa fa-calendar"></i></button>
                   </span>
                 </div>
               </div>
@@ -66,12 +66,12 @@
                 </fieldset>
               </div>
               <div class="panel-footer">
-                <button type="button" class="btn btn-link pull-right" data-ng-click="removeField($index)"><i class="glyphicon glyphicon-remove"></i> Remove field</button>
+                <button type="button" class="btn btn-link pull-right" data-ng-click="removeField($index)"><i class="fa fa-remove"></i> Remove field</button>
                 <span class="clearfix" />
               </div>
             </div>
             <div class="form-group">
-              <button type="button" class="btn btn-link" data-ng-click="addField()"><i class="glyphicon glyphicon-plus"></i> Add a new field</button>
+              <button type="button" class="btn btn-link" data-ng-click="addField()"><i class="fa fa-plus"></i> Add a new field</button>
             </div>
             <div class="form-group">
                 <input type="submit" class="btn btn-default" value="Edit">
