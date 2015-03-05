@@ -20,7 +20,7 @@
             <a href="/#!/{{subitem.link}}" data-ng-bind="subitem.title"></a>
           </li>
         </ul>
-        <button ng-switch-when="button" type="button" class="btn btn-primary btn-sm navbar-btn" href="/#!/{{item.link}}" data-ng-bind-html="item.title"></button>
+        <button ng-switch-when="button" type="button" class="btn btn-primary btn-sm navbar-btn" data-ng-click="$state.go(item.link)" data-ng-bind-html="item.title"></button>
         <a ng-switch-default href="/#!/{{item.link}}" data-ng-bind="item.title"></a>
       </li>
     </ul>
