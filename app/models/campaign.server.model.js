@@ -36,8 +36,13 @@ var CampaignSchema = new Schema({
       type: Date
     }
   },
+  private: {
+    type: Boolean,
+    default: false
+  },
   approvalRequired: {
-    type: Boolean
+    type: Boolean,
+    default: false
   },
   created: {
     type: Date,
