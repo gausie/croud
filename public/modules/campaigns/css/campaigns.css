@@ -1,0 +1,9 @@
+/**
+ * Style for a map icon
+ */
+.icon {
+  border-radius: 10px;
+  border: 2px solid black;
+  opacity: .75;
+  background-color: #ff0000;
+}
