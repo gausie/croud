@@ -162,6 +162,30 @@ module.exports = function(grunt) {
     grunt.config.set('applicationCSSFiles', config.assets.css);
   });
 
+  grunt.task.registerTask('downloadIconList', 'Task that downloads the relevant Font-Awesome icon list.', function() {
+    var https = require('https');
+    var bower = require('bower');
+    var yaml = require('js-yaml');
+    var done = this.async();
+
+    bower.commands.list().on('end', function(results) {
+      var version = results.dependencies['font-awesome'].pkgMeta.version;
+      var url = 'https://raw.githubusercontent.com/FortAwesome/Font-Awesome/v' + version + '/src/icons.yml';
+      https.get(url, function(res) {
+        var body = '';
+        res.on('data', function(chunk) {
+          body += chunk;
+        });
+        res.on('end', function() {
+          var list = yaml.safeLoad(body);
+          grunt.file.write('public/modules/core/data/fontAwesomeIcons.json', JSON.stringify(list));
+          done();
+        });
+      });
+
+    });
+  });
+
   // Default task(s).
   grunt.registerTask('default', ['lint', 'concurrent:default']);
 

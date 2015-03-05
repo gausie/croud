@@ -27,7 +27,8 @@
       <caption>Additional data fields recorded with this point.</caption>
       <tr data-ng-repeat="(name, value) in point.data">
         <th scope="row">{{name}}</td>
-        <td>{{value}}</td>
+        <td data-ng-if="point.campaign.fields[$index].type !== 'select'">{{value}}</td>
+        <td data-ng-if="point.campaign.fields[$index].type === 'select'"><i class="fa fa-{{value.icon}}"></i> {{value.name}}</td>
       </tr>
     </table>
   </div>

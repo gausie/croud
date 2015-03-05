@@ -1,8 +1,8 @@
 'use strict';
 
 // Campaigns controller
-angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns', 'Points', 'Users', 'leafletData', 'moment',
-  function($scope, $stateParams, $location, Authentication, Campaigns, Points, Users, leafletData, moment) {
+angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Campaigns', 'Points', 'Users', 'leafletData', 'moment',
+  function($scope, $stateParams, $location, $http, Authentication, Campaigns, Points, Users, leafletData, moment) {
     $scope.authentication = Authentication;
 
     // Start with empty Campaign.
@@ -25,6 +25,39 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       return diff <= 5;
     };
 
+    $scope.fieldTypes = [
+      { key: 'text', value: 'Text' },
+      { key: 'number', value: 'Number' },
+      { key: 'select', value:'Multiple Choice' },
+      { key: 'boolean', value: 'Boolean' },
+      { key: 'image', value: 'Image' }
+    ];
+
+    $scope.loadIcons = function() {
+      $http.get('modules/core/data/fontAwesomeIcons.json').then(function(res){
+        $scope.icons = res.data.icons;
+      });
+    };
+
+    // Add select option to field.
+    $scope.addOption = function(field) {
+      // Create fields array if one doesn't exist.
+      if ($scope.campaign.fields[field].options === undefined) {
+        $scope.campaign.fields[field].options = [];
+      }
+
+      // Add a new default blank field
+      $scope.campaign.fields[field].options.push({
+        name: '',
+        icon: null
+      });
+    };
+
+    // Remove field from Campaign.
+    $scope.removeOption = function(field, index) {
+      $scope.campaign.fields[field].options.splice(index, 1);
+    };
+
     // Add field to Campaign.
     $scope.addField = function() {
       // Create fields array if one doesn't exist.
@@ -35,7 +68,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       // Add a new default blank field
       $scope.campaign.fields.push({
         name: '',
-        type: 'null',
+        type: null,
         required: false
       });
     };

@@ -22,6 +22,16 @@
       </div>
     </div>
 
+    <div data-ng-switch-when="select">
+      <label class="col-sm-2 control-label">{{field.name}}</label>
+      <div class="col-sm-10">
+        <ui-select data-ng-model="results[field.name]">
+          <ui-select-match placeholder="Choose..."><i class="fa fa-{{$select.selected.icon}} "></i> {{$select.selected.name}}</ui-select-match>
+          <ui-select-choices repeat="option in field.options"><i class="fa fa-{{option.icon}} "></i> {{option.name}}</ui-select-choices>
+        </ui-select>
+      </div>
+    </div>
+
     <div data-ng-switch-when="image">
       <label class="col-sm-2 control-label">{{field.name}}</label>
       <div class="col-sm-10 checkbox">
