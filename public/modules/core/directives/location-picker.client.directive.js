@@ -7,7 +7,8 @@ angular.module('core').directive('locationPicker', [
       restrict: 'E',
       scope: {
         defaultCenter: '=?',
-        location: '='
+        location: '=',
+        staticGetter: '&static'
       },
       controller: function ($scope, leafletData) {
         // The inbuilt default center is the center of the world according
@@ -25,6 +26,9 @@ angular.module('core').directive('locationPicker', [
         } else {
           $scope.defaultCenter = angular.extend({}, defaultCenter, $scope.defaultCenter);
         }
+
+        // Determine whether we are static or not (default false).
+        $scope.static = $scope.staticGetter() || false;
 
         // Set initial values.
         $scope.center = $scope.defaultCenter;
@@ -56,11 +60,13 @@ angular.module('core').directive('locationPicker', [
           var self = this;
           leafletData.getMap().then(function(map) {
             map.locate({ setView: true }).on('locationfound', function(e) {
-              $scope.location = {
-                lng: e.longitude,
-                lat: e.latitude,
-                zoom: $scope.center.zoom
-              };
+              if (!$scope.static) {
+                $scope.location = {
+                  lng: e.longitude,
+                  lat: e.latitude,
+                  zoom: $scope.center.zoom
+                };
+              }
             });
           });
         };
@@ -79,17 +85,19 @@ angular.module('core').directive('locationPicker', [
 
         // Set map marker on click.
         $scope.$on('leafletDirectiveMap.click', function(event, args){
-          var coords = args.leafletEvent.latlng;
-          var obj = {
-            lat: coords.lat,
-            lng: coords.lng,
-            zoom: $scope.center.zoom
-          };
+          if (!$scope.static) {
+            var coords = args.leafletEvent.latlng;
+            var obj = {
+              lat: coords.lat,
+              lng: coords.lng,
+              zoom: $scope.center.zoom
+            };
 
-          if ($scope.location) {
-            angular.extend($scope.location, obj);
-          } else {
-            $scope.location = obj;
+            if ($scope.location) {
+              angular.extend($scope.location, obj);
+            } else {
+              $scope.location = obj;
+            }
           }
         });
 
