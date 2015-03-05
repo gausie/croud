@@ -74,15 +74,23 @@ exports.joinCampaign = function(req, res) {
 exports.leaveCampaign = function(req, res) {
   var user = req.user;
   var campaign = req.campaign;
-  user.leaveCampaign(campaign, function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(user);
-    }
-  });
+  // This function handles joins from the frontend and this should not
+  // be possible for private Campaigns.
+  if (campaign.private) {
+    return res.status(400).send({
+      message: 'Private campaigns cannot be joined without an invitation.'
+    });
+  } else {
+    user.leaveCampaign(campaign, function(err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.json(user);
+      }
+    });
+  }
 };
 
 /**

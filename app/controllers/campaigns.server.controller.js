@@ -121,15 +121,23 @@ exports.delete = function(req, res) {
  */
 exports.list = function(req, res) {
   var query = Campaign.find();
+
   /**
    * We may want to only return Campaigns of which the current user is
    * a member.
+   *
+   * If we are not getting user's own campaigns, we only want publically
+   * available Campaigns.
    */
   if (req.query.mine) {
     query.where({
       '_id': {
         '$in': req.user.memberships
       }
+    });
+  } else {
+    query.where({
+      'private': false
     });
   }
 

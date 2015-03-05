@@ -43,6 +43,13 @@
                 <span class="help-block">If this is checked, any submissions will need to be approved by moderators before appearing in the dataset.</span>
               </div>
             </div>
+            <div class="form-group">
+              <label class="control-label">Private</label>
+              <div class="controls">
+                <checkbox data-ng-model="campaign.private"></checkbox>
+                <span class="help-block">If this is checked, users will not be able to join the campaign unless invited.</span>
+              </div>
+            </div>
             <h2>Fields</h2>
             <div class="panel panel-default" data-ng-repeat="field in campaign.fields">
               <div class="panel-body">
