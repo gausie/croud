@@ -162,6 +162,9 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
 
     $scope.loadPoints = function() {
       $scope.markers = {};
+      $scope.$on('leafletDirectiveMarker.click', function (e, args) {
+        $location.path('points/' + args.markerName);
+      });
       $scope.$on('leafletDirectiveMap.moveend', function() {
         leafletData.getMap().then(function(map) {
           var bounds = map.getBounds();
@@ -171,7 +174,15 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
           }, function(points) {
             var markers = {};
             points.forEach(function(point) {
-              markers[point._id] = point.location;
+              var marker = angular.extend({}, point.location, {
+                icon: {
+                  type: 'div',
+                  iconSize: [10, 10],
+                  className: 'icon',
+                  iconAnchor: [5, 5]
+                }
+              });
+              markers[point._id] = marker;
             });
             $scope.markers = markers;
           });

@@ -96,6 +96,10 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
     $scope.findOne = function() {
       $scope.point = Points.get({
         pointId: $stateParams.pointId
+      }, function() {
+        $scope.location = angular.extend({}, $scope.point.location, {
+          zoom: $scope.point.campaign.location.zoom
+        });
       });
     };
 

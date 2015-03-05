@@ -100,7 +100,7 @@ exports.list = function(req, res) {
  * Point middleware
  */
 exports.pointByID = function(req, res, next, id) {
-  Point.findById(id).populate('user', 'displayName').exec(function(err, point) {
+  Point.findById(id).populate('user', 'displayName').populate('campaign').exec(function(err, point) {
     if (err) return next(err);
     if (! point) return next(new Error('Failed to load Point ' + id));
     req.point = point ;
