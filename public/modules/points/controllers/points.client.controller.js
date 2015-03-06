@@ -94,7 +94,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       }, function() {
         if ($stateParams.userId) {
           if ($stateParams.userId === $scope.authentication.user._id) {
-            $scope.name = "My";
+            $scope.name = 'My';
           } else {
             $scope.name = $scope.points[0].user.displayName + '\'s';
           }
