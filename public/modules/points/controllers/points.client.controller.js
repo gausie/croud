@@ -89,7 +89,17 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
     // Find a list of Points
     $scope.find = function() {
-      $scope.points = Points.query();
+      $scope.points = Points.query({
+          user: $stateParams.userId
+      }, function() {
+        if ($stateParams.userId) {
+          if ($stateParams.userId === $scope.authentication.user._id) {
+            $scope.name = "My";
+          } else {
+            $scope.name = $scope.points[0].user.displayName + '\'s';
+          }
+        }
+      });
     };
 
     // Find existing Point

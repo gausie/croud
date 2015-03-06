@@ -20,6 +20,10 @@ angular.module('points').config(['$stateProvider',
     state('editPoint', {
       url: '/points/:pointId/edit',
       templateUrl: 'modules/points/views/edit-point.client.view.html'
+    }).
+    state('listUserPoints', {
+      url: '/users/:userId/points',
+      templateUrl: 'modules/points/views/list-points.client.view.html'
     });
   }
 ]);

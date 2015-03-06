@@ -75,8 +75,16 @@ exports.delete = function(req, res) {
 exports.list = function(req, res) {
   var query = Point.find();
 
+  // Filter Points by campaign, else populate with the campaign details.
   if (req.query.campaign) {
     query.where('campaign').equals(req.query.campaign);
+  } else {
+    query.populate('campaign');
+  }
+
+  // Filter points by user
+  if (req.query.user) {
+    query.where('user').equals(req.query.user);
   }
 
   //  Only return Points within a certain bounds if needed.

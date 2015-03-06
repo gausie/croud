@@ -1,17 +1,17 @@
 <section data-ng-controller="PointsController" data-ng-init="find()">
     <div class="page-header">
-        <h1>Points</h1>
+        <h1><span data-ng-if="name">{{name}} </span>Points</h1>
     </div>
     <div class="list-group">
-        <a data-ng-repeat="point in points" data-ng-href="#!/points/{{point._id}}" class="list-group-item">
-      <small class="list-group-item-text">
-        Posted on
+      <a data-ng-repeat="point in points" data-ng-href="#!/points/{{point._id}}" class="list-group-item">
+        <i class="fa fa-map-marker"></i>
+        Submitted to
+        <span data-ng-bind="point.campaign.name"></span>
+        on
         <span data-ng-bind="point.created | date:'medium'"></span>
         by
         <span data-ng-bind="point.user.displayName"></span>
-      </small>
-      <h4 class="list-group-item-heading" data-ng-bind="point.name"></h4>
-        </a>
+      </a>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!points.$resolved || points.length">
       No Points yet, why don't you <a href="/#!/points/create">create one</a>?
