@@ -67,6 +67,9 @@
                     <checkbox data-ng-model="field.required"></checkbox> Required?
                   </div>
                   <div data-ng-if="field.type === 'select'">
+                    <div class="form-group">
+                      <checkbox data-ng-model="field.useAsIcon" data-ng-change="useFieldAsIcon($index)"></checkbox> Use field as marker icon
+                    </div>
                     <div class="form-group form-inline" data-ng-repeat="option in field.options">
                       <div class="form-group">
                         <input type="text" placeholder="Option name" data-ng-model="option.name" class="form-control" />
