@@ -14,7 +14,7 @@
         <label class="label-as-badge label label-warning" data-ng-if="daysSince(point.created) >= point.campaign.stale">Stale</label>
       </a>
     </div>
-    <div class="alert alert-warning text-center" data-ng-hide="!points.$resolved || points.length">
-      No Points yet, why don't you <a href="/#!/points/create">create one</a>?
-    </div>
+    <alert type="warning" data-ng-hide="!points.$resolved || points.length">
+      No Points yet, why don't you <a class="alert-link" href="/#!/points/create">create one</a>?
+    </alert>
 </section>

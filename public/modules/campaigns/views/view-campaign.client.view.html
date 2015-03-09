@@ -26,7 +26,7 @@
         <p data-ng-model="controls"></p>
       </div>
     </div>
-    <h1 data-ng-bind="campaign.name"></h1>
+    <h1>{{campaign.name}} <small>by {{campaign.user.displayName}}</small></h1>
   </div>
 
   <leaflet center="center" markers="markers" width="100%" height="300px"></leaflet>
