@@ -9,8 +9,9 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     $scope.campaign = {};
     $scope.center = {};
 
+    $scope.now = new Date();
+
     // Calendar stuff
-    $scope.today = new Date();
     $scope.openCalendar = function ($event, field) {
       $event.preventDefault();
       $event.stopPropagation();

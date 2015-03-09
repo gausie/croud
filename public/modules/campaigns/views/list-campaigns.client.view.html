@@ -4,7 +4,8 @@
     </div>
     <div class="list-group" data-ng-if="authentication">
         <a data-ng-repeat="campaign in joinedCampaigns" data-ng-href="#!/campaigns/{{campaign._id}}" class="list-group-item" data-ng-class="{ 'list-group-item-warning': !campaign.duration.open }">
-          <span data-ng-if="!campaign.duration.open" class="label label-warning label-as-badge"><i class="fa fa-calendar-o"></i> Opens on {{ campaign.duration.start | date : 'd MMMM y' }}</span>
+          <span data-ng-if="(campaign.duration.start > now)" class="label label-warning label-as-badge"><i class="fa fa-calendar-o"></i> Opens on {{ campaign.duration.start | date : 'd MMMM y' }}</span>
+          <span data-ng-if="(campaign.duration.end < now)" class="label label-danger label-as-badge"><i class="fa fa-calendar-o"></i> Closed on {{ campaign.duration.end | date : 'd MMMM y' }}</span>
           <span data-ng-if="campaign.private" class="label label-danger label-as-badge"><i class="fa fa-lock"></i> Private</span>
           <small class="list-group-item-text">
             Posted on
