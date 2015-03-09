@@ -94,7 +94,8 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         start: this.campaign.start,
         end: this.campaign.end,
         approvalRequired: this.campaign.approvalRequired,
-        private: this.campaign.private
+        private: this.campaign.private,
+        fieldAsMarker: this.campaign.fieldAsMarker
       });
 
       // Redirect after save
@@ -208,11 +209,14 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
           }, function(points) {
             var markers = {};
             points.forEach(function(point) {
+              console.log(point.data);
+              var className = ($scope.campaign.fieldAsMarker) ? 'fa fa-' + point.data[$scope.campaign.fieldAsMarker].icon : 'icon';
+              console.log(className);
               var marker = angular.extend({}, point.location, {
                 icon: {
                   type: 'div',
                   iconSize: [10, 10],
-                  className: 'icon',
+                  className: className,
                   iconAnchor: [5, 5]
                 }
               });

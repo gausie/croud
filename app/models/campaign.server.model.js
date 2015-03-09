@@ -44,6 +44,9 @@ var CampaignSchema = new Schema({
     type: Boolean,
     default: false
   },
+  fieldAsMarker: {
+    type: String
+  },
   created: {
     type: Date,
     default: Date.now

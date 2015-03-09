@@ -55,7 +55,7 @@
       </div>
       <div data-ng-if="field.type === 'select'">
         <div class="form-group">
-          <button data-btn-radio="$index" type="button" class="btn btn-default" data-ng-model="campaign.fieldAsIcon" data-uncheckable>Use field as marker icon</button>
+          <button data-btn-radio="field.name" type="button" class="btn btn-default" data-ng-model="campaign.fieldAsMarker" data-uncheckable>Use field as marker icon</button>
         </div>
         <div class="form-group form-inline" data-ng-repeat="option in field.options">
           <div class="form-group">
