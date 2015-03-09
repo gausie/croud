@@ -11,31 +11,44 @@
 </div>
 <div class="form-group">
   <label class="control-label">Duration</label>
-  <div class="form-inline">
-    <div class="form-group input-group">
-      <input placeholder="Start Date" type="text" data-ng-model="campaign.duration.start" min-date="now" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.startDate" show-weeks="false" />
-      <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'startDate')"><i class="fa fa-calendar"></i></button>
-      </span>
+  <div class="form-group form-inline">
+    <div class="controls">
+      <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="campaign.duration.enabled">{{ (campaign.duration.enabled) ? 'Enabled' : 'Disabled' }}</button>
+      <div class="form-group input-group">
+        <input placeholder="Start Date" type="text" data-ng-disabled="!campaign.duration.enabled" data-ng-model="campaign.duration.start" min-date="now" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.startDate" show-weeks="false" />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" data-ng-disabled="!campaign.duration.enabled" ng-click="openCalendar($event, 'startDate')"><i class="fa fa-calendar"></i></button>
+        </span>
+      </div>
+      <div class="form-group text-center">
+        <i class="fa fa-arrow-right"></i>
+      </div>
+      <div class="form-group input-group">
+        <input placeholder="End Date" type="text" data-ng-disabled="!campaign.duration.enabled" data-ng-model="campaign.duration.end" min-date="campaign.duration.start" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.endDate" show-weeks="false" />
+        <span class="input-group-btn">
+          <button type="button" class="btn btn-default" data-ng-disabled="!campaign.duration.enabled" ng-click="openCalendar($event, 'endDate')"><i class="fa fa-calendar"></i></button>
+        </span>
+      </div>
     </div>
-    <div class="form-group text-center">
-      <i class="fa fa-arrow-right"></i>
-    </div>
-    <div class="form-group input-group">
-      <input placeholder="End Date" type="text" data-ng-model="campaign.duration.end" min-date="campaign.duration.start" class="form-control" datepicker-popup="d MMMM yyyy" is-open="openedCalendar.endDate" show-weeks="false" />
-      <span class="input-group-btn">
-        <button type="button" class="btn btn-default" ng-click="openCalendar($event, 'endDate')"><i class="fa fa-calendar"></i></button>
-      </span>
+  </div>
+  <span class="help-block">If a duration is not enabled, the campaign will continue indefinitely.</span>
+</div>
     </div>
   </div>
 </div>
 <div class="form-group">
-  <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="campaign.approvalRequired">Submissions requires approval</button>
-  <span class="help-block">If this is checked, any submissions will need to be approved by moderators before appearing in the dataset.</span>
+  <label class="control-label">Submissions require approval</label>
+  <div class="controls">
+    <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="campaign.approvalRequired">{{ (campaign.approvalRequired) ? 'Enabled' : 'Disabled' }}</button>
+  </div>
+  <span class="help-block">If this is enabled, any submissions will need to be approved by moderators before appearing in the dataset.</span>
 </div>
 <div class="form-group">
-  <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="campaign.private">Private</button>
-  <span class="help-block">If this is checked, users will not be able to join the campaign unless invited.</span>
+  <label class="control-label">Private</label>
+  <div class="controls">
+    <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="campaign.private">{{ (campaign.private) ? 'Enabled' : 'Disabled' }}</button>
+  </div>
+  <span class="help-block">If this is enabled, users will not be able to join the campaign unless invited.</span>
 </div>
 <h2>Fields</h2>
 <div class="panel panel-default" data-ng-repeat="field in campaign.fields">
