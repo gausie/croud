@@ -114,3 +114,40 @@ exports.leaveCampaign = function(req, res) {
 exports.me = function(req, res) {
   res.json(req.user || null);
 };
+
+/**
+ * List users
+ */
+exports.list = function(req, res) {
+  var query = User.find();
+
+  /**
+   * Allow searching by display name on "q" param.
+   */
+  if (req.query.q) {
+    query.where({
+      displayName: {
+        $regex: req.query.q,
+        $options: 'i'
+      }
+    });
+  }
+
+  /**
+   * Do not select private bits.
+   */
+  query.select({
+    salt: 0,
+    password: 0
+  });
+
+  query.sort('-created').populate('user', 'displayName').exec(function(err, campaigns) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(campaigns);
+    }
+  });
+};
