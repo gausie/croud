@@ -36,9 +36,9 @@
 <div class="form-group form-inline">
   <label class="control-label">Submissions go stale</label>
   <div class="controls">
-    <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="campaign.stale.enabled">{{ (campaign.stale.enabled) ? 'Enabled' : 'Disabled' }}</button>
+    <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="staleEnabled">{{ (staleEnabled) ? 'Enabled' : 'Disabled' }}</button>
     <div class="input-group">
-      <input type="number" class="form-control" data-ng-disabled="!campaign.stale.enabled" data-ng-model="campaign.stale.days" />
+      <input type="number" class="form-control" data-ng-disabled="!staleEnabled" data-ng-model="campaign.stale" />
       <span class="input-group-addon">days</span>
     </div>
   </div>

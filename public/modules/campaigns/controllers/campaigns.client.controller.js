@@ -95,7 +95,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         approvalRequired: this.campaign.approvalRequired,
         private: this.campaign.private,
         fieldAsMarker: this.campaign.fieldAsMarker,
-        stale: this.campaign.stale.days
+        stale: this.campaign.stale
       });
 
       // Redirect after save
@@ -129,7 +129,6 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     // Update existing Campaign
     $scope.update = function() {
       var campaign = $scope.campaign;
-      campaign.stale = campaign.stale.days;
       campaign.$update(function() {
         $location.path('campaigns/' + campaign._id);
       }, function(errorResponse) {
