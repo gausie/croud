@@ -195,16 +195,23 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       });
     };
 
-    $scope.loadPoints = function() {
-      $scope.markers = {};
+    $scope.findPoints = function() {
+      /*
+       * When a marker is clicked, show the user a page for the point
+       */
       $scope.$on('leafletDirectiveMarker.click', function (e, args) {
         $location.path('points/' + args.markerName);
       });
+
+      /*
+       * When the map viewport is moved (this also happens on map load,
+       * find all the points that should be displayed
+       */
       $scope.$on('leafletDirectiveMap.moveend', function() {
         leafletData.getMap().then(function(map) {
           var bounds = map.getBounds();
           Points.query({
-            campaign: $scope.campaign._id,
+            campaign: $stateParams.campaignId,
             bounds: bounds.toBBoxString()
           }, function(points) {
             var markers = {};
