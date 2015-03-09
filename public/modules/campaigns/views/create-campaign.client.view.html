@@ -68,7 +68,7 @@
                   </div>
                   <div data-ng-if="field.type === 'select'">
                     <div class="form-group">
-                      <checkbox data-ng-model="field.useAsIcon" data-ng-change="useFieldAsIcon($index)"></checkbox> Use field as marker icon
+                      <button type="button" class="btn btn-primary" data-ng-model="campaign.fieldAsIcon" data-btn-radio="$index" data-uncheckable>Use field as marker icon</button>
                     </div>
                     <div class="form-group form-inline" data-ng-repeat="option in field.options">
                       <div class="form-group">

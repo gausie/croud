@@ -33,10 +33,6 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       { key: 'image', value: 'Image' }
     ];
 
-    $scope.useFieldAsIcon = function(index) {
-      // todo
-    };
-
     $scope.loadIcons = function() {
       $http.get('modules/core/data/fontAwesomeIcons.json').then(function(res){
         $scope.icons = res.data.icons;
