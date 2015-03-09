@@ -56,15 +56,24 @@ exports.update = function(req, res) {
  */
 exports.joinCampaign = function(req, res) {
   var user = req.user;
+  var profile = req.profile;
   var campaign = req.campaign;
-  // This function handles joins from the frontend and this should not
-  // be possible for private Campaigns.
-  if (campaign.private) {
+  /*
+   * Only campaign owners can join other users to a campaign.
+   * If the campaign is private, users cannot join themselves.
+   * Otherwise go ahead!
+   */
+  if (profile && !campaign.user._id.equals(user._id)) {
+    return res.status(400).send({
+      message: 'You are not authorized to add users to this campaign.'
+    });
+  } else if (campaign.private) {
     return res.status(400).send({
       message: 'Private campaigns cannot be joined without an invitation.'
     });
   } else {
-    user.joinCampaign(campaign, function(err) {
+    profile = profile || user;
+    profile.joinCampaign(campaign, function(err) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -82,15 +91,21 @@ exports.joinCampaign = function(req, res) {
 exports.leaveCampaign = function(req, res) {
   var user = req.user;
   var campaign = req.campaign;
-  user.leaveCampaign(campaign, function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(user);
-    }
-  });
+  if (campaign.user._id.equals(user._id)) {
+    return res.status(400).send({
+      message: 'You cannot leave your own campaign.'
+    });
+  } else {
+    user.leaveCampaign(campaign, function(err) {
+      if (err) {
+        return res.status(400).send({
+          message: errorHandler.getErrorMessage(err)
+        });
+      } else {
+        res.json(user);
+      }
+    });
+  }
 };
 
 /**

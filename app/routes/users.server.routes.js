@@ -15,9 +15,13 @@ module.exports = function(app) {
   app.route('/users').put(users.update);
   app.route('/users/accounts').delete(users.removeOAuthProvider);
 
-  // Memberships.
+  // Own memberships.
   app.route('/users/memberships/:campaignId').put(users.joinCampaign);
   app.route('/users/memberships/:campaignId').delete(users.leaveCampaign);
+
+  // Others' memberships
+  app.route('/users/:userId/memberships/:campaignId').put(users.joinCampaign);
+  app.route('/users/:userId/memberships/:campaignId').delete(users.leaveCampaign);
 
   // Setting up the users password api
   app.route('/users/password').post(users.changePassword);
@@ -57,9 +61,7 @@ module.exports = function(app) {
   app.route('/auth/github').get(passport.authenticate('github'));
   app.route('/auth/github/callback').get(users.oauthCallback('github'));
 
-  // Finish by binding the user middleware
+  // Finish by binding the middlewares
   app.param('userId', users.userByID);
-
-  // Load campaigns from campaignId slugs.
   app.param('campaignId', campaigns.campaignByID);
 };
