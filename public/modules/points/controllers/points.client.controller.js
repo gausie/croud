@@ -8,7 +8,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
     $scope.daysSince = function(date) {
       return (date) ? moment().diff(moment(date), 'days') : false;
-    }
+    };
 
     // Create new Point
     $scope.create = function() {
