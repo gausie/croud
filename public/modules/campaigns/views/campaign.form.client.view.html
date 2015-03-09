@@ -85,7 +85,7 @@
           <div class="form-group">
             <ui-select data-ng-model="option.icon">
               <ui-select-match placeholder="Select an icon"><i class="fa fa-{{$select.selected.id}}"></i></ui-select-match>
-              <ui-select-choices repeat="icon.id as icon in icons"><i class="fa fa-{{icon.id}}"></i> {{icon.name}}</ui-select-choices>
+              <ui-select-choices repeat="icon.id as icon in icons | filter: $select.search"><i class="fa fa-{{icon.id}}"></i> {{icon.name}}</ui-select-choices>
             </ui-select>
           </div>
           <div class="form-group">
