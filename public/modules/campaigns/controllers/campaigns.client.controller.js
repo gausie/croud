@@ -20,10 +20,8 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       $scope.openedCalendar[field] = true;
     };
 
-    $scope.soonerThanFiveDays = function(date) {
-      if (!date) return false;
-      var diff = moment(date).diff(moment(), 'days');
-      return diff <= 5;
+    $scope.daysSince = function(date) {
+      return (date) ? moment().diff(moment(date), 'days') : false;
     };
 
     $scope.fieldTypes = [
