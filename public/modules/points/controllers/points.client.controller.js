@@ -39,7 +39,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       var point = new Points ({
         campaign: this.point.campaign._id,
         location: this.point.location,
-        data: this.point.fields
+        data: this.point.data
       });
 
       // Redirect after save
