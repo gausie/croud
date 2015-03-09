@@ -57,23 +57,6 @@ exports.update = function(req, res) {
 exports.joinCampaign = function(req, res) {
   var user = req.user;
   var campaign = req.campaign;
-  user.joinCampaign(campaign, function(err) {
-    if (err) {
-      return res.status(400).send({
-        message: errorHandler.getErrorMessage(err)
-      });
-    } else {
-      res.json(user);
-    }
-  });
-};
-
-/**
- * Leave a campaign.
- */
-exports.leaveCampaign = function(req, res) {
-  var user = req.user;
-  var campaign = req.campaign;
   // This function handles joins from the frontend and this should not
   // be possible for private Campaigns.
   if (campaign.private) {
@@ -81,7 +64,7 @@ exports.leaveCampaign = function(req, res) {
       message: 'Private campaigns cannot be joined without an invitation.'
     });
   } else {
-    user.leaveCampaign(campaign, function(err) {
+    user.joinCampaign(campaign, function(err) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
@@ -91,6 +74,23 @@ exports.leaveCampaign = function(req, res) {
       }
     });
   }
+};
+
+/**
+ * Leave a campaign.
+ */
+exports.leaveCampaign = function(req, res) {
+  var user = req.user;
+  var campaign = req.campaign;
+  user.leaveCampaign(campaign, function(err) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.json(user);
+    }
+  });
 };
 
 /**
