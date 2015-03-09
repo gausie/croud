@@ -94,7 +94,8 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         end: this.campaign.end,
         approvalRequired: this.campaign.approvalRequired,
         private: this.campaign.private,
-        fieldAsMarker: this.campaign.fieldAsMarker
+        fieldAsMarker: this.campaign.fieldAsMarker,
+        stale: this.campaign.stale.days
       });
 
       // Redirect after save
@@ -128,6 +129,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
     // Update existing Campaign
     $scope.update = function() {
       var campaign = $scope.campaign;
+      campaign.stale = campaign.stale.days;
       campaign.$update(function() {
         $location.path('campaigns/' + campaign._id);
       }, function(errorResponse) {
@@ -208,9 +210,23 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
           }, function(points) {
             var markers = {};
             points.forEach(function(point) {
-              console.log(point.data);
+              /*
+               * Use an icon class if the campaign is configured to use
+               * a field as a marker.
+               */
               var className = ($scope.campaign.fieldAsMarker) ? 'fa fa-' + point.data[$scope.campaign.fieldAsMarker].icon : 'icon';
-              console.log(className);
+
+              /*
+               * If the campaign is configured to allow points to go
+               * stale, apply an opacity filter to the icons.
+              */
+              if ($scope.campaign.stale) {
+                var age = $scope.daysSince(point.created);
+                if (age >= $scope.campaign.stale) {
+                  className += ' stale';
+                }
+              }
+
               var marker = angular.extend({}, point.location, {
                 icon: {
                   type: 'div',

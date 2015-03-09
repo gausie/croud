@@ -11,6 +11,7 @@
         <span data-ng-bind="point.created | date:'medium'"></span>
         by
         <span data-ng-bind="point.user.displayName"></span>
+        <label class="label-as-badge label label-warning" data-ng-if="daysSince(point.created) >= point.campaign.stale">Stale</label>
       </a>
     </div>
     <div class="alert alert-warning text-center" data-ng-hide="!points.$resolved || points.length">

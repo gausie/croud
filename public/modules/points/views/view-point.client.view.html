@@ -7,6 +7,9 @@
     </div>
     <h1>Point from {{point.campaign.name}}</h1>
   </div>
+  <alert type="warning" data-ng-if="daysSince(point.created) >= point.campaign.stale">
+    <b>Warning!</b> This point is greater than  <ng-pluralize data-count="point.campaign.stale" data-when="{ 'one': '{} day', 'other': '{} days' }"></ng-pluralize> old and is therefore considered stale by the campaign owner.
+  </alert>
   <h2>Location</h2>
   <location-picker location="location" static="true"></location-picker>
   <h2>Details</h2>

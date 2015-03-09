@@ -1,10 +1,14 @@
 'use strict';
 
 // Points controller
-angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Points', 'Campaigns',
-  function($scope, $stateParams, $location, Authentication, Points, Campaigns) {
+angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Points', 'Campaigns', 'moment',
+  function($scope, $stateParams, $location, Authentication, Points, Campaigns, moment) {
     $scope.authentication = Authentication;
     $scope.point = {};
+
+    $scope.daysSince = function(date) {
+      return (date) ? moment().diff(moment(date), 'days') : false;
+    }
 
     // Create new Point
     $scope.create = function() {
