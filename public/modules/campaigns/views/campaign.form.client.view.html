@@ -69,7 +69,7 @@
         <ui-select data-ng-model="field.type" search-enabled="false">
           <ui-select-match placeholder="Select field type">{{$select.selected.value}}</ui-select-match>
           <ui-select-choices repeat="fieldType.key as fieldType in fieldTypes">{{fieldType.value}}</ui-select-choices>
-        </select>
+        </ui-select>
       </div>
       <div class="form-group" data-ng-if="field.type !== 'boolean'">
         <button data-btn-checkbox type="button" class="btn btn-default" data-ng-model="field.required">Required</button>
