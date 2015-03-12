@@ -6,7 +6,8 @@
           <ui-select data-ng-model="campaign.userToInvite" data-ng-if="campaign.private">
             <ui-select-match placeholder="Invite a user">{{$select.selected.displayName}}</ui-select-match>
             <ui-select-choices repeat="user in users" refresh="refreshUsers($select.search)" refresh-delay="0">
-              <div ng-bind-html="user.displayName | highlight: $select.search"></div>
+              <span ng-bind-html="user.displayName | highlight: $select.search"></span>
+              <i class="fa fa-check" data-ng-if="user.memberships.indexOf(campaign._id) > -1"></i>
             </ui-select-choices>
           </ui-select>
           <span class="input-group-btn">
