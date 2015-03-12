@@ -1,7 +1,20 @@
 <section data-ng-controller="CampaignsController" data-ng-init="findOne();findPoints();">
   <div class="page-header">
-    <div class="pull-right" data-ng-switch="controls">
+    <div class="pull-right form-inline" data-ng-switch="controls">
       <div data-ng-switch-when="owner">
+        <form data-ng-submit="join()" class="form-group input-group">
+          <ui-select data-ng-model="campaign.userToInvite" data-ng-if="campaign.private">
+            <ui-select-match placeholder="Invite a user">{{$select.selected.displayName}}</ui-select-match>
+            <ui-select-choices repeat="user in users" refresh="refreshUsers($select.search)" refresh-delay="0">
+              <div ng-bind-html="user.displayName | highlight: $select.search"></div>
+            </ui-select-choices>
+          </ui-select>
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-default">
+              <i class="fa fa-plus"></i>
+            </button>
+          </span>
+        </form>
         <a class="btn btn-primary" href="/#!/campaigns/{{campaign._id}}/edit">
           <i class="fa fa-edit"></i>
         </a>

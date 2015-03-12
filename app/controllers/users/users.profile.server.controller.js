@@ -63,23 +63,23 @@ exports.joinCampaign = function(req, res) {
    * If the campaign is private, users cannot join themselves.
    * Otherwise go ahead!
    */
-  if (profile && !campaign.user._id.equals(user._id)) {
+
+  if ( profile._id.equals(user._id) && !campaign.user._id.equals(user._id)) {
     return res.status(400).send({
       message: 'You are not authorized to add users to this campaign.'
     });
-  } else if (campaign.private) {
+  } else if (campaign.private && !campaign.user._id.equals(user._id)) {
     return res.status(400).send({
       message: 'Private campaigns cannot be joined without an invitation.'
     });
   } else {
-    profile = profile || user;
     profile.joinCampaign(campaign, function(err) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        res.json(user);
+        res.json(profile);
       }
     });
   }

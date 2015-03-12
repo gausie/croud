@@ -177,8 +177,15 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       });
     };
 
+    $scope.users = [];
+    $scope.refreshUsers = function(name) {
+      $scope.users = Users.query({
+        q: name
+      });
+    };
+
     $scope.join = function() {
-      var user = new Users(Authentication.user);
+      var user = new Users($scope.campaign.userToInvite || Authentication.user);
       user.$join({
         campaignId: $scope.campaign._id
       }, function(response) {
@@ -186,7 +193,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       });
     };
 
-    $scope.leave = function() {
+    $scope.leave = function(userId) {
       var user = new Users(Authentication.user);
       user.$leave({
         campaignId: $scope.campaign._id

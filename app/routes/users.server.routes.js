@@ -16,11 +16,7 @@ module.exports = function(app) {
   app.route('/users').put(users.update);
   app.route('/users/accounts').delete(users.removeOAuthProvider);
 
-  // Own memberships.
-  app.route('/users/memberships/:campaignId').put(users.joinCampaign);
-  app.route('/users/memberships/:campaignId').delete(users.leaveCampaign);
-
-  // Others' memberships
+  // Memberships.
   app.route('/users/:userId/memberships/:campaignId').put(users.joinCampaign);
   app.route('/users/:userId/memberships/:campaignId').delete(users.leaveCampaign);
 
