@@ -1,9 +1,9 @@
 'use strict';
 
 //Points service used to communicate Points REST endpoints
-angular.module('points').factory('Points', ['$resource',
-  function($resource) {
-    return $resource('points/:pointId', { pointId: '@_id'
+angular.module('points').factory('Points', ['$cachedResource',
+  function($cachedResource) {
+    return $cachedResource('points', 'points/:pointId', { pointId: '@_id'
     }, {
       update: {
         method: 'PUT'

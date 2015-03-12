@@ -10,6 +10,7 @@ var ApplicationConfiguration = (function() {
     'ngAnimate',
     'ngTouch',
     'ngSanitize',
+    'ngCachedResource',
     'ui.router',
     'ui.bootstrap',
     'ui.utils',
