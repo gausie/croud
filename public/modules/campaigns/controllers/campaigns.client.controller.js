@@ -227,7 +227,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
                * Use an icon class if the campaign is configured to use
                * a field as a marker.
                */
-              var className = ($scope.campaign.fieldAsMarker) ? 'fa fa-' + point.data[$scope.campaign.fieldAsMarker].icon : 'icon';
+              var className = ($scope.campaign.fieldAsMarker && point.data && point.data[$scope.campaign.fieldAsMarker]) ? 'fa fa-' + point.data[$scope.campaign.fieldAsMarker].icon : 'icon';
 
               /*
                * If the campaign is configured to allow points to go

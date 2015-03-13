@@ -59,12 +59,12 @@ exports.joinCampaign = function(req, res) {
   var profile = req.profile;
   var campaign = req.campaign;
   /*
-   * Only campaign owners can join other users to a campaign.
-   * If the campaign is private, users cannot join themselves.
+   * If you are not submitting your own name and are not the owner, nope.
+   * If the campaign is private and you're not the owner, nope.
    * Otherwise go ahead!
    */
 
-  if ( profile._id.equals(user._id) && !campaign.user._id.equals(user._id)) {
+  if ( !profile._id.equals(user._id) && !campaign.user._id.equals(user._id)) {
     return res.status(400).send({
       message: 'You are not authorized to add users to this campaign.'
     });
