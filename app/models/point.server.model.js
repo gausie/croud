@@ -4,7 +4,8 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose'),
-  Schema = mongoose.Schema;
+  Schema = mongoose.Schema,
+  Campaign = mongoose.model('Campaign');
 
 /**
  * Point Schema
@@ -51,8 +52,12 @@ PointSchema.pre('save', function (next) {
  * Auto-set approved
  */
 PointSchema.pre('save', function (next) {
+  var point = this;
   if (this.isNew) {
-    console.log(this.campaign);
+    Campaign.findById(this.campaign, function(err, campaign) {
+      point.approved = !campaign.approvalRequired;
+      next();
+    });
   }
 });
 
