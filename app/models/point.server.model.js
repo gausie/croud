@@ -25,6 +25,10 @@ var PointSchema = new Schema({
   data: {
     type: Schema.Types.Mixed
   },
+  approved: {
+    type: Boolean,
+    default: true
+  },
   created: {
     type: Date,
     default: Date.now
@@ -35,9 +39,21 @@ var PointSchema = new Schema({
   }
 });
 
+/**
+ * Keep locationArray for geo queries
+ */
 PointSchema.pre('save', function (next) {
   this.locationArray = [this.location.lng, this.location.lat];
   next();
+});
+
+/**
+ * Auto-set approved
+ */
+PointSchema.pre('save', function (next) {
+  if (this.isNew) {
+    console.log(this.campaign);
+  }
 });
 
 mongoose.model('Point', PointSchema);
