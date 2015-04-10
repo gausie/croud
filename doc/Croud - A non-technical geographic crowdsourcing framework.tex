@@ -6,27 +6,79 @@
 \usepackage{amssymb,amsfonts,textcomp}
 \usepackage{array}
 \usepackage{hhline}
+\usepackage{hyperref}
+
+\let\oldsection\section
+\renewcommand\section{\clearpage\oldsection}
 
 \begin{document}
 	\title{Croud \\ \vspace{2 mm} {\large A non-technical geographic crowdsourcing framework}}
-	\author{Sam Gaus}
-	\date{}
+	\author{Samuel Gaus}
+	\date{1st May 2015}
 	\maketitle
 
-	\section{Introduction}
-		\begin{itemize}
-			\item Examples of campaigns
-			\item People have to either start from scratch or learn how to use Bossa/PyBossa
-			\item Can we make something to help?
-			\item Can we make it for free?
-			\item Encourage anyone to start collecting data that interests them, and make the results available to all.
-		\end{itemize}
+	\tableofcontents
 
+	\section{Summary}
+		Geographical data collection is a commonly-repeated task in scientific research, political campaigning, land administration and humanitarian projects.
+		At the moment, there are a number of solutions for organisations wishing to go about data collection, from using existing frameworks to commissioning bespoke software.
+		However, these are either extremely technical, overly generic (i.e. not specifically suited to collecting geographic point data) or expensive to implement.
+
+		In this document I will show that in essence most organisations have very similar requirements for their data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields.
+		After analysing a number of potential benefactors, I produced a framework, set of APIs and mobile app that can be used by anyone requiring a crowdsourcing campaign to start collecting data in minutes.
+
+		The framework I have produced could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world.
+
+	\section{Introduction}
+		\subsection{The problem}
+		Data collection is a very common task in computer science and software development. The requirement to gather information from disparate human sources (or crowdsourcing) can be found from everywhere research projects to humanitarian missions.
+
+		\textbf{FixMyStreet, Missing Maps.}
+
+		\subsection{Current solutions}
+		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available.
+		The framework with the widest reach is \textit{PyBOSSA}, a crowdsourcing platform inspired by \textit{BOSSA} and written in Python. \textit{BOSSA} is a frontend written in PHP to provide a web-based client for \textit{BOINC}, the software behind hundreds of data collection projects such as \textit{SETI@home}, \textit{World Community Grid} and \textit{Climate Prediction}\cite{boincstats}.
+		PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills.
+
+		Alternatively, some organisations have produced their own bespoke software. In 2007, mySociety made FixMyStreet - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{fixmystreet}.
+		A user needs only to click on a map, fill in a survey and submit and the report is sent to the relevant council authority.
+		This system was released open-source for any council to host and use, and theoretically for anyone to adapt to their own crowdsourcing needs.
+
+		There are a number of issues present in using the existing solutions of \textit{PyBOSSA}, \textit{FixMyStreet} or bespoke software. Firstly, for all three there is a technical knowledge requirement. \textit{PyBOSSA} and \textit{FixMyStreet} both need server space, system administration to install and maintain and all the skills required for any necessary customisations.
+		\textit{crowdcrafting} is a platform powered by the \textit{PyBOSSA} framework which is free to use and allows a user to set up a \textit{PyBOSSA} campaign without the aforementioned requirements.
+		However, even in this case, there is significant technical knowledge requried to set up a geographic data-collection campaign due in part to the level of abstraction that the project has achieved from the types of data it could be used to collect.
+		A campaign creator must create a form in \textit{HTML} for the data collection, and the user does not get easy access to a map to just drop their pin. Requiring technical skill to operate the software means that in order to run a campaign one either needs a specific skillset or the financial resources necessary to pay a third party.
+
+		There is no way to validate data input using this methid.
+		For example, you may have a field of data collection in your campaign that must be numerical.
+		Although you can use the \texttt{number} input type in \textit{HTML}, this doesn't stop an old browser or malicious user sending non-numerical data in the response.
+
+		The data submission in \textit{PyBOSSA} is very much a one-way street in terms of direction. By this I mean that the data visibility is low for the user and high for the campaign owners. Many crowdsourcing solutions (for example FixMyStreet) have a much more balanced data visibility, where both users and owners can see the data that has been submitted so far.
+
+		Finally, although existing systems could be used hypothetically with enough technical skill for most crowdsourcing campaigns, they would still take a lot of time to prepare. In some applications of crowdsourced data collection time taken to set up a campaign is an extremely important factor. For example, when Malaysian Airlines Flight 370 crashed in 2014, there was an immediate rush of humanitarian workers to find the location of the plane. Enormous stretches of sea were inspected remotely by ``citizen scientists'' within days due to the existence of \textit{Tomnod} - a crowdsourcing platform built around distributed human inspection of images (in this case satellite images)\cite{tomnod-mh370}. Because a crowdsourcing framework was already in place specifically for that sort of data analysis, they were able to be more responsive than the government organisations expending huge resource on similar endeavours.
+
+		\subsection{Proposal}
+		In the previous sections we have seen that there a number of projects that have been created to crowdsource data from users in the field. We have also seen from \textit{Tomnod} that pre-existing frameworks that are highly specialised are extremely important for easily setting up data collection campaigns quickly and cheaply. Would it be possible to create a framework targeted and tailored specifically for distributed data collection in the field?
+
+		\subsection{Structure}
+		In this document I will show that it is indeed possible to create an easy-to-use, quick and open crowdsourcing framework. I will show tha when the data collection requirements are focussed on geographic data, efforts from anyone looking to crowdsource could be reduced dramatically.
+
+		First I will explore the background of crowdsourcing and ``citizen science'' in more depth. I will assess a number of projects that could benefit from a common framework and determine the common functionalities. I will compare these functionalities with the features of currently-available frameworks and will show, as a result that the framework I propose would be an original work benefiting users and campaign-creators alike.
+
+		Once the set of required features is clear, I will go into more detail about the architecture I use to create such a framework. I will give a more detailed explanation of what the framework actually is and supply a comprehensive requirements analysis to which the project could be built. I will show how the diffrent components fit together and how it works overall. I will then elaborate on and justify the specific technologies I have implemented.
+
+		I will then give more information on the acutal implementation of the software complete with source code. I will go through the schemas used in the data storage and some key snippets from the source code. I will also provide information on some of the features that would be more challenging for someone attempting to reproduce the framework themselves.
+
+		In order to show that the framework is appropriately constructed, I will evaluate it against two completely separate potential campaigns and show that it is suited to the requirements of both. In this section I will walk through the creation of a campaign with screenshots, and then do the same for submitting data to a campaign.
+
+		Finally, I will offer some future improvements on the framework and associated applications and will provide an analysis on what worked and why.
+
+		The software I produced to show this is called \textit{croud}, a portmanteau of ``cloud'' and ``crowd''. It is hosted on \href{http://croud.io/}{\texttt{http://croud.io/}} - please feel free to visit and try it out for yourself.
 	\section{Background}
 		\begin{itemize}
-			\item Review existing apps
-			\item https://en.wikipedia.org/wiki/Citizen\_science
-			\item http://www.geog.ucsb.edu/\~{}good/papers/495.pdf
+			\item Examples of apps that I would want to help you build.
+			\item Belong to the field of (geographic) https://en.wikipedia.org/wiki/Citizen\_science GIS
+			\item http://www.geog.ucsb.edu/~good/papers/495.pdf
 			\item Growing number of projects that involve crowdsourcing geographic information.
 			\begin{itemize}
 				\item OSM
@@ -43,28 +95,60 @@
 			\item What is available
 			\begin{itemize}
 				\item PyBossa and free implementation
-				\item Amazon Mechanical turk theoretically
 				\item There is another but I cant remember it and it's shit.
 			\end{itemize}
-			\item Level of abstraction for non IT people is required
+			\item Level of abstraction for non IT people is required. Potentially alleviates need for money and time.
 		\end{itemize}
-	\section{Documentation}
+	\section{Architecture}
 		\begin{itemize}
 			\item What the project is
-			\item How it works
-			\item API
-			\item Requirements analysis
-			\item Component diagram
-			\item Technologies used and why
+			\item Requirements analysis - very fine detail. Almost like an API per requirement. Basically walk through actions and almost describe each API call that would need to happen (kind of).
+			\item Component diagram. Do not specify technologies (this is for later).
+			\item How it works.
+			\item Technologies used and why.
+			\item Describe Full API docs in appendices.
 		\end{itemize}
+
+	\section{Implementation}
+		\begin{itemize}
+			\item Link to repository.
+			\item Link to a working implementation. http://croud.io/.
+			\item JSON schema.
+			\item Key snippets of code for each component - for each component show a frontend screen and maybe some code that powers it.
+			\item Special features that might take effort from new developers.
+			\begin{itemize}
+				\item Offline caching
+				\item Moderation
+				\item Stale.
+			\end{itemize}
+		\end{itemize}
+
 	\section{Evaluation}
 		\begin{itemize}
 			\item Show it using two completely different campaigns.
+			\item Explain why you chose the two campaigns you did and list their requirements.
 			\item Walkthrough of how user would create a campaign (with screenshots and links ideally)
 			\item Walkthrough of how data is submitted
 		\end{itemize}
 	\section{Conclusion}
 		\begin{itemize}
+			\item Future changes that could be added.
 			\item Conclude that it works etc etc
 		\end{itemize}
+
+	\begin{thebibliography}{9}
+		\bibitem{boincstats}
+		BOINC Project stats info
+		\href{http://boincstats.com/en/stats/projectStatsInfo}{http://boincstats.com/}
+
+		\bibitem{fixmystreet}
+		FixMyStreet README
+		\href{https://github.com/mysociety/fixmystreet/blob/afe94a2eff801b769e55d5527a1367406810958a/README.md}{https://github.com/}
+
+		\bibitem{tomnod-mh370}
+		Tomnod MH370 Indian Ocean Campaign
+		\href{http://www.tomnod.com/campaign/mh370_indian_ocean}{http://www.tomnod.com/}
+
+	\end{thebibliography}
+
 \end{document}
