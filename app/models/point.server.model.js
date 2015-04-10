@@ -54,7 +54,7 @@ PointSchema.pre('save', function (next) {
 PointSchema.pre('save', function (next) {
   var point = this;
   if (this.isNew) {
-    Campaign.findById(this.campaign, function(err, campaign) {
+    Campaign.findById(this.campaign, function (err, campaign) {
       point.approved = !campaign.approvalRequired;
       next();
     });
