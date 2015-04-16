@@ -7,9 +7,12 @@
 \usepackage{array}
 \usepackage{hhline}
 \usepackage{hyperref}
+\usepackage{graphicx}     
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
+
+\graphicspath{ {./images/} }
 
 \begin{document}
 	\title{Croud \\ \vspace{2 mm} {\large A non-technical geographic crowdsourcing framework}}
@@ -53,7 +56,7 @@
 		For example, you may have a field of data collection in your campaign that must be numerical.
 		Although you can use the \texttt{number} input type in \textit{HTML}, this doesn't stop an old browser or malicious user sending non-numerical data in the response.
 
-		The data submission in \textit{PyBOSSA} is very much a one-way street in terms of direction. By this I mean that the data visibility is low for the user and high for the campaign owners. Many crowdsourcing solutions (for example FixMyStreet) have a much more balanced data visibility, where both users and owners can see the data that has been submitted so far.
+		The data submission in \textit{PyBOSSA} is very much a one-way street in terms of availability. By this I mean that the data visibility is low for the user and high for the campaign owners. Many crowdsourcing solutions (for example FixMyStreet) have a much more balanced data visibility, where both users and owners can see the data that has been submitted so far.
 
 		Finally, although existing systems could be used hypothetically with enough technical skill for most crowdsourcing campaigns, they would still take a lot of time to prepare. In some applications of crowdsourced data collection time taken to set up a campaign is an extremely important factor. For example, when Malaysian Airlines Flight 370 crashed in 2014, there was an immediate rush of humanitarian workers to find the location of the plane. Enormous stretches of sea were inspected remotely by ``citizen scientists'' within days due to the existence of \textit{Tomnod} - a crowdsourcing platform built around distributed human inspection of images (in this case satellite images)\cite{_missing_2014}. Because a crowdsourcing framework was already in place specifically for that sort of data analysis, they were able to be more responsive than the government organisations expending huge resource on similar endeavours.
 
@@ -97,7 +100,7 @@
 		\paragraph{Cyclestreets}
 		Although basing most of its data on \textit{OSM}, the cyclist journey planner \textit{Cyclestreets} also hosts a photomap where users are encourage to upload geolocated photographs of cycling infrastructure to their ``Photomap''. This data is used to affect route planning and the prooided images themselves are appended to route itineraries\cite{_cyclestreets_????}.
 
-		\subsection{Common functionalities}
+		\subsubsection{Common functionalities}
 
 		The projects listed above share a number of functionalities. I have isolated and listed them here, although every project does not require every functionality.
 
@@ -111,7 +114,29 @@
 
 		\subsection{Available frameworks}
 
-		The field of crowdsourcing is not without existing frameworks. The key offering currently available is \textit{PyBOSSA}, already introduced in section \ref{sec:introduction}.
+		The field of crowdsourcing is not without existing frameworks. The key offering currently available is \textit{PyBOSSA}, already introduced in section \ref{sec:introduction}. However, the framework is not compatable with the field of crowdsourcing projects addressed in this study. This will be made clear in the walkthrough below.
+
+		\subsubsection{Walkthrough}
+
+		\textit{PyBOSSA} is available without requiring server space through \textit{crowdcrafting}. I will cover briefly the process for creating a geographic in-the-field data collection project using \textit{crowdcrafting}.
+
+		\begin{enumerate}
+			\item Create a user account on the webiste.
+			\item Start a new `Project' (see Figure \ref{fig:cc-create}).
+			\item `Import' some `Tasks'.\\
+			\textit{crowdcrafting} is designed to atomize tasks and distribute them between contributors. In order to achieve this, it requires a CSV (or Google Spreadsheet or similar) of `Tasks'. For example, in the geographic data example they provide for ``Urban Parks'', the tasks are questions like ``Find an urban park for this city'', along with a city name\cite{_urban_????}. To make the system cater for the kind of campaign discussed in this project, the file provided here would need to be consist of a singular question.
+			\item Edit the `Task Presenter' to be both mobile-compatable and capable of using geolocation as well as pointing to where you are on a map.
+			\item Publish the Project.
+		\end{enumerate}
+
+		\begin{figure}[hb]
+			\centering
+			\fbox{\includegraphics[width=4in]{cc-create}}
+			\caption{Creating a project in \textit{crowdcrafting}}
+			\label{fig:cc-create}
+		\end{figure}
+
+		This would then create an input form for the data you wish to collect. However, because \textit{PyBOSSA} focusses on atomised tasks rather than a more general goal, it is not possible to create a question that any user can repeatably answer. For example if you wanted to collect information about potholes, the task ``Where do you see a pothole?'' could be created. Once a user has `completed' this `task', however, they would not be able to answer it again, this causing the campaign to almost be one-use. Similarly, in the `Task Redundancy' settings area, you can specify how many times a single task can be repeated before closing. In the campaigns \textit{PyBOSSA} is built for, this would be to allow verification of submissions by seeing that mmultiple users provided the same data. In our example, however, it would be necessary to provide an arbitrary high number to allow the data collection to continue indefinitely.
 
 		\begin{itemize}
 			\item What is available
