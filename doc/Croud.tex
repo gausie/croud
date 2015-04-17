@@ -8,6 +8,7 @@
 \usepackage{hhline}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{tabularx}
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
@@ -28,12 +29,9 @@
 
 	\section{Summary}
 	\label{sec:summary}
-		Geographical data collection is a commonly-repeated task in scientific research, political campaigning, land administration and humanitarian projects.
-		At the moment, there are a number of solutions for organisations wishing to go about data collection, from using existing frameworks to commissioning bespoke software.
-		However, these are either extremely technical, overly generic (i.e. not specifically suited to collecting geographic point data) or expensive to implement.
+		Geographical data collection is a commonly-repeated task in scientific research, political campaigning, land administration and humanitarian projects. At the moment, there are a number of solutions for organisations wishing to go about data collection, from using existing frameworks to commissioning bespoke software. However, these are either extremely technical, overly generic (i.e. not specifically suited to collecting geographic point data) or expensive to implement.
 
-		This document will show that in essence most organisations have very similar requirements for their data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields.
-		After analysing a number of potential benefactors, a framework was produced, set of APIs and mobile app that can be used by anyone requiring a crowdsourcing campaign to start collecting data in minutes.
+		This document will show that in essence most organisations have very similar requirements for their data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields. After analysing a number of potential benefactors, a framework was produced, set of APIs and mobile app that can be used by anyone requiring a crowdsourcing campaign to start collecting data in minutes.
 
 		The framework that has been produced could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world.
 
@@ -42,23 +40,14 @@
 		\subsection{Problem}
 		Data collection is a very common task in computer science and software development. The requirement to gather information from disparate human sources (or crowdsourcing) can be found from everywhere research projects to humanitarian missions.
 
-		\subsection{Current Situation}
-		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available.
-		The framework with the widest reach is \emph{PyBOSSA}, a crowdsourcing platform inspired by \emph{BOSSA} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}.
-		PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills.
+		\subsection{Current situation}
+		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available. The framework with the widest reach is \emph{PyBOSSA}, a crowdsourcing platform inspired by \emph{BOSSA} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}. PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills.
 
-		Alternatively, some organisations have produced their own bespoke software. In 2007, \emph{mySociety} made FixMyStreet - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015}.
-		A user needs only to click on a map, fill in a survey and submit and the report is sent to the relevant council authority.
-		This system was released open-source for any council to host and use, and theoretically for anyone to adapt to their own crowdsourcing needs.
+		Alternatively, some organisations have produced their own bespoke software. In 2007, \emph{mySociety} made FixMyStreet - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015}. A user needs only to click on a map, fill in a survey and submit and the report is sent to the relevant council authority. This system was released open-source for any council to host and use, and theoretically for anyone to adapt to their own crowdsourcing needs.
 
-		There are a number of issues present in using the existing solutions of \emph{PyBOSSA}, \emph{FixMyStreet} or bespoke software. Firstly, for all three there is a technical knowledge requirement. \emph{PyBOSSA} and \emph{FixMyStreet} both need server space, system administration to install and maintain and all the skills required for any necessary customisations.
-		\emph{crowdcrafting} is a platform powered by the \emph{PyBOSSA} framework which is free to use and allows a user to set up a \emph{PyBOSSA} campaign without the aforementioned requirements.
-		However, even in this case, there is significant technical knowledge required to set up a geographic data-collection campaign due in part to the level of abstraction that the project has achieved from the types of data it could be used to collect.
-		A campaign creator must create a form in \emph{HTML} for the data collection, and the user does not get easy access to a map to just drop their pin. Requiring technical skill to operate the software means that in order to run a campaign one either needs a specific skill set or the financial resources necessary to pay a third party.
+		There are a number of issues present in using the existing solutions of \emph{PyBOSSA}, \emph{FixMyStreet} or bespoke software. Firstly, for all three there is a technical knowledge requirement. \emph{PyBOSSA} and \emph{FixMyStreet} both need server space, system administration to install and maintain and all the skills required for any necessary customisations. \emph{crowdcrafting} is a platform powered by the \emph{PyBOSSA} framework which is free to use and allows a user to set up a \emph{PyBOSSA} campaign without the aforementioned requirements. However, even in this case, there is significant technical knowledge required to set up a geographic data-collection campaign due in part to the level of abstraction that the project has achieved from the types of data it could be used to collect. A campaign creator must create a form in \emph{HTML} for the data collection, and the user does not get easy access to a map to just drop their pin. Requiring technical skill to operate the software means that in order to run a campaign one either needs a specific skill set or the financial resources necessary to pay a third party.
 
-		There is no way to validate data input using this method.
-		For example, you may have a field of data collection in your campaign that must be numerical.
-		Although you can use the \texttt{number} input type in \emph{HTML}, this doesn't stop an old browser or malicious user sending non-numerical data in the response.
+		There is no way to validate data input using this method. For example, you may have a field of data collection in your campaign that must be numerical. Although you can use the \texttt{number} input type in \emph{HTML}, this doesn't stop an old browser or malicious user sending non-numerical data in the response.
 
 		The data submission in \emph{PyBOSSA} is very much a one-way street in terms of availability. This means that the data visibility is low for the user and high for the campaign owners. Many crowdsourcing solutions (for example FixMyStreet) have a much more balanced data visibility, where both users and owners can see the data that has been submitted so far.
 
@@ -70,7 +59,7 @@
 		\subsection{Structure}
 		This document will show that it is indeed possible to create an easy-to-use, quick and open crowdsourcing framework. It will show that when the data collection requirements are focussed on geographic data, efforts from anyone looking to crowdsource could be reduced dramatically.
 
-		First the \hyperref[sec:background]{background} of crowdsourcing and ``citizen science'' will be discussed in more depth. The number of projects that could benefit from a common framework and determine the common functionalities will be assessed. These functionalities will be compared with the features of currently-available frameworks and will show, as a result that the framework that will be proposed would be an original work benefiting users and campaign-creators alike.
+		First the \hyperref[sec:background]{background} of crowdsourcing and ``citizen science'' will be discussed in more depth. The number of projects that could benefit from a common framework and determine the common functionalities will be assessed.These functionalities will be compared with the features of currently-available frameworks and will show, as a result that the framework that will be proposed would be an original work benefiting users and campaign-creators alike.
 
 		Once the set of required features is clear, the document will go into more detail about the \hyperref[sec:architecture]{architecture} used to create such a framework. A more detailed explanation of what the framework actually is will be given and a comprehensive requirements analysis to which the project could be built will be supplied. The document will show how the different components fit together and how it works overall. The specific technologies that have been implemented will then be justified and elaborated upon.
 
@@ -136,14 +125,14 @@
 			\item Publish the Project.
 		\end{enumerate}
 
-		\begin{figure}[hb]
+		\begin{figure}[ht]
 			\centering
 			\fbox{\includegraphics[width=4in]{cc-create}}
 			\caption{Creating a project in \emph{crowdcrafting}}
 			\label{fig:cc-create}
 		\end{figure}
 
-		\begin{figure}[hb]
+		\begin{figure}[ht]
 			\centering
 			\fbox{\includegraphics[width=4in]{cc-present}}
 			\caption{Form creation screen in \emph{crowdcrafting}}
@@ -182,9 +171,9 @@
 	\label{sec:architecture}
 		As a result of the analysis and background above, a framework could be produced to provide sufficient functionality to replace the bespoke implementations so far. The framework would need to consist primarily of an API that can receive submitted data, perform all the necessary back-end organisation of that data, and expose a way of interacting with inbuilt data. On top of that, it will be necessary to construct a number of front-ends to interact with the API - a web-based and a mobile application.
 
-		\subsection{Requirements Analysis}
+		\subsection{Requirements analysis}
 
-		This section contains a detailed and quantifiable list of the requirements for the framework, built from the common functionalities of the analysed projects.
+		This section contains a detailed and quantifiable list of the requirements for the framework, built from the common functionalities of the analysed projects. To simplify accounting for each requirement in the implementation of the project, each requirement follows a continuous count, despite being split across categories.
 
 		\newcounter{requirementcounter}
 		\newcommand\rqrn{\stepcounter{requirementcounter}\arabic{requirementcounter}}
@@ -193,8 +182,7 @@
 
 		\begin{tabular}{ | l | l | l | }
 			\hline
-			\textbf{\textnumero} & \textbf{Category} & \textbf{Requirement} \\ \hline
-			& & Users must be able to...\\
+			\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Users must be able to...}\\ \hline
 			\rqrn & Authentication & Sign up.\\
 			\rqrn & Authentication & Sign in.\\
 			\rqrn & Authentication & Sign out.\\
@@ -205,8 +193,61 @@
 			\rqrn & Profiles & Find other users.\\
 			\rqrn & Campaigns & Join a campaign.\\
 			\rqrn & Campaigns & Leave a campaign.\\
+			\rqrn & Campaigns & Create a campaign.\\
 			\hline
 		\end{tabular}
+
+		\subsubsection{Campaigns}
+
+		\begin{tabularx}{\textwidth}{ | l | l | X | }
+			\hline
+			\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
+			\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Campaigns must...}\\ \hline
+			\rqrn & Design & Be able to be created.\\
+			\rqrn & Design & Have names.\\
+			\rqrn & Design & Have a location.\\
+			\rqrn & Design & Allow the user creating them to provide a custom list of fields specific to their campaign.\\
+			\rqrn & Design & Support a start and end date outside of which they cannot receive data.\\
+			\rqrn & Design & Support a `text' field type.\\
+			\rqrn & Design & Support a `numerical' field type.\\
+			\rqrn & Design & Support a `boolean' field type.\\
+			\rqrn & Design & Support a `choose from a set of options' field type.\\
+			\rqrn & Design & Support an `image' field type.\\
+			\rqrn & Design & Be able to define `required' fields.\\
+			\rqrn & Display & Be retrievable individually.\\
+			\rqrn & Display & Be retrievable as a list.\\
+			\rqrn & Display & Display associated points on a map, with icons or markers.\\
+			\rqrn & Display & Be searchable and sortable to assist in ``discovering'' new Campaigns.\\
+			\rqrn & Administration & Be updatable.\\
+			\rqrn & Administration & Be deletable.\\
+			\rqrn & Administration & Maintain a list of ``moderators'' - members with extra privileges to moderate content submitted.\\
+			\rqrn & Administration & Be able to be made private so that users must be invited rather than join freely.\\
+			\rqrn & Administration & Either be actively or passively moderated - i.e. data submissions join a queue to be approved, or are accepted and can be removed later.\\
+			\rqrn & Administration & Be able to give its Points a `shelf life', after which they become ``stale''.\\
+			\hline
+		\end{tabularx}
+
+		\subsubsection{Points}
+
+		\begin{tabularx}{\textwidth}{ | l | l | X | }
+			\hline
+			\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
+			\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Points must...}\\ \hline
+			\rqrn & Design & Be able to be created and submitted to a Campaign of which the User is a member.\\
+			\rqrn & Design & Support a data payload that matches the schema of the Campaign \\
+			\hline
+		\end{tabularx}
+
+		\subsection{Component Diagram}
+
+		In Figure \ref{fig:component-diagram}, the relationship between components in the project is described.
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{component-diagram}}
+			\caption{Component diagram}
+			\label{fig:component-diagram}
+		\end{figure}
 
 		\begin{itemize}
 			\item What the project is
