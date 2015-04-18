@@ -9,6 +9,7 @@
 \usepackage{hyperref}
 \usepackage{graphicx}
 \usepackage{tabularx}
+\usepackage[page,titletoc]{appendix}
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
@@ -69,7 +70,7 @@
 
 		In \hyperref[sec:conclusion]{conclusion}, some future improvements on the framework and associated applications will be explored and recommended and an analysis on what worked and why will be provided.
 
-		The software produced to show this was named \emph{Croud}, a portmanteau of ``cloud'' and ``crowd''. It is hosted on \href{http://croud.io/}{\texttt{http://croud.io/}} - please feel free to visit and try it out for yourself.
+		The software produced to show this was named \emph{Croud}, a portmanteau of ``cloud'' and ``crowd''. It is hosted on \href{http://croud.io/}{\nolinkurl{http://croud.io/}} - please feel free to visit and try it out for yourself.
 
 	\section{Background}
 	\label{sec:background}
@@ -147,7 +148,7 @@
 
 		\subsection{Conclusion}
 
-		As was made clear when extracting the \hyperref[sec:common-functionalities]{common functionalities}, there is a huge overlap in the functionality of many crowdsourcing projects. There is a clear `type' of project for which a framework could be built that would save future campaign-creators having to make their own. This type of project - open submission of data with a geographic coordinate - is not well catered for by \emph{PyBOSSA}, which is built around finding a large task, atomising it into smaller tasks, and sharing them equally across the crowd. Even building something similar using \emph{PyBOSSA} would require significant technical knowledge to edit the HTML and JavaScript for the end-user to quickly enter data.
+		As was made clear when extracting the \hyperref[sec:common-functionalities]{common functionalities}, there is a huge overlap in the functionality of many crowdsourcing projects. There is a clear `type' of project for which a framework could be built that would save future campaign-creators having to make their own. This type of project - open submission of data with a geographic coordinate - is not well catered for by \emph{PyBOSSA}, which is built around finding a large task, atomising it into smaller tasks, and sharing them equally across the crowd. Even building something similar using \emph{PyBOSSA} would require significant technical knowledge to edit the \emph{HTML} and \emph{JavaScript} for the end-user to quickly enter data.
 
 		A framework implementing the common functionalities could act as a level of abstraction away from these technical issues. From the analysis of the existing applications, a number of benefits can be drawn:
 
@@ -163,7 +164,9 @@
 			\end{itemize}
 			\pitem{Cross-pollination} If a centralised platform were hosted using this crowdsourcing platform, and they shared a web interface and mobile application, smaller campaigns would benefit for a number of reasons.
 			\begin{itemize}
-				\item Multiple campaigns could be accessed through the same interface. This means when a user is supplying information for a specific campaign of personal or public interest could be e
+				\item Multiple campaigns could be accessed through the same interface. This means when a user is supplying information for a specific campaign of personal or public interest, they have the app open and would be more inclined to discover new campaigns.
+				\item If a campaign is advertised to a user who already has the application installed on their phone, they may perceive the effort required as lower than it would be if they had to install a completely new application.
+				\item Users could be emailed a newsletter featuring campaigns that they might find interesting, using collaborative or content-based filtering.
 			\end{itemize}
 		\end{enumerate}
 
@@ -249,20 +252,49 @@
 			\label{fig:component-diagram}
 		\end{figure}
 
+		\subsection{How it works}
+
+		As shown in the component diagram, the application is split into two primary components - the server and the client.
+
+		\subsubsection{Server}
+
+		The server carries out tasks like storing the information; validating submitted data; managing user authentication; and handling search queries. Instructions are provided using a REST (REpresational State Transfer) API over HTTP. REST over HTTP is an architectural style for semantic application interfaces. It leverages the ``methods'' defined in the specification for HTTP, and is recommended by the \emph{W3C}, who are in the draft stages of producing an official ``W3C Recommendation'' for its use\cite{_w3c_2012}.
+
+		The data is split into three models - Campaigns, Points and Users. Users are the data model representing a user, which will contain authentication information. Campaigns are equivalent to a single project and represent a single campaign of data crowdsourcing. Users can join Campaigns and the submit Points, which will be related to a single campaign. A Point represents a single data item collected for a campaign and contains at least a geographic coordinate pair. A Point may also contain other information as detailed by the form structure set in the creation of a Campaign.
+
+		API documentation can be found in \hyperref[sec:api-docs]{Appendix A}.
+
+		\subsubsection{Client}
+
+		The client comes in two forms - the web client and the mobile client. The key difference between the two is that the web client is served from a central server, whereas the mobile client is downloaded and stored on a mobile device.
+
+		The client provides an interface for the user to interact with the framework by translating user actions into to find and join Campaigns, to see a list of the Campaigns that they have joined, to submit Points to a Campaign and to see a map of Points that have been submitted to a Campaign.
+
+		A user can also create their own Campaign. A form is available that asks the user for the information required to create the Campaign, and the client transforms these options into an API request.
+
+		\subsection{Technologies}
+
+		The server is written using \emph{JavaScript}, running server-side using \emph{Node.js}. This the software being primarily event-driven (i.e. responding to events rather than running tasks constantly) and potentially requiring a high volume of concurrent users\cite{tilkov_node.js:_2010}. Because the platform is designed to support multiple Campaigns being run simultaneously, the software needs to be scalable. This language was also chosen due to developer preference and the current proliferation of third-party libraries available in the \emph{JavaScript} ecosystem.
+
+		Within the \emph{Node.js} environment, the \emph{express} framework is used to wrap the HTTP server, and \emph{passport} is used to handle multiple login strategies (local or via social media accounts).
+
+		For storing data, the software uses the document-oriented database \emph{MongoDB}. This is beneficial for this system for a number of reasons, listed below.
+
 		\begin{itemize}
-			\item What the project is
-			\item Requirements analysis - very fine detail. Almost like an API per requirement. Basically walk through actions and almost describe each API call that would need to happen (kind of).
-			\item Component diagram. Do not specify technologies (this is for later).
-			\item How it works.
-			\item Technologies used and why.
-			\item Describe Full API docs in appendices.
+			\item The data's interrelationship is not complex and can easily be handled by the basic \emph{MongoDB} table relationship schema.
+			\item Dynamic schemas are extremely useful in storing Points because each Campaign can require a different data structure to be collected per point. In a relational \emph{SQL}-based database this would be complicated, requiring another table to store the fields. On \emph{MongoDB}, however, it is an extremely trivial issue.
+			\item The support for geographic data is good, with the ability to query coordinate data on a simulated 2d sphere extremely quickly.
+			\item \emph{MongoDB} can very quickly be scaled to run in a distributed manner from a number of machines. This is useful for saving money in a cloud environment where the software can quickly scale up depending on usage.
 		\end{itemize}
+
+		The client software is written in \emph{HTML} and JavaScript, using the \emph{AngularJS} MVC application framework. This was chosen because of widespread usage resulting in third-party libraries, and developer experience. The mobile application is produced from bundling the web application using \emph{Cordova}, a mobile development framework produced by \emph{Apache} allowing the creation of native mobile applications using \emph{HTML} and \emph{JavaScript}.
+
+		The software is designed to run on any operating system, but in the current production environment is running on a \emph{Linux} server provided by \emph{Heroku}.
 
 	\section{Implementation}
 	\label{sec:implementation}
+		The code is tracked using the \emph{Git} revision control system and is hosted on \emph{Github}. It can be found at \href{http://github.com/gausie/croud}{\nolinkurl{http://github.com/gausie/croud}}. The software is also running and available to be used at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
 		\begin{itemize}
-			\item Link to repository.
-			\item Link to a working implementation. http://croud.io/.
 			\item JSON schema.
 			\item Key snippets of code for each component - for each component show a front-end screen and maybe some code that powers it.
 			\item Special features that might take effort from new developers.
@@ -290,5 +322,12 @@
 
 	\bibliographystyle{Croud}
 	\bibliography{Croud}
+
+	\clearpage
+	\begin{appendices}
+	\oldsection{API Documentation}
+	\label{sec:api-docs}
+	\section{Source Code}
+	\end{appendices}
 
 \end{document}
