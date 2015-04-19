@@ -184,21 +184,34 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       });
     };
 
+    $scope.toggleJoin = function(campaign) {
+      var user = new Users($scope.campaign.userToInvite || Authentication.user);
+      if (user.memberships.indexOf($scope.campaign._id) > -1) {
+        $scope.leave();
+      } else {
+        $scope.join();
+      }
+    }
+
     $scope.join = function() {
       var user = new Users($scope.campaign.userToInvite || Authentication.user);
       user.$join({
         campaignId: $scope.campaign._id
       }, function(response) {
-        $scope.authentication.user = response;
+        if (!$scope.campaign.userToInvite) {
+          $scope.authentication.user = response;
+        }
       });
     };
 
     $scope.leave = function(userId) {
-      var user = new Users(Authentication.user);
+      var user = new Users($scope.campaign.userToInvite || Authentication.user);
       user.$leave({
         campaignId: $scope.campaign._id
       }, function(response) {
-        $scope.authentication.user = response;
+        if (!$scope.campaign.userToInvite) {
+          $scope.authentication.user = response;
+        }
       });
     };
 

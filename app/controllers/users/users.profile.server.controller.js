@@ -90,22 +90,34 @@ exports.joinCampaign = function(req, res) {
  */
 exports.leaveCampaign = function(req, res) {
   var user = req.user;
+  var profile = req.profile;
   var campaign = req.campaign;
-  if (campaign.user._id.equals(user._id)) {
+  /*
+   * If you are not submitting your own name and are not the owner, nope.
+   * If you are the owner, nope.
+   * Otherwise go ahead!
+   */
+
+  if ( !profile._id.equals(user._id) && !campaign.user._id.equals(user._id)) {
     return res.status(400).send({
-      message: 'You cannot leave your own campaign.'
+      message: 'You are not authorized to remove users to this campaign.'
+    });
+  } else if (campaign.user._id.equals(profile._id)) {
+    return res.status(400).send({
+      message: 'You cannot remove the creator of a campaign.'
     });
   } else {
-    user.leaveCampaign(campaign, function(err) {
+    profile.leaveCampaign(campaign, function(err) {
       if (err) {
         return res.status(400).send({
           message: errorHandler.getErrorMessage(err)
         });
       } else {
-        res.json(user);
+        res.json(profile);
       }
     });
   }
+
 };
 
 /**
