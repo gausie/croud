@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage{tabularx}
 \usepackage[page,titletoc]{appendix}
+\usepackage{minted}
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
@@ -30,11 +31,13 @@
 
 	\section{Summary}
 	\label{sec:summary}
-		Geographical data collection is a commonly-repeated task in scientific research, political campaigning, land administration and humanitarian projects. At the moment, there are a number of solutions for organisations wishing to go about data collection, from using existing frameworks to commissioning bespoke software. However, these are either extremely technical, overly generic (i.e. not specifically suited to collecting geographic point data) or expensive to implement.
+		Geographical data collection is a commonly-repeated task in scientific research, political campaigning, land administration and humanitarian projects. At the moment, there are a number of solutions for organisations wishing to go about this type of data collection, from using existing frameworks to commissioning bespoke software. However, these either require significant technical knowledge; are overly generic and are not specifically suited to collecting geographic point data; or are expensive to implement.
 
-		This document will show that in essence most organisations have very similar requirements for their data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields. After analysing a number of potential benefactors, a framework was produced, set of APIs and mobile app that can be used by anyone requiring a crowdsourcing campaign to start collecting data in minutes.
+		This document will show that many organisations, in essence, have broadly similar requirements for their crowdsourced data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields. After analysing a number of existing projects, it was possible to extract a list of common functionalities that would need to be present in such a solution.
 
-		The framework that has been produced could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world.
+		A framework was produced consisting of a set of APIs and client interface that can be used by anyone requiring a crowdsourcing campaign. The framework can be used as a platform to allow a user to set up a campaign from nothing in minutes. It is also GPLv3 licenses and can be used as a library framework or expanded upon for projects with wider requirements. The framework is available to be viewed at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
+
+		In evaluating the framework, it is shown that it could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world.
 
 	\section{Introduction}
 	\label{sec:introduction}
@@ -294,16 +297,350 @@
 	\section{Implementation}
 	\label{sec:implementation}
 		The code is tracked using the \emph{Git} revision control system and is hosted on \emph{Github}. It can be found at \href{http://github.com/gausie/croud}{\nolinkurl{http://github.com/gausie/croud}}. The software is also running and available to be used at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
-		\begin{itemize}
-			\item JSON schema.
-			\item Key snippets of code for each component - for each component show a front-end screen and maybe some code that powers it.
-			\item Special features that might take effort from new developers.
-			\begin{itemize}
-				\item Offline caching
-				\item Moderation
-				\item Stale.
-			\end{itemize}
-		\end{itemize}
+
+		Due to the quantity of code across a wide directory structure, the source code is not included as an appendix. Instead, this section will cover some highlights of code behind the key functionalities.
+
+		\subsection{Schema}
+
+		As \emph{MongoDB} uses dynamic schemas, these are not necessarily how documents stored in each collection might look. Instead, the schema here is the framework of a model described in JavaScript, and as a result contains some callbacks as values (which would not be valid in plain JSON).
+
+		\subsubsection{User}
+
+		\begin{minted}[frame=single,fontsize=\scriptsize]{js}
+{
+  firstName: {
+    type: String,
+    trim: true,
+    default: '',
+    validate: [validateLocalStrategyProperty, 'Please fill in your first name']
+  },
+  lastName: {
+    type: String,
+    trim: true,
+    default: '',
+    validate: [validateLocalStrategyProperty, 'Please fill in your last name']
+  },
+  displayName: {
+    type: String,
+    trim: true
+  },
+  email: {
+    type: String,
+    trim: true,
+    default: '',
+    validate: [validateLocalStrategyProperty, 'Please fill in your email'],
+    match: [/.+\@.+\..+/, 'Please fill a valid email address']
+  },
+  username: {
+    type: String,
+    unique: 'testing error message',
+    required: 'Please fill in a username',
+    trim: true
+  },
+  password: {
+    type: String,
+    default: '',
+    validate: [validateLocalStrategyPassword, 'Password should be longer']
+  },
+  memberships: [{
+      type: Schema.ObjectId,
+      ref: 'Campaign',
+  }],
+  salt: {
+    type: String
+  },
+  provider: {
+    type: String,
+    required: 'Provider is required'
+  },
+  providerData: {},
+  additionalProvidersData: {},
+  roles: {
+    type: [{
+      type: String,
+      enum: ['user', 'admin']
+    }],
+    default: ['user']
+  },
+  updated: {
+    type: Date
+  },
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  /* For reset password */
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
+  }
+}
+		\end{minted}
+
+		\subsubsection{Campaign}
+
+		\begin{minted}[frame=single,fontsize=\scriptsize]{js}
+{
+  name: {
+    type: String,
+    default: '',
+    required: 'Please fill Campaign name',
+    trim: true
+  },
+  location: {
+    lng: { type: Number },
+    lat: { type: Number },
+    zoom: { type: Number }
+  },
+  locationArray: {
+    type: [Number],
+    index: '2dsphere'
+  },
+  fields: {
+    type: Schema.Types.Mixed
+  },
+  duration: {
+    start: {
+      type: Date
+    },
+    end: {
+      type: Date
+    }
+  },
+  private: {
+    type: Boolean,
+    default: false
+  },
+  approvalRequired: {
+    type: Boolean,
+    default: false
+  },
+  fieldAsMarker: {
+    type: String
+  },
+  stale: {
+    type: Number
+  },
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  user: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  }
+}
+		\end{minted}
+
+		The ``fields'' field is a JSON sub-structure built from the data required for each campaign. For example, it could contain a value such as
+
+		\begin{minted}[frame=single,fontsize=\scriptsize]{json}
+[
+    {
+        "options" : [ 
+            {
+                "icon" : "gamepad",
+                "name" : "Water"
+            }, 
+            {
+                "icon" : "search",
+                "name" : "Toll Both"
+            }
+        ],
+        "required" : true,
+        "type" : "select",
+        "name" : "Point of Interest"
+    },
+    {
+        "required" : false,
+        "type" : "image",
+        "name" : "Picture"
+    }
+]
+		\end{minted}
+
+		\subsubsection{Point}
+
+		\begin{minted}[frame=single,fontsize=\scriptsize]{js}
+{
+  campaign: {
+    type: Schema.ObjectId,
+    ref: 'Campaign'
+  },
+  location: {
+    lat: { type: Number },
+    lng: { type: Number }
+  },
+  locationArray: {
+    type: [Number],
+    index: '2dsphere'
+  },
+  data: {
+    type: Schema.Types.Mixed
+  },
+  approved: {
+    type: Boolean,
+    default: true
+  },
+  created: {
+    type: Date,
+    default: Date.now
+  },
+  user: {
+    type: Schema.ObjectId,
+    ref: 'User'
+  }
+}
+		\end{minted}
+
+		The ``data'' field is a JSON sub-structure matching the ``fields'' field of the Campaign to which the Point belongs. For example, it could contain a value such as
+
+		\begin{minted}[frame=single,fontsize=\scriptsize]{json}
+{
+    "Point of Interest" : {
+        "icon" : "gamepad",
+        "name" : "Water"
+    }
+}
+		\end{minted}
+
+		\subsection{Code excerpts}
+
+		This section will contain a few examples of the source code and is not intended to be exhaustive.
+
+		\subsubsection{Server}
+
+		\paragraph{Querying points}
+
+		\begin{minted}[frame=single,linenos,fontsize=\scriptsize]{js}
+/**
+ * List of Points
+ */
+exports.list = function(req, res) {
+  var query = Point.find();
+
+  // Filter Points by campaign, else populate with the campaign details.
+  if (req.query.campaign) {
+    query.where('campaign').equals(req.query.campaign);
+  } else {
+    query.populate('campaign');
+  }
+
+  // Filter points by user
+  if (req.query.user) {
+    query.where('user').equals(req.query.user);
+  }
+
+  //  Only return Points within a certain bounds if needed.
+  if (req.query.bounds) {
+    var b = req.query.bounds.split(',');
+    query.where('locationArray').within().box(b.slice(0,2), b.slice(2,4));
+  }
+
+  query.sort('-created').populate('user', 'displayName').exec(function(err, points) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      res.jsonp(points);
+    }
+  });
+};
+	\end{minted}
+
+	This section of code is the callback for the controller handling \texttt{GET} requests to \texttt{/points} endpoint. The Point variable is an object referring to a MongoDB class (using the \emph{Mongoose} JavaScript library), and it is instantiated to \texttt{query} using the \texttt{find()} method with no arguments. Different HTTP query parameters are appended to the \texttt{req} argument by \emph{express}. If they are found to exist in this callback, they alter the \texttt{query} object by reference.
+
+	For example, if we are looking for Points in a specific Campaign, we add chain the \texttt{where} and \texttt{equals} methods (lines~8-10,) 		 which is syntactical sugar for \emph{mongoose} to add our conditions to the query it is building. The benefit of building queries in this way is that it means the system is not vulnerable to an injection attack, where a maliciously crafted query could break out of the execution context within which it is intended to operate and affect other parts of the database or code.
+
+	Also to be noted here is the simplicity with which \emph{MongoDB} (and, in turn, \emph{mongoose}) deal with geographical queries. On line~22 the \texttt{within} and \texttt{box} methods are chained to quickly define a fence within which we want our Points to be.
+
+	\paragraph{Deleting a Campaign}
+
+	\begin{minted}[frame=single,linenos,fontsize=\scriptsize]{js}
+/**
+ * Delete an Campaign.
+ *
+ * Also unjoins all joined Users.
+ */
+exports.delete = function(req, res) {
+  var campaign = req.campaign;
+
+  // Start an object of tasks to be carried out.
+  var tasks = {};
+
+  // Delete the campaign.
+  tasks.campaign = function(done) {
+    campaign.remove(function(err, result) {
+      done(err, result);
+    });
+  };
+
+  User.findUsersInCampaign(campaign, function(err, users) {
+    if (err) {
+      return res.status(400).send({
+        message: errorHandler.getErrorMessage(err)
+      });
+    } else {
+      // Add task to leave every joined user from the group.
+      users.forEach(function(user) {
+        tasks[user._id] = function(done) {
+          user.leaveCampaign(campaign, function(err, result) {
+            done(err, result);
+          });
+        };
+      });
+
+      // Carry out all the tasks in parallel.
+      async.parallel(tasks, function(err, results) {
+        if (err) {
+          return res.status(400).send({
+            message: errorHandler.getErrorMessage(err)
+          });
+        } else {
+          res.jsonp(results.campaign);
+        }
+      });
+    }
+  });
+
+};
+	\end{minted}
+
+	This section of code is the callback for the controller handling \texttt{DELETE} requests to \texttt{/campaigns/:campaignId} endpoints. Note that this occurs after middleware that checks whether a user is authenticated to carry out the command.
+
+	The Campaigns of which a User is a member is stored in a collection on the User object. \emph{MongoDB} is not a relational database and so the data is stored in this way to be fastest - most of the time we need to know what Campaigns a User is a member of, rather than know what Users are members of a campaign (although this would also be trivial to calculate). The only added complication is that when a Campaign is deleted, every member needs to remove it from their membership list. Because of the asynchronous nature of a number of the requests carried out by this function, instead of carrying out each instruction in sequence the callbacks required are collected in an object called \texttt{tasks}. Once the tasks are all collected, the \emph{async} library is used to execute them all in parallel (line~35) and send a response to the client once complete.
+
+	\paragraph{Authorization Middleware}
+
+	\begin{minted}[frame=single,linenos,fontsize=\scriptsize]{js}
+app.route('/campaigns/:campaignId')
+  .delete(users.requiresLogin, campaigns.hasAuthorization, campaigns.delete);
+	\end{minted}
+
+	\begin{minted}[frame=single,linenos,fontsize=\scriptsize]{js}
+exports.hasAuthorization = function(req, res, next) {
+  if (req.campaign.user.id !== req.user.id) {
+    return res.status(403).send('User is not authorized');
+  }
+  next();
+};
+	\end{minted}
+
+	This is an example of authorization middleware. The first snippet is an \emph{express} routing expression, listing a chain of callbacks to process on a \texttt{DELETE} request to \texttt{/campaigns/:campaignId}. The second callback (line~2) \texttt{campaigns.hasAuthorization} can be seen in the second snippet. The \texttt{req} variable has been populated with \texttt{campaign} and \texttt{user} from middleware elsewhere in the application. On line~2 the campaign owner and authenticated user are compared, but if they are indeed equal, the \texttt{next} function passes control to the next middleware callback.
+
+	\subsubsection{Client}
+
+	\subsection{Features}
+
+	Special features that might take effort from new developers.
+	\begin{itemize}
+		\item Offline caching
+		\item Moderation
+		\item Stale.
+	\end{itemize}
 
 	\section{Evaluation}
 	\label{sec:evaluation}
@@ -313,6 +650,7 @@
 			\item Walkthrough of how user would create a campaign (with screenshots and links ideally)
 			\item Walkthrough of how data is submitted
 		\end{itemize}
+
 	\section{Conclusion}
 	\label{sec:conclusion}
 		\begin{itemize}
@@ -327,7 +665,6 @@
 	\begin{appendices}
 	\oldsection{API Documentation}
 	\label{sec:api-docs}
-	\section{Source Code}
 	\end{appendices}
 
 \end{document}
