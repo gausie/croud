@@ -633,23 +633,47 @@ exports.hasAuthorization = function(req, res, next) {
 
 	\subsubsection{Client}
 
+	Because the client is written using \emph{AngularJS}, which spreads the implementation across the views and controllers, code snippets will not be as fluid as in the Server section.
+
+	\paragraph{Campaign field design}
+
+	\subparagraph{View}
+	\inputminted[frame=single,linenos,breaklines,fontsize=\scriptsize]{xml}{snippets/campaign-field-design.html}
+	Note: this is trimmed down from the true source to save space.
+
+	\subparagraph{Controller}
+	\inputminted[frame=single,linenos,breaklines,fontsize=\scriptsize]{js}{snippets/campaign-field-design.js}
+
+	\emph{AngularJS} has the ability to repeat HTML elements based on objects attached to \texttt{\$scope}. In this example, the \texttt{fields} object populates the form's input fields using the \texttt{addField} and \texttt{removeField} functions. Within each field, there is an option to use the type multiple choice ``select'' type, and options can be added and removed using the \texttt{addOption} and \texttt{removeOption} functions.
+
+	Options for a ``select'' type come with icons, which are loaded from a list generated from the icons available in the \emph{FontAwesome} icon pack. The ``Use field as marker'' option can only be selected in one field and, if checked, will replace the generic markers on the Campaign's display map with the icon selected in the point submitted.
+
 	\subsection{Features}
 
-	Special features that might take effort from new developers.
-	\begin{itemize}
-		\item Offline caching
-		\item Moderation
-		\item Stale.
-	\end{itemize}
+	Although the framework is useful for starting campaigns in any case, there are a number of features implemented that are non-trivial to produce. Were a developer to create a framework from scratch, the basic data storage might come quickly, but these features would encourage developers to use pre-existing software. Below are listed a few of these features.
+
+	\paragraph{Points going stale}
+	In this framework, it's possible to mark Campaigns with the property of their Points expiring or going ``stale'' after a set amount of time. This feature is useful for Campaigns collecting information that is time sensitive and not relevant if it hasn't been recently submitted. This is common in humanitarian crowdsourcing campaigns. At the moment, being stale just visually distinguishes the Point when it is being displayed on a map, but in the future the feature could be expanded upon. For example, users could be reminded to re-check their stale submissions; or Users who submitted data nearby could be asked if they would like to help out.
+
+	\paragraph{Customizable Campaign field schemas}
+	As covered partly in one of the code snippets above, the framework is capable of handling any number of typed (and thus validatable) fields. There are five field types to choose from: boolean, numerical, text, multiple choice and file. Any number of these fields can be added to a Campaign in any configuration, with the creator being able to specify whether they are required or not, and if the icon chosen in the multiple choice field should be used as the map marker.
+
+	\paragraph{Standards-compliant mobile-ready client}
+	The client is written in a fully standards-compliant fashion and the display completely adapts to mobile. This means that the web version is viewable on a wide range of browsers, usable by users with accessibility requirements such as the use of a screen-reader. It also means that the web version can be viewed on mobiles and tablets with a fluid experience. This is useful also in packaging the client as a native mobile application, as very little changes need to be made and so changes to the codebase can be quickly expanded across the whole ecosystem.
 
 	\section{Evaluation}
 	\label{sec:evaluation}
-		\begin{itemize}
-			\item Show it using two completely different campaigns.
-			\item Explain why you chose the two campaigns you did and list their requirements.
-			\item Walkthrough of how user would create a campaign (with screenshots and links ideally)
-			\item Walkthrough of how data is submitted
-		\end{itemize}
+
+	In evaluating the framework, it is necessary to test two aspects of the framework's usage - the creation of Campaigns, and the submission of points. In this section, a number of key features will be tested by using the software and providing screenshots and comments. First, the client will be used to create two Campaigns that are as distinct as possible in usage scenarios. These campaigns will be
+
+	\begin{itemize}
+		\item A humanitarian Campaign similar to the \emph{Missing Maps} project. The campaign is designed to collect time-sensitive information about the physical environment, and as a result will have a time limit after which a Point will be marked stale. It will be a private campaign open only to invited members.
+		\item A simple ``fix this pothole'' style project where users casually submit images with location data. The campaign will be open to all to join.
+	\end{itemize}
+
+	Using a second account, the second Campaign will be joined and a point will be submitted.
+
+	\subsection{Creating Campaigns}
 
 	\section{Conclusion}
 	\label{sec:conclusion}

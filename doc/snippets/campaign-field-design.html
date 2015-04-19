@@ -1,0 +1,26 @@
+<div data-ng-repeat="field in campaign.fields" >
+  <input type="text" data-ng-model="field.name" placeholder="Field name" required="true" />
+  <ui-select data-ng-model="field.type" search-enabled="false" >
+    <ui-select-match placeholder="Select field type" >{{$select.selected.value}}</ui-select-match>
+    <ui-select-choices repeat="fieldType.key as fieldType in fieldTypes" >{{fieldType.value}}</ui-select-choices>
+  </ui-select>
+  <div data-ng-if="field.type !== 'boolean'">
+    <button data-btn-checkbox="true" type="button" class="btn btn-default" data-ng-model="field.required">Required</button>
+  </div>
+  <div data-ng-if="field.type === 'select'">
+    <button data-btn-radio="field.name" type="button" class="btn btn-default" data-ng-model="campaign.fieldAsMarker" data-uncheckable="true">
+      Use field as marker icon
+    </button>
+    <div data-ng-repeat="option in field.options">
+      <input type="text" placeholder="Option name" data-ng-model="option.name" />
+      <ui-select data-ng-model="option.icon">
+        <ui-select-match placeholder="Select an icon"><i class="fa fa-{{$select.selected.id}}"></i></ui-select-match>
+        <ui-select-choices repeat="icon.id as icon in icons | filter: $select.search"><i class="fa fa-{{icon.id}}"></i> {{icon.name}}</ui-select-choices>
+      </ui-select>
+      <button class="btn btn-danger" data-ng-click="removeOption($parent.$index, $index)"><i class="fa fa-remove"></i></button>
+    </div>
+    <button type="button" class="btn btn-link" data-ng-click="addOption($index)"><i class="fa fa-plus"></i> Add a new option</button>
+  </div>
+  <button type="button" class="btn btn-link pull-right" data-ng-click="removeField($index)"><i class="fa fa-remove"></i> Remove field</button>
+</div>
+<button type="button" class="btn btn-link" data-ng-click="addField()"><i class="fa fa-plus"></i> Add a new field</button>
