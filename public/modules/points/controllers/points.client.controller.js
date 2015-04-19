@@ -1,8 +1,8 @@
 'use strict';
 
 // Points controller
-angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Points', 'Campaigns', 'moment',
-  function($scope, $stateParams, $location, Authentication, Points, Campaigns, moment) {
+angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', '$upload', 'Authentication', 'Points', 'Campaigns', 'moment',
+  function($scope, $stateParams, $location, $upload, Authentication, Points, Campaigns, moment) {
     $scope.authentication = Authentication;
     $scope.point = {};
 
@@ -22,13 +22,24 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
         errors.push('You must specify a location.');
       }
 
+      var files = [];
+
       // Validate custom fields.
       if (this.point.campaign.fields) {
         this.point.campaign.fields.forEach(function(field) {
           if (field.required) {
-            if (self.point.fields === undefined || self.point.fields[field.name] === undefined || self.point.fields[field.name] === '') {
+            if (self.point.data === undefined || self.point.data[field.name] === undefined || self.point.data[field.name] === '') {
               errors.push('"' + field.name + '" is a required field.');
             }
+          }
+          if (field.type === 'image') {
+            var file = self.point.data[field.name][0];
+            var ext = file.name.split('.').pop();
+            files.push({
+              name: field.name,
+              file: file
+            });
+            self.point.data[field.name] = ext;
           }
         });
       }
@@ -48,12 +59,23 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
       // Redirect after save
       point.$save(function(response) {
+        // Upload images
+        files.forEach(function(file){
+          $upload.upload({
+            url: 'points/' + point._id + '/upload',
+            file: file.file,
+            fields: {
+              'name': file.name
+            }
+          });
+        });
+
+        // Redirect
         $location.path('points/create');
 
         // Reset the form
         $scope.point = {};
         $scope.$broadcast('resetMap');
-
       }, function(errorResponse) {
         $scope.error = errorResponse.data.message;
       });

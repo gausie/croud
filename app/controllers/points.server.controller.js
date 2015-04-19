@@ -6,7 +6,10 @@
 var mongoose = require('mongoose'),
   errorHandler = require('./errors.server.controller'),
   Point = mongoose.model('Point'),
-  _ = require('lodash');
+  _ = require('lodash'),
+  multiparty = require('multiparty'),
+  fs = require('fs'),
+  sanitize = require('sanitize-filename');
 
 /**
  * Create a Point
@@ -27,6 +30,30 @@ exports.create = function(req, res) {
 };
 
 /**
+ * Upload an Image
+ */
+exports.upload = function(req, res) {
+  var form = new multiparty.Form();
+
+  form.parse(req, function(err, fields, files) {
+    if (err) {
+      return res.status(400).send(err);
+    } else if (fields.name === undefined) {
+      return res.status(400).send('Field name is required');
+    } else {
+      // Only one file at a time
+      var file = files.file[0];
+
+      // Transfer file to correct folder.
+      var fieldName = String(fields.name);
+      var newPath = './public/images/' + req.point._id + '_' + sanitize(fieldName) + '.' + req.point.data[fieldName];
+      fs.renameSync(file.path, newPath);
+      return res.status(200).send('Upload successful');
+    }
+  });
+};
+
+/**
  * Show the current Point
  */
 exports.read = function(req, res) {
@@ -37,7 +64,7 @@ exports.read = function(req, res) {
  * Update a Point
  */
 exports.update = function(req, res) {
-  var point = req.point ;
+  var point = req.point;
 
   point = _.extend(point , req.body);
 

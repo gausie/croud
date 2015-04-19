@@ -30,8 +30,17 @@
       <caption>Additional data fields recorded with this point.</caption>
       <tr data-ng-repeat="(name, value) in point.data">
         <th scope="row">{{name}}</td>
-        <td data-ng-if="point.campaign.fields[$index].type !== 'select'">{{value}}</td>
-        <td data-ng-if="point.campaign.fields[$index].type === 'select'"><i class="fa fa-{{value.icon}}"></i> {{value.name}}</td>
+        <td data-ng-switch="point.campaign.fields[$index].type">
+          <div data-ng-switch-when="select">
+            <i class="fa fa-{{value.icon}}"></i> {{value.name}}
+          </div>
+          <div data-ng-switch-when="image">
+            <img data-ng-src="/images/{{ point._id }}_{{ point.campaign.fields[$index].name | sanitizeFilename }}.{{ value }}" />
+          </div>
+          <div data-ng-switch-default>
+            {{value}}
+          </div>
+        </td>
       </tr>
     </table>
   </div>

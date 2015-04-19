@@ -27,7 +27,8 @@ module.exports = {
         'public/lib/angular-ui-select/dist/select.min.js',
         'public/lib/moment/min/moment.min.js',
         'public/lib/angular-moment/angular-moment.min.js',
-        'public/lib/angular-cached-resource/angular-cached-resource.min.js'
+        'public/lib/angular-cached-resource/angular-cached-resource.min.js',
+        'public/lib/ng-file-upload/angular-file-upload-all.min.js'
       ]
     },
     css: 'public/dist/application.min.css',

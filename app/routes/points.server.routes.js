@@ -9,6 +9,9 @@ module.exports = function(app) {
     .get(points.list)
     .post(users.requiresLogin, points.create);
 
+  app.route('/points/:pointId/upload')
+    .post(users.requiresLogin, points.hasAuthorization, points.upload);
+
   app.route('/points/:pointId')
     .get(points.read)
     .put(users.requiresLogin, points.hasAuthorization, points.update)
