@@ -191,7 +191,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       } else {
         $scope.join();
       }
-    }
+    };
 
     $scope.join = function() {
       var user = new Users($scope.campaign.userToInvite || Authentication.user);
