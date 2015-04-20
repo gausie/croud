@@ -11,6 +11,8 @@
 \usepackage{tabularx}
 \usepackage[page,titletoc]{appendix}
 \usepackage{minted}
+\usepackage{enumitem}
+\usepackage{placeins}
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
@@ -277,7 +279,7 @@
 
 		\subsection{Technologies}
 
-		The server is written using \emph{JavaScript}, running server-side using \emph{Node.js}. This the software being primarily event-driven (i.e. responding to events rather than running tasks constantly) and potentially requiring a high volume of concurrent users\cite{tilkov_node.js:_2010}. Because the platform is designed to support multiple Campaigns being run simultaneously, the software needs to be scalable. This language was also chosen due to developer preference and the current proliferation of third-party libraries available in the \emph{JavaScript} ecosystem.
+		The server is written using \emph{JavaScript}, running server-side using \emph{Node.js}. This the software being primarily event-driven (i.e. responding to events rather than running tasks constantly) and potentially requiring a high volume of concurrent users\cite{tilkov_node.js:_2010}. Because the platform is designed to support multiple Campaigns being run simultaneously, the software needs to be scalable. This language was also chosen due to developer preference and the current proliferation of third-party libraries available in the \emph{JavaScript} ecosystem. In particular, the application was scaffolded using \emph{MEAN.JS}, a bootstrap for applications using a ``MEAN'' stack - or \emph{MongoDB}, \emph{express}, \emph{AngularJS} and \emph{Node.js}.
 
 		Within the \emph{Node.js} environment, the \emph{express} framework is used to wrap the HTTP server, and \emph{passport} is used to handle multiple login strategies (local or via social media accounts).
 
@@ -664,22 +666,152 @@ exports.hasAuthorization = function(req, res, next) {
 	\section{Evaluation}
 	\label{sec:evaluation}
 
-	In evaluating the framework, it is necessary to test two aspects of the framework's usage - the creation of Campaigns, and the submission of points. In this section, a number of key features will be tested by using the software and providing screenshots and comments. First, the client will be used to create two Campaigns that are as distinct as possible in usage scenarios. These campaigns will be
+		In evaluating the framework, it is necessary to test two aspects of the framework's usage - the creation of Campaigns, and the submission of points. In this section, a number of key features will be tested by using the software and providing screenshots and comments. First, the client will be used to create two Campaigns that are as distinct as possible in usage scenarios. These campaigns will be
 
-	\begin{itemize}
-		\item A humanitarian Campaign similar to the \emph{Missing Maps} project. The campaign is designed to collect time-sensitive information about the physical environment, and as a result will have a time limit after which a Point will be marked stale. It will be a private campaign open only to invited members.
-		\item A simple ``fix this pothole'' style project where users casually submit images with location data. The campaign will be open to all to join.
-	\end{itemize}
+		\begin{enumerate}[label=\Alph*.]
+			\item A humanitarian Campaign similar to the \emph{Missing Maps} project. The campaign is designed to collect time-sensitive information about the physical environment, and as a result will have a time limit after which a Point will be marked stale. It will be a private campaign open only to invited members.
+			\item A simple ``fix this pothole'' style project where users casually submit images with location data. The campaign will be open to all to join.
+		\end{enumerate}
 
-	Using a second account, the second Campaign will be joined and a point will be submitted.
+		Using a second account, the second Campaign will be joined and a point will be submitted.
 
-	\subsection{Creating Campaigns}
+		\subsection{Preparing users}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-prep-1}}
+			\caption{Landing page}
+			\label{fig:eval-prep-1}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-prep-2}}
+			\caption{Registration page.}
+			\label{fig:eval-prep-2}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-prep-3}}
+			\caption{Registering \texttt{test1} user.}
+			\label{fig:eval-prep-3}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-prep-4}}
+			\caption{Registering \texttt{test2} user.}
+			\label{fig:eval-prep-4}
+		\end{figure}
+
+		\FloatBarrier
+		\subsection{Creating Campaign A}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-ca-1}}
+			\caption{Navigating to Campaign creation page.}
+			\label{fig:eval-ca-1}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-ca-2}}
+			\caption{Initial state of Campaign creation form.}
+			\label{fig:eval-ca-2}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-ca-3}}
+			\caption{Campaign A form completed. Hampstead Heath is having a humanitarian crisis.}
+			\label{fig:eval-ca-3}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-ca-5}}
+			\caption{Configuration of options for multiple choice field.}
+			\label{fig:eval-ca-5}
+		\end{figure}
+
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-ca-6}}
+			\caption{Adding \texttt{test2} to the private Campaign.}
+			\label{fig:eval-ca-6}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-ca-4}}
+			\caption{Campaign A ready to be used.}
+			\label{fig:eval-ca-4}
+		\end{figure}
+
+		\FloatBarrier
+		\subsection{Creating Campaign B}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-cb-1}}
+			\caption{Campaign B form completed.}
+			\label{fig:eval-cb-1}
+		\end{figure}
+
+		\FloatBarrier
+		\subsection{Submitting Points to Campaign A}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-cb-1}}
+			\caption{Selecting Campaign A (``Humanitarian Campaign'').}
+			\label{fig:eval-submita-1}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-submita-2}}
+			\caption{Filled in the Point information.}
+			\label{fig:eval-submita-2}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-submita-3}}
+			\caption{Campaign A now appears with a ``fire'' symbol where the point was placed.}
+			\label{fig:eval-submita-3}
+		\end{figure}
+
+		\begin{figure}[ht]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-submita-4}}
+			\caption{Clicking the ``fire'' symbol reveals this full information page for that Point.}
+			\label{fig:eval-submita-4}
+		\end{figure}
 
 	\section{Conclusion}
 	\label{sec:conclusion}
+
+		Based on the evaluation in the previous section, it is clear that the framework can indeed be used to start a breadth of different crowdsourcing campaigns with the same interface. The campaigns were quick to create and were quick for users to upload data.
+
+		Users with interest in data who would normally have little reach could use the platform to create Campaigns and build a base of interested contributors who might find the Campaign by reading browsing through the available projects.
+
+		\subsection{Future changes}
+
+		The framework currently exists as a proof of concept and there are a number of features that could be added to improve the system, attracting more users and widening the application of the framework.
+
 		\begin{itemize}
-			\item Future changes that could be added.
-			\item Conclude that it works etc etc
+			\pitem{More customisation of Campaigns} Campaigns could have descriptions, cover images, Twitter feeds and other additions to make them feel more social. At the moment the framework displays the name of the Campaign and the map data, but this could easily be built into a profile page for each Campaign.
+			\pitem{Organisations} Rather than Campaigns being owned by Users, they could instead be part of Organisations. This would allow Campaigns by a single Organisation to be shown together, like \emph{American Red Cross} for example. Users could be given roles in Organisations that would allow them to create Campaigns, or cause them to automatically become moderators of any new Campaigns in that Organisation.
+			\pitem{More field types} Although the five that currently exist fit the requirements of the existing projects this framework is intended to replace, there are many other field types that could be added with more time to build the software. For example: star rating scale, audio upload, or barcode for the mobile application.
+			\pitem{Social aspect} At the moment Users are quite opaque to each other, with little by way of ``public profile''. In the future, the application could be expanded to include optional sharing of activity for Users, so that Users can find new Campaigns to contribute to by looking at what their friends are doing.
+			\pitem{Suggested Campaigns} As mentioned earlier in the document, using suggestion algorithms and given a big enough user base it would be possible to suggest Campaigns for a User to contribute to based on the Campaigns they already have joined.
+			\pitem{Stale Point reminders} When a Point becomes stale, a user could be reminded via email to check that submission again, or other Users who have submitted data nearby could be prompted to check out that location.
+			\pitem{Motivational strategies} The utility of the framework would be greatly improved by the availability of common motivational strategies in the framework. For example: being able to configure some points system for Users submitting data; or providing some method of micropayments to Users for each Point they submit.
+			\pitem{More relevant icon set for multiple choice field} At the moment the framework uses \emph{FontAwesome} because it has a large set of icons and is already loaded on the site for iconographic use. However, when projects like \emph{Maki} by \emph{Mapbox} for ``point of interest icon sets'' get bigger and include more icons, the system could easily be switched to use them.
 		\end{itemize}
 
 	\bibliographystyle{Croud}
