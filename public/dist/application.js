@@ -4,7 +4,21 @@
 var ApplicationConfiguration = (function() {
   // Init module configuration options
   var applicationModuleName = 'croud';
-  var applicationModuleVendorDependencies = ['ngResource', 'ngCookies',  'ngAnimate',  'ngTouch',  'ngSanitize',  'ui.router', 'ui.bootstrap', 'ui.utils', 'ui.checkbox', 'leaflet-directive'];
+  var applicationModuleVendorDependencies = [
+    'ngResource',
+    'ngCookies',
+    'ngAnimate',
+    'ngTouch',
+    'ngSanitize',
+    'ngCachedResource',
+    'ui.router',
+    'ui.bootstrap',
+    'ui.utils',
+    'ui.select',
+    'leaflet-directive',
+    'angularMoment',
+    'angularFileUpload'
+  ];
 
   // Add a new vertical module
   var registerModule = function(moduleName, dependencies) {
@@ -34,6 +48,39 @@ angular.module(ApplicationConfiguration.applicationModuleName).config(['$locatio
   }
 ]);
 
+/**
+ * Convert JSON dates into JavaScript dates.
+ * Copied from http://aboutcode.net/2013/07/27/json-date-parsing-angularjs.html
+ */
+var regexIso8601 = /^(\d{4}|\+\d{6})(?:-(\d{2})(?:-(\d{2})(?:T(\d{2}):(\d{2}):(\d{2})\.(\d{1,})(Z|([\-+])(\d{2}):(\d{2}))?)?)?)?$/;
+function convertDateStringsToDates(input) {
+    // Ignore things that aren't objects.
+    if (typeof input !== "object") return input;
+
+    for (var key in input) {
+        if (!input.hasOwnProperty(key)) continue;
+
+        var value = input[key];
+        var match;
+        // Check for string properties which look like dates.
+        if (typeof value === "string" && (match = value.match(regexIso8601))) {
+            var milliseconds = Date.parse(match[0])
+            if (!isNaN(milliseconds)) {
+                input[key] = new Date(milliseconds);
+            }
+        } else if (typeof value === "object") {
+            // Recurse into object
+            convertDateStringsToDates(value);
+        }
+    }
+}
+angular.module(ApplicationConfiguration.applicationModuleName).config(["$httpProvider", function ($httpProvider) {
+  $httpProvider.defaults.transformResponse.push(function(responseData){
+    convertDateStringsToDates(responseData);
+    return responseData;
+  });
+}]);
+
 //Then define the init function for starting up the application
 angular.element(document).ready(function() {
   //Fixing facebook bug with redirect
@@ -42,6 +89,7 @@ angular.element(document).ready(function() {
   //Then init the app
   angular.bootstrap(document, [ApplicationConfiguration.applicationModuleName]);
 });
+
 'use strict';
 
 // Use applicaion configuration module to register a new module
@@ -99,22 +147,60 @@ angular.module('campaigns').config(['$stateProvider',
 'use strict';
 
 // Campaigns controller
-angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Campaigns', 'Points', 'leafletData',
-  function($scope, $stateParams, $location, Authentication, Campaigns, Points, leafletData) {
+angular.module('campaigns').controller('CampaignsController', ['$scope', '$stateParams', '$location', '$http', 'Authentication', 'Campaigns', 'Points', 'Users', 'leafletData', 'moment',
+  function($scope, $stateParams, $location, $http, Authentication, Campaigns, Points, Users, leafletData, moment) {
     $scope.authentication = Authentication;
 
     // Start with empty Campaign.
     $scope.campaign = {};
     $scope.center = {};
 
+    $scope.now = new Date();
+
     // Calendar stuff
-    $scope.today = new Date();
     $scope.openCalendar = function ($event, field) {
       $event.preventDefault();
       $event.stopPropagation();
 
       $scope.openedCalendar = {};
       $scope.openedCalendar[field] = true;
+    };
+
+    $scope.daysSince = function(date) {
+      return (date) ? moment().diff(moment(date), 'days') : false;
+    };
+
+    $scope.fieldTypes = [
+      { key: 'text', value: 'Text' },
+      { key: 'number', value: 'Number' },
+      { key: 'select', value:'Multiple Choice' },
+      { key: 'boolean', value: 'Boolean' },
+      { key: 'image', value: 'Image' }
+    ];
+
+    $scope.loadIcons = function() {
+      $http.get('modules/core/data/fontAwesomeIcons.json').then(function(res){
+        $scope.icons = res.data.icons;
+      });
+    };
+
+    // Add select option to field.
+    $scope.addOption = function(field) {
+      // Create fields array if one doesn't exist.
+      if ($scope.campaign.fields[field].options === undefined) {
+        $scope.campaign.fields[field].options = [];
+      }
+
+      // Add a new default blank field
+      $scope.campaign.fields[field].options.push({
+        name: '',
+        icon: null
+      });
+    };
+
+    // Remove field from Campaign.
+    $scope.removeOption = function(field, index) {
+      $scope.campaign.fields[field].options.splice(index, 1);
     };
 
     // Add field to Campaign.
@@ -127,7 +213,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       // Add a new default blank field
       $scope.campaign.fields.push({
         name: '',
-        type: 'null',
+        type: null,
         required: false
       });
     };
@@ -152,7 +238,10 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         fields: this.campaign.fields,
         start: this.campaign.start,
         end: this.campaign.end,
-        approvalRequired: this.campaign.approvalRequired
+        approvalRequired: this.campaign.approvalRequired,
+        private: this.campaign.private,
+        fieldAsMarker: this.campaign.fieldAsMarker,
+        stale: this.campaign.stale
       });
 
       // Redirect after save
@@ -198,30 +287,127 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       $scope.campaigns = Campaigns.query();
     };
 
+    // Find a list of Campaigns User has joined.
+    $scope.findJoined = function() {
+      if ($scope.authentication) {
+        $scope.joinedCampaigns = Campaigns.query({
+          mine: true,
+          includeClosed: true
+        });
+      } else {
+        $scope.joinedCampaigns = [];
+      }
+    };
+
     // Find existing Campaign
     $scope.findOne = function() {
       $scope.campaign = Campaigns.get({
         campaignId: $stateParams.campaignId
       }, function() {
         $scope.center = $scope.campaign.location;
+
+        // Determine which controls to display
+        $scope.$watch('authentication.user', function(user) {
+          if (user) {
+            if (user._id === $scope.campaign.user._id) {
+              $scope.controls = 'owner';
+            } else if (user.memberships.indexOf($scope.campaign._id) > -1) {
+              $scope.controls = 'member';
+            } else {
+              $scope.controls = 'user';
+            }
+          } else {
+            $scope.controls = 'none';
+          }
+        });
       });
     };
 
-    $scope.loadPoints = function() {
-      $scope.markers = {};
+    $scope.users = [];
+    $scope.refreshUsers = function(name) {
+      $scope.users = Users.query({
+        q: name
+      });
+    };
+
+    $scope.toggleJoin = function(campaign) {
+      var user = new Users($scope.campaign.userToInvite || Authentication.user);
+      if (user.memberships.indexOf($scope.campaign._id) > -1) {
+        $scope.leave();
+      } else {
+        $scope.join();
+      }
+    }
+
+    $scope.join = function() {
+      var user = new Users($scope.campaign.userToInvite || Authentication.user);
+      user.$join({
+        campaignId: $scope.campaign._id
+      }, function(response) {
+        if (!$scope.campaign.userToInvite) {
+          $scope.authentication.user = response;
+        }
+      });
+    };
+
+    $scope.leave = function(userId) {
+      var user = new Users($scope.campaign.userToInvite || Authentication.user);
+      user.$leave({
+        campaignId: $scope.campaign._id
+      }, function(response) {
+        if (!$scope.campaign.userToInvite) {
+          $scope.authentication.user = response;
+        }
+      });
+    };
+
+    $scope.findPoints = function() {
+      /*
+       * When a marker is clicked, show the user a page for the point
+       */
+      $scope.$on('leafletDirectiveMarker.click', function (e, args) {
+        $location.path('points/' + args.markerName);
+      });
+
+      /*
+       * When the map viewport is moved (this also happens on map load,
+       * find all the points that should be displayed
+       */
       $scope.$on('leafletDirectiveMap.moveend', function() {
         leafletData.getMap().then(function(map) {
           var bounds = map.getBounds();
           Points.query({
-            campaign: $scope.campaign._id,
+            campaign: $stateParams.campaignId,
             bounds: bounds.toBBoxString()
           }, function(points) {
             var markers = {};
             points.forEach(function(point) {
-              markers[point._id] = {
-                'lng': point.location[0],
-                'lat': point.location[1]
-              };
+              /*
+               * Use an icon class if the campaign is configured to use
+               * a field as a marker.
+               */
+              var className = ($scope.campaign.fieldAsMarker && point.data && point.data[$scope.campaign.fieldAsMarker]) ? 'fa fa-' + point.data[$scope.campaign.fieldAsMarker].icon : 'icon';
+
+              /*
+               * If the campaign is configured to allow points to go
+               * stale, apply an opacity filter to the icons.
+              */
+              if ($scope.campaign.stale) {
+                var age = $scope.daysSince(point.created);
+                if (age >= $scope.campaign.stale) {
+                  className += ' stale';
+                }
+              }
+
+              var marker = angular.extend({}, point.location, {
+                icon: {
+                  type: 'div',
+                  iconSize: [10, 10],
+                  className: className,
+                  iconAnchor: [5, 5]
+                }
+              });
+              markers[point._id] = marker;
             });
             $scope.markers = markers;
           });
@@ -234,16 +420,16 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
 'use strict';
 
 //Campaigns service used to communicate Campaigns REST endpoints
-angular.module('campaigns').factory('Campaigns', ['$resource',
-  function($resource) {
-    return $resource('campaigns/:campaignId', { campaignId: '@_id'
-    }, {
+angular.module('campaigns').factory('Campaigns', ['$cachedResource',
+  function($cachedResource) {
+    return $cachedResource('campaigns', 'campaigns/:campaignId', { campaignId: '@_id'}, {
       update: {
         method: 'PUT'
       }
     });
   }
 ]);
+
 'use strict';
 
 // Setting up route
@@ -262,11 +448,12 @@ angular.module('core').config(['$stateProvider', '$urlRouterProvider',
 ]);
 'use strict';
 
-angular.module('core').controller('HeaderController', ['$scope', 'Authentication', 'Menus',
-  function($scope, Authentication, Menus) {
+angular.module('core').controller('HeaderController', ['$scope', '$state', 'Authentication', 'Menus',
+  function($scope, $state, Authentication, Menus) {
     $scope.authentication = Authentication;
     $scope.isCollapsed = false;
     $scope.menu = Menus.getMenu('topbar');
+    $scope.$state = $state;
 
     $scope.toggleCollapsibleMenu = function() {
       $scope.isCollapsed = !$scope.isCollapsed;
@@ -278,6 +465,7 @@ angular.module('core').controller('HeaderController', ['$scope', 'Authentication
     });
   }
 ]);
+
 'use strict';
 
 
@@ -296,7 +484,8 @@ angular.module('core').directive('locationPicker', [
       restrict: 'E',
       scope: {
         defaultCenter: '=?',
-        location: '='
+        location: '=',
+        staticGetter: '&static'
       },
       controller: ["$scope", "leafletData", function ($scope, leafletData) {
         // The inbuilt default center is the center of the world according
@@ -314,6 +503,9 @@ angular.module('core').directive('locationPicker', [
         } else {
           $scope.defaultCenter = angular.extend({}, defaultCenter, $scope.defaultCenter);
         }
+
+        // Determine whether we are static or not (default false).
+        $scope.static = $scope.staticGetter() || false;
 
         // Set initial values.
         $scope.center = $scope.defaultCenter;
@@ -345,11 +537,13 @@ angular.module('core').directive('locationPicker', [
           var self = this;
           leafletData.getMap().then(function(map) {
             map.locate({ setView: true }).on('locationfound', function(e) {
-              $scope.location = {
-                lng: e.longitude,
-                lat: e.latitude,
-                zoom: $scope.center.zoom
-              };
+              if (!$scope.static) {
+                $scope.location = {
+                  lng: e.longitude,
+                  lat: e.latitude,
+                  zoom: $scope.center.zoom
+                };
+              }
             });
           });
         };
@@ -368,17 +562,19 @@ angular.module('core').directive('locationPicker', [
 
         // Set map marker on click.
         $scope.$on('leafletDirectiveMap.click', function(event, args){
-          var coords = args.leafletEvent.latlng;
-          var obj = {
-            lat: coords.lat,
-            lng: coords.lng,
-            zoom: $scope.center.zoom
-          };
+          if (!$scope.static) {
+            var coords = args.leafletEvent.latlng;
+            var obj = {
+              lat: coords.lat,
+              lng: coords.lng,
+              zoom: $scope.center.zoom
+            };
 
-          if ($scope.location) {
-            angular.extend($scope.location, obj);
-          } else {
-            $scope.location = obj;
+            if ($scope.location) {
+              angular.extend($scope.location, obj);
+            } else {
+              $scope.location = obj;
+            }
           }
         });
 
@@ -582,9 +778,7 @@ angular.module('core').service('Menus', [
 angular.module('points').run(['Menus',
   function(Menus) {
     // Set top bar menu items
-    Menus.addMenuItem('topbar', 'Points', 'points', 'dropdown', '/points(/create)?');
-    Menus.addSubMenuItem('topbar', 'points', 'View Points', 'points');
-    Menus.addSubMenuItem('topbar', 'points', 'Create Point', 'points/create');
+    Menus.addMenuItem('topbar', '<i class="fa fa-map-marker"></i> Add a point!', 'createPoint', 'button', undefined, undefined, undefined, -1);
   }
 ]);
 
@@ -610,16 +804,25 @@ angular.module('points').config(['$stateProvider',
     state('editPoint', {
       url: '/points/:pointId/edit',
       templateUrl: 'modules/points/views/edit-point.client.view.html'
+    }).
+    state('listUserPoints', {
+      url: '/users/:userId/points',
+      templateUrl: 'modules/points/views/list-points.client.view.html'
     });
   }
 ]);
+
 'use strict';
 
 // Points controller
-angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Authentication', 'Points', 'Campaigns',
-  function($scope, $stateParams, $location, Authentication, Points, Campaigns) {
+angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', '$upload', 'Authentication', 'Points', 'Campaigns', 'moment',
+  function($scope, $stateParams, $location, $upload, Authentication, Points, Campaigns, moment) {
     $scope.authentication = Authentication;
     $scope.point = {};
+
+    $scope.daysSince = function(date) {
+      return (date) ? moment().diff(moment(date), 'days') : false;
+    };
 
     // Create new Point
     $scope.create = function() {
@@ -633,13 +836,24 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
         errors.push('You must specify a location.');
       }
 
+      var files = [];
+
       // Validate custom fields.
-      if (this.campaign.fields) {
-        this.campaign.fields.forEach(function(field) {
+      if (this.point.campaign.fields) {
+        this.point.campaign.fields.forEach(function(field) {
           if (field.required) {
-            if (self.point.fields === undefined || self.point.fields[field.name] === undefined || self.point.fields[field.name] === '') {
+            if (self.point.data === undefined || self.point.data[field.name] === undefined || self.point.data[field.name] === '') {
               errors.push('"' + field.name + '" is a required field.');
             }
+          }
+          if (field.type === 'image') {
+            var file = self.point.data[field.name][0];
+            var ext = file.name.split('.').pop();
+            files.push({
+              name: field.name,
+              file: file
+            });
+            self.point.data[field.name] = ext;
           }
         });
       }
@@ -652,19 +866,30 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
       // Create new Point object
       var point = new Points ({
-        campaign: this.campaign._id,
-        location: [this.point.location.lng, this.point.location.lat],
-        data: this.point.fields
+        campaign: this.point.campaign._id,
+        location: this.point.location,
+        data: this.point.data
       });
 
       // Redirect after save
       point.$save(function(response) {
+        // Upload images
+        files.forEach(function(file){
+          $upload.upload({
+            url: 'points/' + point._id + '/upload',
+            file: file.file,
+            fields: {
+              'name': file.name
+            }
+          });
+        });
+
+        // Redirect
         $location.path('points/create');
 
         // Reset the form
-        $scope.campaign = null;
+        $scope.point = {};
         $scope.$broadcast('resetMap');
-
       }, function(errorResponse) {
         $scope.error = errorResponse.data.message;
       });
@@ -704,47 +929,69 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
 
     // Find a list of Points
     $scope.find = function() {
-      $scope.points = Points.query();
+      $scope.points = Points.query({
+          user: $stateParams.userId
+      }, function() {
+        if ($stateParams.userId) {
+          if ($stateParams.userId === $scope.authentication.user._id) {
+            $scope.name = 'My';
+          } else {
+            $scope.name = $scope.points[0].user.displayName + '\'s';
+          }
+        }
+      });
     };
 
     // Find existing Point
     $scope.findOne = function() {
       $scope.point = Points.get({
         pointId: $stateParams.pointId
+      }, function() {
+        $scope.location = angular.extend({}, $scope.point.location, {
+          zoom: $scope.point.campaign.location.zoom
+        });
       });
     };
 
-    // Find a list of Campaigns
+    // Find a list of Campaigns of which the User is a member.
     $scope.findCampaigns = function() {
-      $scope.campaigns = Campaigns.query();
+      $scope.campaigns = Campaigns.query({
+          mine: true
+      });
     };
   }
 ]);
 
 'use strict';
 
-angular.module('points').directive('formGenerator', [
-  function() {
-    return {
-      templateUrl: 'modules/points/views/form-generator.client.view.html',
-      restrict: 'E',
-      scope: {
-        schema: '=',
-        results: '='
-      },
-      controller: ["$scope", function($scope) {
-        $scope.results = {};
-      }]
-    };
-  }
-]);
+angular.module('points').filter('sanitizeFilename', [
+	function() {
+		return function(input) {
+			/**
+			 * Copied from the sanitize-filename npm package.
+			 */
+			var illegalRe = /[\/\?<>\\:\*\|":]/g;
+			var controlRe = /[\x00-\x1f\x80-\x9f]/g;
+			var reservedRe = /^\.+$/;
+			var windowsReservedRe = /^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$/i;
 
+			function sanitize(input, replacement) {
+			  return input
+			    .replace(illegalRe, replacement)
+			    .replace(controlRe, replacement)
+			    .replace(reservedRe, replacement)
+			    .replace(windowsReservedRe, replacement);
+			}
+			return sanitize(input, '');
+		};
+	}
+]);
 'use strict';
 
 //Points service used to communicate Points REST endpoints
-angular.module('points').factory('Points', ['$resource',
-  function($resource) {
-    return $resource('points/:pointId', { pointId: '@_id'
+angular.module('points').factory('Points', ['$cachedResource',
+  function($cachedResource) {
+    return $cachedResource('points', 'points/:pointId', { pointId: '@_id'
     }, {
       update: {
         method: 'PUT'
@@ -752,11 +999,12 @@ angular.module('points').factory('Points', ['$resource',
     });
   }
 ]);
+
 'use strict';
 
 // Config HTTP Error Handling
-angular.module('users').config(['$httpProvider',
-  function($httpProvider) {
+angular.module('users').config(['$httpProvider', '$stateProvider',
+  function($httpProvider, $stateProvider) {
     // Set the httpProvider "not authorized" interceptor
     $httpProvider.interceptors.push(['$q', '$location', 'Authentication',
       function($q, $location, Authentication) {
@@ -771,7 +1019,7 @@ angular.module('users').config(['$httpProvider',
                 $location.path('signin');
                 break;
               case 403:
-                // Add unauthorized behaviour 
+                // Add unauthorized behaviour
                 break;
             }
 
@@ -780,8 +1028,16 @@ angular.module('users').config(['$httpProvider',
         };
       }
     ]);
+
+    // Users state routing
+    $stateProvider.
+    state('viewUser', {
+      url: '/users/:userId',
+      templateUrl: 'modules/users/views/view-user.client.view.html'
+    });
   }
 ]);
+
 'use strict';
 
 // Setting up route
@@ -993,11 +1249,19 @@ angular.module('users').factory('Authentication', [
 'use strict';
 
 // Users service used for communicating with the users REST endpoint
-angular.module('users').factory('Users', ['$resource',
-  function($resource) {
-    return $resource('users', {}, {
+angular.module('users').factory('Users', ['$cachedResource',
+  function($cachedResource) {
+    return $cachedResource('users', 'users', { userId: '@_id' }, {
       update: {
         method: 'PUT'
+      },
+      join: {
+        method: 'PUT',
+        url: 'users/:userId/memberships/:campaignId'
+      },
+      leave: {
+        method: 'DELETE',
+        url: 'users/:userId/memberships/:campaignId'
       }
     });
   }
