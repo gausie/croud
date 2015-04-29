@@ -13,6 +13,7 @@
 \usepackage{minted}
 \usepackage{enumitem}
 \usepackage{placeins}
+\usepackage[margin=1.5in]{geometry}
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
@@ -24,7 +25,7 @@
 \graphicspath{ {./images/} }
 
 \begin{document}
-	\title{Croud \\ \vspace{2 mm} {\large A non-technical geographic crowdsourcing framework}}
+	\title{Croud \\ \vspace{2 mm} {\large A geographic crowdsourcing framework for non-technical users}}
 	\author{Samuel Gaus}
 	\date{1\textsuperscript{st} May 2015}
 	\maketitle
@@ -37,7 +38,7 @@
 
 		This document will show that many organisations, in essence, have broadly similar requirements for their crowdsourced data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields. After analysing a number of existing projects, it was possible to extract a list of common functionalities that would need to be present in such a solution.
 
-		A framework was produced consisting of a set of APIs and client interface that can be used by anyone requiring a crowdsourcing campaign. The framework can be used as a platform to allow a user to set up a campaign from nothing in minutes. It is also GPLv3 licenses and can be used as a library framework or expanded upon for projects with wider requirements. The framework is available to be viewed at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
+		A framework was produced consisting of a set of APIs and client interface that can be used by anyone requiring a crowdsourcing campaign. If an individual or organisation needs to start collecting geographic data from groups of people, the framework can be used as a platform for them to set up a campaign from nothing in minutes with no technical skills required. It is also GPLv3 licensed and can be used as a library framework or expanded upon for projects with wider requirements. The framework is available to be viewed at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
 
 		In evaluating the framework, it is shown that it could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world.
 
@@ -47,7 +48,7 @@
 		Data collection is a very common task in computer science and software development. The requirement to gather information from disparate human sources (or crowdsourcing) can be found from everywhere research projects to humanitarian missions.
 
 		\subsection{Current situation}
-		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available. The framework with the widest reach is \emph{PyBOSSA}, a crowdsourcing platform inspired by \emph{BOSSA} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}. PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills.
+		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available. The framework with the widest reach is \emph{PyBOSSA}, a crowdsourcing platform inspired by \emph{BOSSA} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}. PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills. 
 
 		Alternatively, some organisations have produced their own bespoke software. In 2007, \emph{mySociety} made FixMyStreet - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015}. A user needs only to click on a map, fill in a survey and submit and the report is sent to the relevant council authority. This system was released open-source for any council to host and use, and theoretically for anyone to adapt to their own crowdsourcing needs.
 
@@ -80,9 +81,22 @@
 	\section{Background}
 	\label{sec:background}
 		\subsection{Crowdsourcing}
-		Crowdsourcing is a term coined in 2005 by editors of \emph{Wired Magazine} Jeff Howe and Mark Robinson\cite{safire_fat_2009} referring to the outsourcing of a task to the crowd. The rise of the internet and of mobile phones has made crowdsourcing an extremely efficient way of collecting data on a large scale. Due in part to its relevance to both business and academic research, it has been subject to a vast quantity of study of both its effectiveness\cite{brabham_effectiveness_2010} and the techniques of motivation that draw people to participating\cite{hossain_users_2012}. Much of this study is part of research focussing on \emph{computer-supported cooperative work}, a more general topic covering software that helps groups of people work together in ways that would not be possible or worthwhile without technology.
+		Crowdsourcing is a term coined in 2005 by editors of \emph{Wired Magazine} Jeff Howe and Mark Robinson\cite{safire_fat_2009} referring to the outsourcing of a task to the crowd. The rise of the internet and of mobile phones has made crowdsourcing an extremely efficient way of collecting data on a large scale. Due in part to its relevance to both business and academic research, it has been subject to a vast quantity of study of both its effectiveness\cite{brabham_effectiveness_2010} and the techniques of motivation that draw people to participating\cite{hossain_users_2012}. Much of this study is part of research focussing on \emph{computer-supported cooperative work} (CSCW), a more general topic covering software that helps groups of people work together in ways that would not be possible or worthwhile without technology.
 
 		When applied to gathering data for research, crowdsourcing is a form of citizen science\cite{_citizen_2015}. In this field, however, there is a more specific definition given to crowdsourcing. Muki Halay describes crowdsourcing as ``level 1'' of participation in citizen science, where a citizen merely acts a sensor. In higher levels, citizens contribute to data interpretation (``distributed intelligence''), problem definition (``participatory science'') and data analysis (``extreme citizen science'')\cite{haklay_citizen_2013}.
+
+		In the field of CSCW, the categorisation of work is often imagined as ``four quadrants''\cite{johansen_groupware:_1988} separated by the work's distribution over space and time: same place, same time; same place, different time; different time, same place; and different time, different place. This can be applied to crowdsourcing to assist in categorising these specific forms of CSCW as showin in Table~\ref{tab:quad}\cite{erickson_geocentric_2010}.
+
+		\begin{table}[ht]
+			\begin{tabular}{ | l || l | l | }
+				\hline 
+				                        & \textbf{Same Place}            & \textbf{Different Place} \\ \hhline{|=#=|=|}
+				\textbf{Same Time}      & Audience-centric Crowdsourcing & Event-centric Crowdsourcing \\ \hline
+				\textbf{Different Time} & Geocentric Crowdsourcing       & Global Crowdsourcing \\ \hline
+			\end{tabular}
+			\caption{Four quadrant model applied to crowdsourcing\cite{erickson_geocentric_2010}}
+			\label{tab:quad}
+		\end{table}
 
 		\subsection{Existing projects}
 		There are a growing number of projects that involve crowdsourcing geographic information. Although there are many to choose from, information will be provided for a few that roughly represent the disparate use cases.
@@ -94,7 +108,7 @@
 		\emph{FixMyStreet} is - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015} created by \emph{mySociety} in 2007. \emph{mySociety} is an ``e-democracy'' charity in the UK that have created and operate a number of tools to improve the user experience of national and local government. \emph{FixMyStreet} in particular is used to simplify the process of reporting potholes, broken street lamps etc. to their local authority. Users submit a description of the problem attached to a coordinate pair via the website or mobile applications for \emph{Android} and \emph{iOS}. It has been adopted by local authorities all over the world.
 
 		\paragraph{Fill That Hole}
-		\emph{Fill That Hole} is a cyclist-specific app for reporting potholes to the relevant Council in the UK. It differs from other reporting systems because the data submitted is public and freely usable by other systems via and API. For example, the journey planner \emph{Cyclestreets} takes the potholes reported on \emph{Fill That Hole} into account when planning routes. Reports are submitted via mobile applications for \emph{Android} and \emph{iOS}.
+		\emph{Fill That Hole}\cite{_fill_????} is a cyclist-specific app for reporting potholes to the relevant Council in the UK. It differs from other reporting systems because the data submitted is public and freely usable by other systems via and API. As well as affecting the relationship between responsible officials and the public using the app\cite{erickson_geocentric_2010}, the journey planner \emph{Cyclestreets} takes the potholes reported on \emph{Fill That Hole} into account when planning routes. Reports are submitted via mobile applications for \emph{Android} and \emph{iOS}.
 
 		\paragraph{Cyclestreets}
 		Although basing most of its data on \emph{OSM}, the cyclist journey planner \emph{Cyclestreets} also hosts a ``Photomap'' where users are encourage to upload geolocated photographs of cycling infrastructure. This data is used to affect route planning and the provided images themselves are appended to route itineraries\cite{_cyclestreets_????}.
@@ -188,63 +202,75 @@
 
 		\subsubsection{Users}
 
-		\begin{tabular}{ | l | l | l | }
-			\hline
-			\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Users must be able to...}\\ \hline
-			\rqrn & Authentication & Sign up.\\
-			\rqrn & Authentication & Sign in.\\
-			\rqrn & Authentication & Sign out.\\
-			\rqrn & Authentication & Sign up and in using accounts from social media.\\
-			\rqrn & Authentication & Reset their passwords.\\
-			\rqrn & Authentication & Delete their accounts.\\
-			\rqrn & Profiles & Edit their user profiles.\\
-			\rqrn & Profiles & Find other users.\\
-			\rqrn & Campaigns & Join a campaign.\\
-			\rqrn & Campaigns & Leave a campaign.\\
-			\rqrn & Campaigns & Create a campaign.\\
-			\hline
-		\end{tabular}
+		\begin{table}[ht]
+			\begin{tabular}{ | l | l | l | }
+				\hline
+				\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Users must be able to...}\\ \hline
+				\rqrn & Authentication & Sign up.\\
+				\rqrn & Authentication & Sign in.\\
+				\rqrn & Authentication & Sign out.\\
+				\rqrn & Authentication & Sign up and in using accounts from social media.\\
+				\rqrn & Authentication & Reset their passwords.\\
+				\rqrn & Authentication & Delete their accounts.\\
+				\rqrn & Profiles & Edit their user profiles.\\
+				\rqrn & Profiles & Find other users.\\
+				\rqrn & Campaigns & Join a campaign.\\
+				\rqrn & Campaigns & Leave a campaign.\\
+				\rqrn & Campaigns & Create a campaign.\\
+				\hline
+			\end{tabular}
+			\caption{System requirements for management of Users.}
+			\label{tab:reqs-users}
+		\end{table}
 
 		\subsubsection{Campaigns}
 
-		\begin{tabularx}{\textwidth}{ | l | l | X | }
-			\hline
-			\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
-			\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Campaigns must...}\\ \hline
-			\rqrn & Design & Be able to be created.\\
-			\rqrn & Design & Have names.\\
-			\rqrn & Design & Have a location.\\
-			\rqrn & Design & Allow the user creating them to provide a custom list of fields specific to their campaign.\\
-			\rqrn & Design & Support a start and end date outside of which they cannot receive data.\\
-			\rqrn & Design & Support a `text' field type.\\
-			\rqrn & Design & Support a `numerical' field type.\\
-			\rqrn & Design & Support a `boolean' field type.\\
-			\rqrn & Design & Support a `choose from a set of options' field type.\\
-			\rqrn & Design & Support an `image' field type.\\
-			\rqrn & Design & Be able to define `required' fields.\\
-			\rqrn & Display & Be retrievable individually.\\
-			\rqrn & Display & Be retrievable as a list.\\
-			\rqrn & Display & Display associated points on a map, with icons or markers.\\
-			\rqrn & Display & Be searchable and sortable to assist in ``discovering'' new Campaigns.\\
-			\rqrn & Administration & Be updatable.\\
-			\rqrn & Administration & Be deletable.\\
-			\rqrn & Administration & Maintain a list of ``moderators'' - members with extra privileges to moderate content submitted.\\
-			\rqrn & Administration & Be able to be made private so that users must be invited rather than join freely.\\
-			\rqrn & Administration & Either be actively or passively moderated - i.e. data submissions join a queue to be approved, or are accepted and can be removed later.\\
-			\rqrn & Administration & Be able to give its Points a `shelf life', after which they become ``stale''.\\
-			\hline
-		\end{tabularx}
+		\begin{table}[ht]
+			\begin{tabularx}{\textwidth}{ | l | l | X | }
+				\hline
+				\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
+				\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Campaigns must...}\\ \hline
+				\rqrn & Design & Be able to be created.\\
+				\rqrn & Design & Have names.\\
+				\rqrn & Design & Have a location.\\
+				\rqrn & Design & Allow the user creating them to provide a custom list of fields specific to their campaign.\\
+				\rqrn & Design & Support a start and end date outside of which they cannot receive data.\\
+				\rqrn & Design & Support a `text' field type.\\
+				\rqrn & Design & Support a `numerical' field type.\\
+				\rqrn & Design & Support a `boolean' field type.\\
+				\rqrn & Design & Support a `choose from a set of options' field type.\\
+				\rqrn & Design & Support an `image' field type.\\
+				\rqrn & Design & Be able to define `required' fields.\\
+				\rqrn & Display & Be retrievable individually.\\
+				\rqrn & Display & Be retrievable as a list.\\
+				\rqrn & Display & Display associated points on a map, with icons or markers.\\
+				\rqrn & Display & Be searchable and sortable to assist in ``discovering'' new Campaigns.\\
+				\rqrn & Administration & Be updatable.\\
+				\rqrn & Administration & Be deletable.\\
+				\rqrn & Administration & Maintain a list of ``moderators'' - members with extra privileges to moderate content submitted.\\
+				\rqrn & Administration & Be able to be made private so that users must be invited rather than join freely.\\
+				\rqrn & Administration & Either be actively or passively moderated - i.e. data submissions join a queue to be approved, or are accepted and can be removed later.\\
+				\rqrn & Administration & Be able to give its Points a `shelf life', after which they become ``stale''.\\
+				\hline
+			\end{tabularx}
+			\caption{System requirements for management of Campaigns.}
+			\label{tab:reqs-campaigns}
+		\end{table}
 
 		\subsubsection{Points}
 
-		\begin{tabularx}{\textwidth}{ | l | l | X | }
-			\hline
-			\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
-			\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Points must...}\\ \hline
-			\rqrn & Design & Be able to be created and submitted to a Campaign of which the User is a member.\\
-			\rqrn & Design & Support a data payload that matches the schema of the Campaign \\
-			\hline
-		\end{tabularx}
+		\begin{table}
+			\begin{tabularx}{\textwidth}{ | l | l | X | }
+				\hline
+				\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
+				\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Points must...}\\ \hline
+				\rqrn & Design & Be able to be created and submitted to a Campaign of which the User is a member.\\
+				\rqrn & Design & Support a data payload that matches the schema of the Campaign \\
+				\hline
+			\end{tabularx}
+			\caption{System requirements for management of Points.}
+			\label{tab:reqs-points}
+		\end{table}
 
 		\subsection{Component Diagram}
 
