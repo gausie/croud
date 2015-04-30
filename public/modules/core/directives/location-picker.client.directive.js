@@ -86,7 +86,7 @@ angular.module('core').directive('locationPicker', [
         // Set map marker on click.
         $scope.$on('leafletDirectiveMap.click', function(event, args){
           if (!$scope.static) {
-            var coords = args.leafletEvent.latlng;
+            var coords = args.leafletEvent.latlng.wrap();
             var obj = {
               lat: coords.lat,
               lng: coords.lng,
