@@ -13,7 +13,8 @@
 \usepackage{minted}
 \usepackage{enumitem}
 \usepackage{placeins}
-\usepackage[margin=1.5in]{geometry}
+%\usepackage[margin=1.5in]{geometry}
+\usepackage{todonotes}
 
 \let\oldsection\section
 \renewcommand\section{\clearpage\oldsection}
@@ -45,10 +46,14 @@
 	\section{Introduction}
 	\label{sec:introduction}
 		\subsection{Problem}
-		Data collection is a very common task in computer science and software development. The requirement to gather information from disparate human sources (or crowdsourcing) can be found from everywhere research projects to humanitarian missions.
+		Data collection is a vital and very common task in scientific research and beyond. Computer science, as well as often having internal data gathering requirements of its own, has a part to play in the wider scientific community by providing tools to make the process more accurate, wide-reaching and time-efficient. As is often the case, the need for research tools has historically driven the development of powerful and influential technologies\cite{haggerty_spinoff_1991}. Perhaps the most indicative example of this is the internet: preceded by \emph{ARPANET} over which the first messages were sent between the \emph{University of California, Los Angeles} and the \emph{Stanford Research Institute} in 1969\cite{_arpanet_????}. The first nodes on these early networks were in universities, for whom the ability to send ``electronic mail'' revolutionised the ability to collaborate on research and share information\cite{benfield_internet-based_2006}. Indeed, the internet could be considered computer science's greatest gift to the gathering of data due to the mass and effortless communication available to scientists all over the world\cite{benfield_internet-based_2006}. Of course, the internet is just a transport medium and the technologies built on top have also been of great assistance to scientists: networked email in 1971\cite{_first_????}; the \emph{Hypertext Transfer Protocol} and \emph{World Wide Web} in 1989\cite{_http_????}; and the omni-present wireless internet that is currently available over cell towers.
+
+		Methods of collection with which computer science can assist depend heavily on properties of the data being collected. This project specifically will focus on data collection that has one common property: that the data is geographically linked. This means that every piece of information collected is attached to a geographic co-ordinate or range of co-ordinates.
+
+		Although not a property of the type of data itself, another aspect of collection this project will focus on is the requirement to gather information from disparate human sources (or crowdsourcing). This condition can be found everywhere from research projects to humanitarian missions.
 
 		\subsection{Current situation}
-		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available. The framework with the widest reach is \emph{PyBOSSA}, a crowdsourcing platform inspired by \emph{BOSSA} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}. PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills. 
+		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available. A popular example of such a framework is \emph{PyBOSSA}, a crowdsourcing platform inspired by \emph{BOSSA}\cite{_welcome_????} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}. PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills. Also worthy of note is \emph{Hive}, designed by the \emph{New York Times} with a similar feature set to \emph{PyBOSSA}\cite{_nytlabs/hive_????}.
 
 		Alternatively, some organisations have produced their own bespoke software. In 2007, \emph{mySociety} made FixMyStreet - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015}. A user needs only to click on a map, fill in a survey and submit and the report is sent to the relevant council authority. This system was released open-source for any council to host and use, and theoretically for anyone to adapt to their own crowdsourcing needs.
 
@@ -61,14 +66,14 @@
 		Finally, although existing systems could be used hypothetically with enough technical skill for most crowdsourcing campaigns, they would still take a lot of time to prepare. In some applications of crowdsourced data collection time taken to set up a campaign is an extremely important factor. For example, when Malaysian Airlines Flight 370 crashed in 2014, there was an immediate rush of humanitarian workers to find the location of the plane. Enormous stretches of sea were inspected remotely by ``citizen scientists'' within days due to the existence of \emph{Tomnod} - a crowdsourcing platform built around distributed human inspection of images (in this case satellite images)\cite{_missing_2014}. Because a crowdsourcing framework was already in place specifically for that sort of data analysis, they were able to be more responsive than the government organisations expending huge resource on similar endeavours.
 
 		\subsection{Proposal}
-		In the previous sections we have seen that there a number of projects that have been created to crowdsource data from users in the field. We have also seen from \emph{Tomnod} that pre-existing frameworks that are highly specialised are extremely important for easily setting up data collection campaigns quickly and cheaply. Would it be possible to create a framework targeted and tailored specifically for distributed data collection in the field?
+		In the previous sections we have seen that there a number of projects that have been created to crowdsource data from users in the field. We have also seen from \emph{Tomnod} that pre-existing frameworks that are highly specialised are extremely important for easily setting up data collection campaigns quickly and cheaply. Would it be possible to create a framework targeted and tailored specifically for distributed geographic data collection in the field that does not require technical expertise?
 
 		\subsection{Structure}
 		This document will show that it is indeed possible to create an easy-to-use, quick and open crowdsourcing framework. It will show that when the data collection requirements are focussed on geographic data, efforts from anyone looking to crowdsource could be reduced dramatically.
 
 		First the \hyperref[sec:background]{background} of crowdsourcing and ``citizen science'' will be discussed in more depth. The number of projects that could benefit from a common framework and determine the common functionalities will be assessed.These functionalities will be compared with the features of currently-available frameworks and will show, as a result that the framework that will be proposed would be an original work benefiting users and campaign-creators alike.
 
-		Once the set of required features is clear, the document will go into more detail about the \hyperref[sec:architecture]{architecture} used to create such a framework. A more detailed explanation of what the framework actually is will be given and a comprehensive requirements analysis to which the project could be built will be supplied. The document will show how the different components fit together and how it works overall. The specific technologies that have been implemented will then be justified and elaborated upon.
+		Once the set of required features is clear, the document will go into more detail about the \hyperref[sec:architecture]{design} used to create such a framework. A more detailed explanation of what the framework actually is will be given and a comprehensive requirements analysis to which the project could be built will be supplied. The document will show how the different components fit together and how it works overall. The specific technologies that have been implemented will then be justified and elaborated upon.
 
 		The document will then provide more information on the actual \hyperref[sec:implementation]{implementation} of the software complete with source code. It will go through the schemas used in the data storage and some key snippets from the source code. It will also provide information on some of the features that would be more challenging for any other party attempting to reproduce the framework.
 
@@ -89,7 +94,7 @@
 
 		\begin{table}[ht]
 			\begin{tabular}{ | l || l | l | }
-				\hline 
+				\hline
 				                        & \textbf{Same Place}            & \textbf{Different Place} \\ \hhline{|=#=|=|}
 				\textbf{Same Time}      & Audience-centric Crowdsourcing & Event-centric Crowdsourcing \\ \hline
 				\textbf{Different Time} & Geocentric Crowdsourcing       & Global Crowdsourcing \\ \hline
@@ -99,13 +104,28 @@
 		\end{table}
 
 		\subsection{Existing projects}
-		There are a growing number of projects that involve crowdsourcing geographic information. Although there are many to choose from, information will be provided for a few that roughly represent the disparate use cases.
+		There are a growing number of projects that involve crowdsourcing geographic information. Of the many examples categorised in Table~\ref{tab:existing-projects}, a selection are explored in more detail below. Obviously, because the project deals with geographic data collection, the projects are more likely to be in the ``different place'' half of the four quadrant model. Projects within the ``same time'' half have, by definition, time-limited data whereas in the other half the data is theoretically relevant in perpetuity.
+
+		\begin{table}[ht]
+			\begin{tabularx}{\textwidth}{ | l | l | X |}
+				\hline
+				\textbf{Project} & \textbf{Category} & \textbf{Crowdsourced data} \\ \hline
+				\emph{OpenStreetMap}\cite{_openstreetmap_????} & Global & Global cartography. \\ \hline
+				\emph{Tomnod}\cite{_missing_2014} & Event-centric & Interpreting satellite data in crisis response. \\ \hline
+				\emph{FixMyStreet}\cite{_mysociety/fixmystreet_2015} & Geocentric & Reporting problems in physical environment to the local authority running the framework. \\ \hline
+				\emph{Fill That Hole}\cite{_fill_????} & Global & Reporting potholes to any local authority. \\ \hline
+				\emph{Cyclestreets}\cite{_cyclestreets_????} & Global & Sharing information on cycle routes anywhere. \\ \hline
+				\emph{Close the Door}\cite{massung_using_2013}\cite{preist_competing_2014} & Geo-centric & Tracking whether shop doors are left open unnecessarily. \\ \hline
+			\end{tabularx}
+			\caption{Examples of existing crowdsourcing projects categorised into quadrants defined in Table~\ref{tab:quad}.}
+			\label{tab:existing-projects}
+		\end{table}
 
 		\paragraph{OpenStreetMap}
 		\emph{OpenStreetMap} (\emph{OSM}) is a world-wide online collaborative effort to create detailed maps of the world under a free\cite{_open_2012} license started in 2004. Any user from around the world can submit geographic data using either the web-based application, or offline tools like \emph{Merkaartor}. Although used by individuals and organisations everywhere, it has also been crucial in ``crisis mapping''. Since the Haiti earthquake in 2010, volunteers have provided geographic data on areas experiencing crises to \emph{OSM} to help humanitarian workers\cite{_our_????}. This effort has since expanded into the Missing Maps project, within which the \emph{Humanitarian OSM Team} work with \emph{Medecins Sans Frontieres} and the \emph{American Red Cross} to pre-emptively map ``the most crisis-prone parts of the developing world''\cite{_missing_????}.
 
 		\paragraph{FixMyStreet}
-		\emph{FixMyStreet} is - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015} created by \emph{mySociety} in 2007. \emph{mySociety} is an ``e-democracy'' charity in the UK that have created and operate a number of tools to improve the user experience of national and local government. \emph{FixMyStreet} in particular is used to simplify the process of reporting potholes, broken street lamps etc. to their local authority. Users submit a description of the problem attached to a coordinate pair via the website or mobile applications for \emph{Android} and \emph{iOS}. It has been adopted by local authorities all over the world.
+		\emph{FixMyStreet} is a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015} created by \emph{mySociety} in 2007. \emph{mySociety} is an ``e-democracy'' charity in the UK that have created and operate a number of tools to improve the user experience of national and local government. \emph{FixMyStreet} in particular is used to simplify the process of reporting potholes, broken street lamps etc. to their local authority. Users submit a description of the problem attached to a coordinate pair via the website or mobile applications for \emph{Android} and \emph{iOS}. It has been adopted by local authorities all over the world.
 
 		\paragraph{Fill That Hole}
 		\emph{Fill That Hole}\cite{_fill_????} is a cyclist-specific app for reporting potholes to the relevant Council in the UK. It differs from other reporting systems because the data submitted is public and freely usable by other systems via and API. As well as affecting the relationship between responsible officials and the public using the app\cite{erickson_geocentric_2010}, the journey planner \emph{Cyclestreets} takes the potholes reported on \emph{Fill That Hole} into account when planning routes. Reports are submitted via mobile applications for \emph{Android} and \emph{iOS}.
@@ -116,7 +136,9 @@
 		\subsubsection{Common functionalities}
 		\label{sec:common-functionalities}
 
-		The projects listed above share a number of functionalities. They are isolated and listed here, although every project does not require every functionality.
+		The projects listed above share a number of similarities. Each project has a different profile of data collected - whether it be an image, an image with a description, a selection from a drop-down box, or a combination of those and more. All the projects have two types of user: the creator who is asking for the data, whether they be an individual or organisation; and the contributor, who provides the information being collected. Creators can design and describe their own campaigns, and publicize their availability. Creators have some level of moderation control over the data that is submitted. Contributors can ``join'' campaigns, to register their interest and boost the popularity of the campaign. They can submit data from a number of devices and typically programmatically through APIs. Contributors can see some visual feedback of how much has been contributed, often shown with points on a map.
+
+		Thee functionalities that can be extracted from these similarities are listed here, although every project does not require every functionality.
 
 		\begin{itemize}
 			\item Interface to submit some validated payload of form data with an accompanying coordinate pair.
@@ -130,7 +152,7 @@
 
 		\subsection{Available frameworks}
 
-		The field of crowdsourcing is not without existing frameworks. The key offering currently available is \emph{PyBOSSA}, already introduced in section \ref{sec:introduction}.
+		The field of crowdsourcing is not without existing frameworks. A representative offering currently available is \emph{PyBOSSA}, already introduced in section \ref{sec:introduction}. Although \emph{Hive} also exists, it has an extremely similar feature-set to \emph{PyBOSSA} and is primarily differentiated by being written in \emph{Go} and \emph{Ruby}\cite{_nytlabs/hive_????}. For this reason, for the purposes of this study only \emph{PyBOSSA} will be covered.
 
 		\subsubsection{PyBOSSA}
 
@@ -189,20 +211,28 @@
 			\end{itemize}
 		\end{enumerate}
 
-	\section{Architecture}
+	\section{Framework Design}
 	\label{sec:architecture}
 		As a result of the analysis and background above, a framework could be produced to provide sufficient functionality to replace the bespoke implementations so far. The framework would need to consist primarily of an API that can receive submitted data, perform all the necessary back-end organisation of that data, and expose a way of interacting with inbuilt data. On top of that, it will be necessary to construct a number of front-ends to interact with the API - a web-based and a mobile application.
+
+		The \hyperref[sec:implementation]{next chapter} will cover the implementation of this design.
 
 		\subsection{Requirements analysis}
 
 		This section contains a detailed and quantifiable list of the requirements for the framework, built from the common functionalities of the analysed projects. To simplify accounting for each requirement in the implementation of the project, each requirement follows a continuous count, despite being split across categories.
+
+		There are three data models around which the framework is based. Firstly, the User is the authenticated account and stable identity for anyone using the service. Although they are structurally the same, there are nonetheless two separate ``attitudes'' of User in the framework - campaign creators and campaign contributors. Throughout this section, where appropriate the requirements for each type will be differentiated with $\star$ for creator and $\dagger$ for contributor.
+
+		Secondly, the Campaign is the name for the metadata around a campaign of data collection. For example, it contains a name for the campaign, a description of the data it is collecting and all other information about the campaign itself.
+
+		Finally, the data that are contributed to Campaigns by Users are referred to as ``Points''.
 
 		\newcounter{requirementcounter}
 		\newcommand\rqrn{\stepcounter{requirementcounter}\arabic{requirementcounter}}
 
 		\subsubsection{Users}
 
-		\begin{table}[ht]
+		\begin{table}[H]
 			\begin{tabular}{ | l | l | l | }
 				\hline
 				\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Users must be able to...}\\ \hline
@@ -214,9 +244,9 @@
 				\rqrn & Authentication & Delete their accounts.\\
 				\rqrn & Profiles & Edit their user profiles.\\
 				\rqrn & Profiles & Find other users.\\
-				\rqrn & Campaigns & Join a campaign.\\
-				\rqrn & Campaigns & Leave a campaign.\\
-				\rqrn & Campaigns & Create a campaign.\\
+				\rqrn & Campaigns $\dagger$ & Join a campaign.\\
+				\rqrn & Campaigns $\dagger$ & Leave a campaign.\\
+				\rqrn & Campaigns $\star$ & Create a campaign.\\
 				\hline
 			\end{tabular}
 			\caption{System requirements for management of Users.}
@@ -225,32 +255,32 @@
 
 		\subsubsection{Campaigns}
 
-		\begin{table}[ht]
+		\begin{table}[H]
 			\begin{tabularx}{\textwidth}{ | l | l | X | }
 				\hline
 				\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
 				\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Campaigns must...}\\ \hline
-				\rqrn & Design & Be able to be created.\\
-				\rqrn & Design & Have names.\\
-				\rqrn & Design & Have a location.\\
-				\rqrn & Design & Allow the user creating them to provide a custom list of fields specific to their campaign.\\
-				\rqrn & Design & Support a start and end date outside of which they cannot receive data.\\
-				\rqrn & Design & Support a `text' field type.\\
-				\rqrn & Design & Support a `numerical' field type.\\
-				\rqrn & Design & Support a `boolean' field type.\\
-				\rqrn & Design & Support a `choose from a set of options' field type.\\
-				\rqrn & Design & Support an `image' field type.\\
-				\rqrn & Design & Be able to define `required' fields.\\
+				\rqrn & Design $\star$ & Be able to be created.\\
+				\rqrn & Design $\star$ & Have names.\\
+				\rqrn & Design $\star$ & Have a location.\\
+				\rqrn & Design $\star$ & Allow the user creating them to provide a custom list of fields specific to their campaign.\\
+				\rqrn & Design $\star$ & Support a start and end date outside of which they cannot receive data.\\
+				\rqrn & Design $\star$ & Support a `text' field type.\\
+				\rqrn & Design $\star$ & Support a `numerical' field type.\\
+				\rqrn & Design $\star$ & Support a `boolean' field type.\\
+				\rqrn & Design $\star$ & Support a `choose from a set of options' field type.\\
+				\rqrn & Design $\star$ & Support an `image' field type.\\
+				\rqrn & Design $\star$ & Be able to define `required' fields.\\
 				\rqrn & Display & Be retrievable individually.\\
 				\rqrn & Display & Be retrievable as a list.\\
 				\rqrn & Display & Display associated points on a map, with icons or markers.\\
-				\rqrn & Display & Be searchable and sortable to assist in ``discovering'' new Campaigns.\\
-				\rqrn & Administration & Be updatable.\\
-				\rqrn & Administration & Be deletable.\\
-				\rqrn & Administration & Maintain a list of ``moderators'' - members with extra privileges to moderate content submitted.\\
-				\rqrn & Administration & Be able to be made private so that users must be invited rather than join freely.\\
-				\rqrn & Administration & Either be actively or passively moderated - i.e. data submissions join a queue to be approved, or are accepted and can be removed later.\\
-				\rqrn & Administration & Be able to give its Points a `shelf life', after which they become ``stale''.\\
+				\rqrn & Display $\dagger$ & Be searchable and sortable to assist in ``discovering'' new Campaigns.\\
+				\rqrn & Administration $\star$ & Be updatable.\\
+				\rqrn & Administration $\star$ & Be deletable.\\
+				\rqrn & Administration $\star$ & Maintain a list of ``moderators'' - members with extra privileges to moderate content submitted.\\
+				\rqrn & Administration $\star$ & Be able to be made private so that users must be invited rather than join freely.\\
+				\rqrn & Administration $\star$ & Either be actively or passively moderated - i.e. data submissions join a queue to be approved, or are accepted and can be removed later.\\
+				\rqrn & Administration $\star$ & Be able to give its Points a `shelf life', after which they become ``stale''.\\
 				\hline
 			\end{tabularx}
 			\caption{System requirements for management of Campaigns.}
@@ -259,22 +289,20 @@
 
 		\subsubsection{Points}
 
-		\begin{table}
+		\begin{table}[H]
 			\begin{tabularx}{\textwidth}{ | l | l | X | }
 				\hline
 				\textbf{\textnumero} & \textbf{Sub-category} & \textbf{Requirement} \\ \hline
 				\multicolumn{2}{| l }{} & \multicolumn{1}{ l | }{Points must...}\\ \hline
-				\rqrn & Design & Be able to be created and submitted to a Campaign of which the User is a member.\\
-				\rqrn & Design & Support a data payload that matches the schema of the Campaign \\
+				\rqrn & Design $\dagger$ & Be able to be created and submitted to a Campaign of which the User is a member.\\
+				\rqrn & Design $\dagger$ & Support a data payload that matches the schema of the Campaign \\
 				\hline
 			\end{tabularx}
 			\caption{System requirements for management of Points.}
 			\label{tab:reqs-points}
 		\end{table}
 
-		\subsection{Component Diagram}
-
-		In Figure \ref{fig:component-diagram}, the relationship between components in the project is described.
+		\subsection{Component architecture}
 
 		\begin{figure}[ht]
 			\centering
@@ -283,13 +311,11 @@
 			\label{fig:component-diagram}
 		\end{figure}
 
-		\subsection{How it works}
-
-		As shown in the component diagram, the application is split into two primary components - the server and the client.
+		In Figure \ref{fig:component-diagram}, the relationship between components in the project is described. The framework follows a server-client architecture.
 
 		\subsubsection{Server}
 
-		The server carries out tasks like storing the information; validating submitted data; managing user authentication; and handling search queries. Instructions are provided using a REST (REpresational State Transfer) API over HTTP. REST over HTTP is an architectural style for semantic application interfaces. It leverages the ``methods'' defined in the specification for HTTP, and is recommended by the \emph{W3C}, who are in the draft stages of producing an official ``W3C Recommendation'' for its use\cite{_w3c_2012}.
+		The server carries out tasks like storing the data for the three models; validating submitted data; managing user authentication; and handling search queries. Instructions are provided using a REST (REpresational State Transfer) API over HTTP. REST over HTTP is an architectural style for semantic application interfaces. It leverages the ``methods'' defined in the specification for HTTP, and is recommended by the \emph{W3C}, who are in the draft stages of producing an official ``W3C Recommendation'' for its use\cite{_w3c_2012}.
 
 		The data is split into three models - Campaigns, Points and Users. Users are the data model representing a user, which will contain authentication information. Campaigns are equivalent to a single project and represent a single campaign of data crowdsourcing. Users can join Campaigns and the submit Points, which will be related to a single campaign. A Point represents a single data item collected for a campaign and contains at least a geographic coordinate pair. A Point may also contain other information as detailed by the form structure set in the creation of a Campaign.
 
@@ -302,6 +328,33 @@
 		The client provides an interface for the user to interact with the framework by translating user actions into to find and join Campaigns, to see a list of the Campaigns that they have joined, to submit Points to a Campaign and to see a map of Points that have been submitted to a Campaign.
 
 		A user can also create their own Campaign. A form is available that asks the user for the information required to create the Campaign, and the client transforms these options into an API request.
+
+		\subsection{How it works}
+
+		\subsubsection{Registering}
+		To register, the user follows a link from the home page to a ``Sign up'' form, where they fill information such as their name, required username, email address and password. If the form has been filled in correctly, an account will be created for that user and they will be automatically logged in.
+
+		\subsubsection{Creating a Campaign}
+		To create a Campaign, a ``Create campaign'' link can be accessed from the home page, directing the user to a form with the necessary fields. The user selects a name for the Campaign, a central location and zoom level, a duration (if required), a time after which a submitted data point will go stale (if required), choose whether the Campaign is private to members only, if the campaign requires each point be approved by a moderator, and finally chooses the fields for the Campaign. The fields are chosen by adding as many fields as are required and selecting their ``type'' - boolean, numerical, text, multiple select or image. If the field is a multiple select, the user is further required to input different selections that can be made. An icon can be attached to each selection and, if required, the user can select that field's chosen option's icon be the marker on the resulting map for each point. Once submitted, the user will be brought to their new Campaign page, showing a blank map, the Campaign title and their name as the creator.
+
+		\subsubsection{Discovering Campaigns}
+		There is a page to ``View Campaigns'' even if the user is not a member, so new Campaigns can be discovered. At the top of the list are the Campaigns that the user has already joined. Below that, in a separate list, are all the Campaigns on the site that are not marked as ``private''. They are decorated with ``badges'' indicating whether they are ending soon, or whether the user is already a member.
+
+		\subsubsection{Submitting information}
+		To submit information to a Campaign, a specially emphasised button on the home page. This button leads the user to select from a list of Campaigns that they have joined. Once a Campaign is selected, the user is presented with a map on which to drop a pin, and the form specified by the Campaign creator. The user can choose to have the map automatically drop a pin based on their geolocation as reported by their browser or mobile device. Only once the map is marked and the form is filled out as specified in the creation of the campaign is the point submitted.
+
+		\subsubsection{Browsing a Campaign}
+		Clicking on a Campaign from the ``View Campaigns'' page brings you to the display page for that Campaign. The page features a map with all the points that have been submitted shown as markers (with an icon if specified). The map is centred to the configured ``centre point'' of the Campaign. The markers are clickable, and doing so leads the user to the full information attached to that Point.
+
+		\subsubsection{Viewing a Point}
+		When a marker is clicked, a page containing all the information for a Point is displayed. The page contains a map with just the marker visible, and a table of the information submitted along with the co-ordinate. If, for example, the information includes an uploaded picture, the picture will be visible in this table.
+
+	\section{Implementation}
+	\label{sec:implementation}
+
+		The code is tracked using the \emph{Git} revision control system and is hosted on \emph{Github}. It can be found at \href{http://github.com/gausie/croud}{\nolinkurl{http://github.com/gausie/croud}}. The software is also running and available to be used at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
+
+		Due to the quantity of code across a wide directory structure, the source code is not included as an appendix. Instead, this section will cover some highlights of code behind the key functionalities.
 
 		\subsection{Technologies}
 
@@ -321,12 +374,6 @@
 		The client software is written in \emph{HTML} and JavaScript, using the \emph{AngularJS} MVC application framework. This was chosen because of widespread usage resulting in third-party libraries, and developer experience. The mobile application is produced from bundling the web application using \emph{Cordova}, a mobile development framework produced by \emph{Apache} allowing the creation of native mobile applications using \emph{HTML} and \emph{JavaScript}.
 
 		The software is designed to run on any operating system, but in the current production environment is running on a \emph{Linux} server provided by \emph{Heroku}.
-
-	\section{Implementation}
-	\label{sec:implementation}
-		The code is tracked using the \emph{Git} revision control system and is hosted on \emph{Github}. It can be found at \href{http://github.com/gausie/croud}{\nolinkurl{http://github.com/gausie/croud}}. The software is also running and available to be used at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
-
-		Due to the quantity of code across a wide directory structure, the source code is not included as an appendix. Instead, this section will cover some highlights of code behind the key functionalities.
 
 		\subsection{Schema}
 
