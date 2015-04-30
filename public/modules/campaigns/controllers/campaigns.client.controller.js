@@ -226,7 +226,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
        * When a marker is clicked, show the user a page for the point
        */
       $scope.$on('leafletDirectiveMarker.click', function (e, args) {
-        $location.path('points/' + args.markerName);
+        $location.path('points/' + args.modelName);
       });
 
       /*
