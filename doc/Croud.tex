@@ -217,7 +217,7 @@
 	\label{sec:architecture}
 		As a result of the analysis and background above, a framework could be produced to provide sufficient functionality to replace the bespoke implementations so far. The framework would need to consist primarily of an API that can receive submitted data, perform all the necessary back-end organisation of that data, and expose a way of interacting with inbuilt data. On top of that, it will be necessary to construct a number of front-ends to interact with the API - a web-based and a mobile application.
 
-		The \hyperref[sec:implementation]{next chapter} will cover the implementation of this design.
+		Following this, section~\ref{sec:implementation} will show how this design is implemented in the framework, including the technologies used and examples of the source code behind it.
 
 		\subsection{Requirements analysis}
 
@@ -786,21 +786,21 @@ exports.hasAuthorization = function(req, res, next) {
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-prep-2}}
-			\caption{Registration page.}
+			\caption{The empty registration page.}
 			\label{fig:eval-prep-2}
 		\end{figure}
 
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-prep-3}}
-			\caption{Registering \texttt{test1} user.}
+			\caption{Registering \texttt{test1} user with some example data.}
 			\label{fig:eval-prep-3}
 		\end{figure}
 
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-prep-4}}
-			\caption{Registering \texttt{test2} user.}
+			\caption{Registering \texttt{test2} user with equivalent example data.}
 			\label{fig:eval-prep-4}
 		\end{figure}
 
@@ -824,14 +824,14 @@ exports.hasAuthorization = function(req, res, next) {
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-3}}
-			\caption{Campaign A form completed. Hampstead Heath is having a humanitarian crisis.}
+			\caption{Campaign A form completed. This Campaign has been set up centred over Hampstead Heath, enabled between the 20\textsuperscript{th} and the 25\textsuperscript{th} of April 2015, with data marked to go ``stale'' after 3 days. The Campaign is private, so users will have to be invited. There is one field for the campaign, a required multiple choice selection titled ``What can you see?''. The options are not yet set, but whatever is chosen will act as the marker for each point.}
 			\label{fig:eval-ca-3}
 		\end{figure}
 
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-5}}
-			\caption{Configuration of options for multiple choice field.}
+			\caption{Configuration of options for multiple choice field. Three options have been set - fire, road and tree all with appropriate icons.}
 			\label{fig:eval-ca-5}
 		\end{figure}
 
@@ -839,7 +839,7 @@ exports.hasAuthorization = function(req, res, next) {
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-6}}
-			\caption{Adding \texttt{test2} to the private Campaign.}
+			\caption{Adding \texttt{test2} to the private Campaign using the invite user interface.}
 			\label{fig:eval-ca-6}
 		\end{figure}
 
@@ -856,15 +856,15 @@ exports.hasAuthorization = function(req, res, next) {
 
 		\begin{figure}[H]
 			\centering
-			\fbox{\includegraphics[width=4in]{eval-cb-1}}
-			\caption{Selecting Campaign A (``Humanitarian Campaign'').}
+			\fbox{\includegraphics[width=4in]{eval-submita-1}}
+			\caption{After clicking the big blue ``Add a point!'' icon at the top, the user is selecting Campaign A (``Humanitarian Campaign'').}
 			\label{fig:eval-submita-1}
 		\end{figure}
 
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-submita-2}}
-			\caption{Filled in the Point information.}
+			\caption{Filled in the Point information. The marker is placed in the north-east corner of Hampstead Heath and a ``fire'' has been selected as the answer to ``What can you see?''}
 			\label{fig:eval-submita-2}
 		\end{figure}
 
@@ -878,14 +878,14 @@ exports.hasAuthorization = function(req, res, next) {
 		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-submita-4}}
-			\caption{Clicking the ``fire'' symbol reveals this full information page for that Point.}
+			\caption{Clicking the ``fire'' symbol reveals this full information page for that Point, including time submitted.}
 			\label{fig:eval-submita-4}
 		\end{figure}
 
 		\subsection{Campaign~\ref{itm:pothole-campaign} - Pothole Fixing}
 		\label{sec:pothole-campaign}
 
-		Any steps that are identical to that of Section~\ref{sec:humanitarian-campaign} are omitted.
+		Any steps that are extremely similar or identical to the same step in Section~\ref{sec:humanitarian-campaign} are omitted.
 
 		\subsubsection{Creating the Campaign}
 
@@ -898,13 +898,57 @@ exports.hasAuthorization = function(req, res, next) {
 
 		\subsubsection{Submitting data}
 
+		\begin{figure}[H]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-cb-2}}
+			\caption{Filled in the Point information. The central junction of Camden Town is selected, with an image of the pothole (``pothole.jpg'') selected.}
+			\label{fig:eval-cb-2}
+		\end{figure}
+
+		\begin{figure}[H]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-cb-3}}
+			\caption{This Point displays as a red marker because there is no multiple choice question to provide an icon.}
+			\label{fig:eval-cb-3}
+		\end{figure}
+
+		\begin{figure}[H]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-cb-4}}
+			\caption{The full information page for the Point, displaying the attached image.}
+			\label{fig:eval-cb-4}
+		\end{figure}
+
 		\FloatBarrier
 
+		\subsection{Mobile Interface}
+
+		\begin{figure}[H]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-mobile-1}}
+			\caption{This shows how the campaign creation page looks on a mobile client. Because the application is written in responsive HTML and CSS, the same codebase is used to achieve this interface.}
+			\label{fig:eval-mobile-1}
+		\end{figure}
+
+		\begin{figure}[H]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-mobile-2}}
+			\caption{An example of submitting information to Campaign~\ref{itm:pothole-campaign} using the mobile inteface.}
+			\label{fig:eval-mobile-2}
+		\end{figure}
+
+		\FloatBarrier
+
+		\subsection{Usability}
+
+		Sections \ref{sec:humanitarian-campaign} and \ref{sec:pothole-campaign} show that configuring a broad range of types of campaign follows the same simple user interface. At no point is the user required to exhibit any technical coding or markup skills, instead following clearly labelled and simple instructions in a graphical user interface to produce what would otherwise require programming from scratch.
+
+		Despite both campaigns using the same submission forms, they are able to be presented very differently. For example: they collect completely different payloads of data; one has a generic marker and one has a marker based on each Point's data.
 
 	\ssection{Conclusion}
 	\label{sec:conclusion}
 
-		Based on the evaluation in the previous section, it is clear that the framework can indeed be used to start a breadth of different crowdsourcing campaigns with the same interface. The campaigns were quick to create and were quick for users to upload data.
+		The evaluation in the previous section, has shown that the framework can indeed be used to start a breadth of different crowdsourcing campaigns with the same interface. The campaigns were quick to create and were quick for users to upload data.
 
 		Users with interest in data who would normally have little reach could use the platform to create Campaigns and build a base of interested contributors who might find the Campaign by reading browsing through the available projects.
 
