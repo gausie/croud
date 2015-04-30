@@ -1,8 +1,8 @@
 'use strict';
 
 // Points controller
-angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', '$upload', 'Authentication', 'Points', 'Campaigns', 'moment',
-  function($scope, $stateParams, $location, $upload, Authentication, Points, Campaigns, moment) {
+angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Upload', 'Authentication', 'Points', 'Campaigns', 'moment',
+  function($scope, $stateParams, $location, Upload, Authentication, Points, Campaigns, moment) {
     $scope.authentication = Authentication;
     $scope.point = {};
 
@@ -61,7 +61,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       point.$save(function(response) {
         // Upload images
         files.forEach(function(file){
-          $upload.upload({
+          Upload.upload({
             url: 'points/' + point._id + '/upload',
             file: file.file,
             fields: {

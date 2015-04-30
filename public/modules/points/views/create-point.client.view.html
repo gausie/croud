@@ -60,7 +60,7 @@
                       <div data-ng-switch-when="image">
                         <label class="col-sm-2 control-label">{{field.name}}</label>
                         <div class="col-sm-10 checkbox">
-                          <div class="btn btn-default" ng-file-select ng-model="point.data[field.name]"><i class="fa fa-upload"></i> Select file to upload ({{ point.data[field.name][0].name }})</div>
+                          <div class="btn btn-default" data-ngf-select data-ng-model="point.data[field.name]"><i class="fa fa-upload"></i> Select file to upload ({{ point.data[field.name][0].name }})</div>
                         </div>
                       </div>
 

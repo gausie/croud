@@ -17,7 +17,7 @@ var ApplicationConfiguration = (function() {
     'ui.select',
     'leaflet-directive',
     'angularMoment',
-    'angularFileUpload'
+    'ngFileUpload'
   ];
 
   // Add a new vertical module

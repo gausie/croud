@@ -36,7 +36,7 @@ module.exports = {
         'public/lib/moment/moment.js',
         'public/lib/angular-moment/angular-moment.js',
         'public/lib/angular-cached-resource/angular-cached-resource.js',
-        'public/lib/ng-file-upload/angular-file-upload-all.js'
+        'public/lib/ng-file-upload/ng-file-upload-all.js'
       ]
     },
     css: [
