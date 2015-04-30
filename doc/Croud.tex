@@ -13,8 +13,8 @@
 \usepackage{minted}
 \usepackage{enumitem}
 \usepackage{placeins}
-%\usepackage[margin=1.5in]{geometry}
-\usepackage{todonotes}
+\usepackage[margin=1.5in]{geometry}
+\usepackage{ltablex}
 
 \newcommand\ssection{\clearpage\section}
 
@@ -22,13 +22,32 @@
 	\item{\textbf{#1}}
 }
 
+\newenvironment{bottompar}{\par\vspace*{\fill}}{\clearpage}
+
 \graphicspath{ {./images/} }
 
 \begin{document}
 	\title{Croud \\ \vspace{2 mm} {\large A geographic crowdsourcing framework for non-technical users}}
-	\author{Samuel Gaus}
+	\author{
+		\begin{tabular}{r@{ }l}
+			Author:      & Sam Gaus \\[1ex]
+			Supervisor: & Licia Capra \\
+		\end{tabular}
+	}
 	\date{1\textsuperscript{st} May 2015}
+
 	\maketitle
+	\thispagestyle{empty}
+
+	\centerline{UCL Computer Science MEng}
+
+	\begin{bottompar}
+		This report is submitted as part requirement for the MEng Degree in Computer Science at UCL. It is substantially the result of my own work except where explicitly indicated in the text. The report may be freely copied and distributed provided the source is explicitly acknowledged.
+	\end{bottompar}
+
+	\clearpage
+
+	\pagenumbering{roman}
 
 	\tableofcontents
 	\listoffigures
@@ -39,27 +58,30 @@
 	\label{sec:summary}
 		Geographical data collection is a commonly-repeated task in scientific research, political campaigning, land administration and humanitarian projects. At the moment, there are a number of solutions for organisations wishing to go about this type of data collection, from using existing frameworks to commissioning bespoke software. However, these either require significant technical knowledge; are overly generic and are not specifically suited to collecting geographic point data; or are expensive to implement.
 
-		This document will show that many organisations, in essence, have broadly similar requirements for their crowdsourced data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields. After analysing a number of existing projects, it was possible to extract a list of common functionalities that would need to be present in such a solution.
+		This document will show that many organisations, in essence, have broadly similar requirements for their crowdsourced data collection and as such it is possible to engineer a solution that is abstract enough to be used in many different fields, while maintaining extremely easy to use for non-technical users. After analysing a number of existing projects, it was possible to extract a list of common functionalities that would need to be present in such a solution.
 
-		A framework was produced consisting of a set of APIs and client interface that can be used by anyone requiring a crowdsourcing campaign. If an individual or organisation needs to start collecting geographic data from groups of people, the framework can be used as a platform for them to set up a campaign from nothing in minutes with no technical skills required. It is also GPLv3 licensed and can be used as a library framework or expanded upon for projects with wider requirements. The framework is available to be viewed at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
+		A framework was produced consisting of a set of APIs and client interface that can be used by anyone requiring a geographic crowdsourcing campaign. If an individual or organisation needs to start collecting geographic data from groups of people, the framework can be used as a platform for them to set up a campaign from nothing in minutes with no technical skills required. It is also GPLv3 licensed and can be used as a library framework or expanded upon for projects with wider requirements. The framework is available to be viewed at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
 
-		In evaluating the framework, it is shown that it could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world.
+		In evaluating the framework, it is shown that it could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world, without the operator needing any technical skills.
 
 	\ssection{Introduction}
+	\pagenumbering{arabic}
 	\label{sec:introduction}
 		\subsection{Problem}
-		Data collection is a vital and very common task in scientific research and beyond. Computer science, as well as often having internal data gathering requirements of its own, has a part to play in the wider scientific community by providing tools to make the process more accurate, wide-reaching and time-efficient. As is often the case, the need for research tools has historically driven the development of powerful and influential technologies\cite{haggerty_spinoff_1991}. Perhaps the most indicative example of this is the internet: preceded by \emph{ARPANET} over which the first messages were sent between the \emph{University of California, Los Angeles} and the \emph{Stanford Research Institute} in 1969\cite{_arpanet_????}. The first nodes on these early networks were in universities, for whom the ability to send ``electronic mail'' revolutionised the ability to collaborate on research and share information\cite{benfield_internet-based_2006}. Indeed, the internet could be considered computer science's greatest gift to the gathering of data due to the mass and effortless communication available to scientists all over the world\cite{benfield_internet-based_2006}. Of course, the internet is just a transport medium and the technologies built on top have also been of great assistance to scientists: networked email in 1971\cite{_first_????}; the \emph{Hypertext Transfer Protocol} and \emph{World Wide Web} in 1989\cite{_http_????}; and the omni-present wireless internet that is currently available over cell towers.
+		Data collection is a vital and very common task in scientific research and beyond. Computer science, as well as often having internal data gathering requirements of its own, has a part to play in the wider scientific community by providing tools to make the process more accurate, wide-reaching and time-efficient. As is often the case, the need for research tools has historically driven the development of powerful and influential technologies\cite{haggerty_spinoff_1991}. Perhaps the most indicative example of this is the internet: preceded by \emph{ARPANET} over which the first messages were sent between the \emph{University of California, Los Angeles} and the \emph{Stanford Research Institute} in 1969\cite{_arpanet_????}. The first nodes on these early networks were in universities, for whom the ability to send ``electronic mail'' revolutionised the ability to collaborate on research and share information\cite{benfield_internet-based_2006}. Indeed, the internet could be considered computer science's greatest gift to the gathering of data due to the mass and effortless communication available to scientists all over the world\cite{benfield_internet-based_2006}. Of course, the internet is just a transport medium and the technologies built on top have also been of great assistance to scientists: networked email in 1971\cite{_first_????}; the \emph{Hypertext Transfer Protocol} and \emph{World Wide Web} in 1989\cite{_http_????}; and the omni-present wireless internet that is currently available via cell towers.
 
 		Methods of collection with which computer science can assist depend heavily on properties of the data being collected. This project specifically will focus on data collection that has one common property: that the data is geographically linked. This means that every piece of information collected is attached to a geographic co-ordinate or range of co-ordinates.
 
 		Although not a property of the type of data itself, another aspect of collection this project will focus on is the requirement to gather information from disparate human sources (or crowdsourcing). This condition can be found everywhere from research projects to humanitarian missions.
 
 		\subsection{Current situation}
-		At the moment individuals or organisations looking to initiate a campaign of data collection either have to start their project from scratch or use one of the extremely abstract frameworks available. A popular example of such a framework is \emph{PyBOSSA}, a crowdsourcing platform inspired by \emph{BOSSA}\cite{_welcome_????} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}. PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills. Also worthy of note is \emph{Hive}, designed by the \emph{New York Times} with a similar feature set to \emph{PyBOSSA}\cite{_nytlabs/hive_????}.
+		At the moment individuals or organisations looking to initiate a campaign of geographic data collection either have to start their project from scratch or use one of the extremely abstract frameworks available. A popular example of such a framework is \emph{PyBOSSA}\cite{_welcome_????}, a crowdsourcing platform inspired by \emph{BOSSA}\cite{_welcome_????} and written in Python. \emph{BOSSA} is a front-end written in PHP to provide a web-based client for \emph{BOINC}, the software behind hundreds of data collection projects such as \emph{SETI@home}, \emph{World Community Grid} and \emph{Climate Prediction}\cite{_boinc_2015}. PyBOSSA is a rewrite of that with a focus on helping scientists and other researchers crowdsource human problem-solving skills\cite{_welcome_????}. Also worthy of note is \emph{Hive}, designed by the \emph{New York Times} with a similar feature set to \emph{PyBOSSA}\cite{_nytlabs/hive_????}.
 
 		Alternatively, some organisations have produced their own bespoke software. In 2007, \emph{mySociety} made FixMyStreet - a platform for ``reporting common street problems such as potholes and broken street lights''\cite{_mysociety/fixmystreet_2015}. A user needs only to click on a map, fill in a survey and submit and the report is sent to the relevant council authority. This system was released open-source for any council to host and use, and theoretically for anyone to adapt to their own crowdsourcing needs.
 
-		There are a number of issues present in using the existing solutions of \emph{PyBOSSA}, \emph{FixMyStreet} or bespoke software. Firstly, for all three there is a technical knowledge requirement. \emph{PyBOSSA} and \emph{FixMyStreet} both need server space, system administration to install and maintain and all the skills required for any necessary customisations. \emph{crowdcrafting} is a platform powered by the \emph{PyBOSSA} framework which is free to use and allows a user to set up a \emph{PyBOSSA} campaign without the aforementioned requirements. However, even in this case, there is significant technical knowledge required to set up a geographic data-collection campaign due in part to the level of abstraction that the project has achieved from the types of data it could be used to collect. A campaign creator must create a form in \emph{HTML} for the data collection, and the user does not get easy access to a map to just drop their pin. Requiring technical skill to operate the software means that in order to run a campaign one either needs a specific skill set or the financial resources necessary to pay a third party.
+		There are a number of issues present in using the existing solutions of \emph{PyBOSSA}, \emph{FixMyStreet} or bespoke software. Firstly, for all three there is a technical knowledge requirement. \emph{PyBOSSA} and \emph{FixMyStreet} both need server space, system administration to install and maintain and all the skills required for any necessary customisations.
+
+		\emph{crowdcrafting}\cite{_crowdcrafting_????} is a platform powered by the \emph{PyBOSSA} framework which is free to use and allows a user to set up a \emph{PyBOSSA} campaign without the aforementioned requirements. However, even in this case, there is significant technical knowledge required to set up a geographic data-collection campaign due in part to the level of abstraction that the project has achieved from the types of data it could be used to collect. A campaign creator must create a form in \emph{HTML} for the data collection, and the user does not get easy access to a map to just drop their pin. Requiring technical skill to operate the software means that in order to run a campaign one either needs a specific skill set or the financial resources necessary to pay a third party.
 
 		There is no way to validate data input using this method. For example, you may have a field of data collection in your campaign that must be numerical. Although you can use the \texttt{number} input type in \emph{HTML}, this doesn't stop an old browser or malicious user sending non-numerical data in the response.
 
@@ -68,10 +90,10 @@
 		Finally, although existing systems could be used hypothetically with enough technical skill for most crowdsourcing campaigns, they would still take a lot of time to prepare. In some applications of crowdsourced data collection time taken to set up a campaign is an extremely important factor. For example, when Malaysian Airlines Flight 370 crashed in 2014, there was an immediate rush of humanitarian workers to find the location of the plane. Enormous stretches of sea were inspected remotely by ``citizen scientists'' within days due to the existence of \emph{Tomnod} - a crowdsourcing platform built around distributed human inspection of images (in this case satellite images)\cite{_missing_2014}. Because a crowdsourcing framework was already in place specifically for that sort of data analysis, they were able to be more responsive than the government organisations expending huge resource on similar endeavours.
 
 		\subsection{Proposal}
-		In the previous sections we have seen that there a number of projects that have been created to crowdsource data from users in the field. We have also seen from \emph{Tomnod} that pre-existing frameworks that are highly specialised are extremely important for easily setting up data collection campaigns quickly and cheaply. Would it be possible to create a framework targeted and tailored specifically for distributed geographic data collection in the field that does not require technical expertise?
+		In the previous sections it can be seen that there a number of projects that have been created to crowdsource geographic data from users in the field. We have also seen from \emph{Tomnod} that pre-existing frameworks that are highly specialised are extremely important for easily setting up data collection campaigns quickly and cheaply. Would it be possible to create a framework targeted and tailored specifically for distributed geographic data collection in the field that does not require technical expertise?
 
 		\subsection{Structure}
-		This document will show that it is indeed possible to create an easy-to-use, quick and open crowdsourcing framework. It will show that when the data collection requirements are focussed on geographic data, efforts from anyone looking to crowdsource could be reduced dramatically.
+		This document will show that it is indeed possible to create an easy-to-use, quick and open geographic crowdsourcing framework. It will show that when the data collection requirements are focussed on geographic data, efforts from anyone looking to crowdsource could be reduced dramatically.
 
 		First the \hyperref[sec:background]{background} of crowdsourcing and ``citizen science'' will be discussed in more depth. The number of projects that could benefit from a common framework and determine the common functionalities will be assessed.These functionalities will be compared with the features of currently-available frameworks and will show, as a result that the framework that will be proposed would be an original work benefiting users and campaign-creators alike.
 
@@ -106,7 +128,7 @@
 		\end{table}
 
 		\subsection{Existing projects}
-		There are a growing number of projects that involve crowdsourcing geographic information. Of the many examples categorised in Table~\ref{tab:existing-projects}, a selection are explored in more detail below. Obviously, because the project deals with geographic data collection, the projects are more likely to be in the ``different place'' half of the four quadrant model. Projects within the ``same time'' half have, by definition, time-limited data whereas in the other half the data is theoretically relevant in perpetuity.
+		There are a growing number of projects that involve crowdsourcing geographic information. Of the many examples categorised in Table~\ref{tab:existing-projects}, a selection are explored in more detail below. Because the project deals with geographic data collection, the projects are more likely to be in the ``different place'' half of the four quadrant model. Also, projects within the ``same time'' half have, by definition, time-limited data whereas in the other half the data is theoretically relevant in perpetuity.
 
 		\begin{table}[ht]
 			\begin{tabularx}{\textwidth}{ | l | l | X |}
@@ -138,9 +160,9 @@
 		\subsubsection{Common functionalities}
 		\label{sec:common-functionalities}
 
-		The projects listed above share a number of similarities. Each project has a different profile of data collected - whether it be an image, an image with a description, a selection from a drop-down box, or a combination of those and more. All the projects have two types of user: the creator who is asking for the data, whether they be an individual or organisation; and the contributor, who provides the information being collected. Creators can design and describe their own campaigns, and publicize their availability. Creators have some level of moderation control over the data that is submitted. Contributors can ``join'' campaigns, to register their interest and boost the popularity of the campaign. They can submit data from a number of devices and typically programmatically through APIs. Contributors can see some visual feedback of how much has been contributed, often shown with points on a map.
+		The projects listed in Table~\ref{tab:existing-projects} share a number of similarities. Each project has a different profile of data collected - whether it be an image, an image with a description, a selection from a drop-down box, or a combination of those and more. All the projects have two types of user: the creator who is requesting the data, whether they be an individual or organisation; and the contributor, who provides the information being collected. Creators can design and describe their own campaigns, and publicize their availability. Creators have some level of moderation control over the data that is submitted. Contributors can ``join'' campaigns, to register their interest and boost the popularity of the campaign. They can submit data from a number of devices and typically programmatically through APIs. Contributors can see some visual feedback of how much has been contributed, often shown with points on a map.
 
-		Thee functionalities that can be extracted from these similarities are listed here, although every project does not require every functionality.
+		The functionalities that can be extracted from these similarities are listed here, although every project does not require every functionality.
 
 		\begin{itemize}
 			\item Interface to submit some validated payload of form data with an accompanying coordinate pair.
@@ -154,7 +176,7 @@
 
 		\subsection{Available frameworks}
 
-		The field of crowdsourcing is not without existing frameworks. A representative offering currently available is \emph{PyBOSSA}, already introduced in section \ref{sec:introduction}. Although \emph{Hive} also exists, it has an extremely similar feature-set to \emph{PyBOSSA} and is primarily differentiated by being written in \emph{Go} and \emph{Ruby}\cite{_nytlabs/hive_????}. For this reason, for the purposes of this study only \emph{PyBOSSA} will be covered.
+		The field of crowdsourcing is not without existing frameworks. A representative offering currently available is \emph{PyBOSSA}, already introduced in section \ref{sec:introduction}. Although \emph{Hive} also exists, it has an extremely similar feature-set to \emph{PyBOSSA} and is primarily differentiated by being written in \emph{Go} and \emph{Ruby}\cite{_nytlabs/hive_????} instead of Python. For this reason, for the purposes of this study only \emph{PyBOSSA} will be covered.
 
 		\subsubsection{PyBOSSA}
 
@@ -313,7 +335,7 @@
 			\label{fig:component-diagram}
 		\end{figure}
 
-		In Figure \ref{fig:component-diagram}, the relationship between components in the project is described. The framework follows a server-client architecture. Each of these systems contain a set of subcomponents described below.
+		In Figure \ref{fig:component-diagram}, the relationship between components in the project is described. The framework follows a server-client architecture. Each of these systems contain a set of subcomponents described in the following subsections.
 
 		\subsubsection{Server}
 
@@ -762,7 +784,7 @@ exports.hasAuthorization = function(req, res, next) {
 	\ssection{Evaluation}
 	\label{sec:evaluation}
 
-		The primary goal of this framework is to simplify the creation of geographic crowdsourcing campaigns for non-technical users. Therefore, in evaluating the framework, it is necessary to test the usability of the of the software. Ideally this would be done inviting different campaigners to use the framework, but that wider testing is not within the scope of this project. Instead, two very different campaigns were created and a walkthrough of the steps requires is provided. These two campaigns will be:
+		The primary goal of this framework is to simplify the creation of geographic crowdsourcing campaigns for non-technical users. Therefore, in evaluating the framework, it is necessary to test the usability of the of the software. Ideally this would involve inviting many different campaigners to use the framework, but that wider testing is not within the scope of this project. Instead, two very different campaigns were created and a walkthrough of the steps requires is provided. These two campaigns are:
 
 		\begin{enumerate}[label=\Alph*.]
 			\item \label{itm:humanitarian-campaign} A humanitarian Campaign similar to the \emph{Missing Maps} project. The campaign is designed to collect time-sensitive information about the physical environment, and as a result will have a time limit after which a Point will be marked stale. It will be a private campaign open only to invited members.
@@ -852,7 +874,7 @@ exports.hasAuthorization = function(req, res, next) {
 
 		\FloatBarrier
 
-		\subsection{Submitting data}
+		\subsubsection{Submitting data}
 
 		\begin{figure}[H]
 			\centering
@@ -919,18 +941,16 @@ exports.hasAuthorization = function(req, res, next) {
 			\label{fig:eval-cb-4}
 		\end{figure}
 
-		\FloatBarrier
-
 		\subsection{Mobile Interface}
 
-		\begin{figure}[H]
+		\begin{figure}[ht]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-mobile-1}}
 			\caption{This shows how the campaign creation page looks on a mobile client. Because the application is written in responsive HTML and CSS, the same codebase is used to achieve this interface.}
 			\label{fig:eval-mobile-1}
 		\end{figure}
 
-		\begin{figure}[H]
+		\begin{figure}[ht]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-mobile-2}}
 			\caption{An example of submitting information to Campaign~\ref{itm:pothole-campaign} using the mobile inteface.}
@@ -948,9 +968,9 @@ exports.hasAuthorization = function(req, res, next) {
 	\ssection{Conclusion}
 	\label{sec:conclusion}
 
-		The evaluation in the previous section, has shown that the framework can indeed be used to start a breadth of different crowdsourcing campaigns with the same interface. The campaigns were quick to create and were quick for users to upload data.
+		The evaluation in the previous section has shown that the framework can indeed be used to start a breadth of different crowdsourcing campaigns with the same interface. The campaigns were quick and simple to create, importantly requiring no technical skills. Similarly, it was made very quick for users to upload data to a campaign of their choosing.
 
-		Users with interest in data who would normally have little reach could use the platform to create Campaigns and build a base of interested contributors who might find the Campaign by reading browsing through the available projects.
+		Users with interest in geographic data who would normally have little reach could use the platform to create campaigns and build a base of interested contributors who might find the Campaign by reading browsing through the available projects. Users who want to respond quickly to a geographic data gathering requirement can do so within minutes and potentially already have thousands of users signed up to the data collection platform they are using. Researchers could use the framework to spend less time programming and more time collecting the information they need.
 
 		\subsection{Future changes}
 
@@ -975,6 +995,178 @@ exports.hasAuthorization = function(req, res, next) {
 	\begin{appendices}
 	\section{API Documentation}
 	\label{sec:api-docs}
+
+	\subsection{Users}
+	\begin{tabularx}{\textwidth}{ | X | X | X | X | X | X | }
+
+		\hline
+		\textbf{Endpoint} & \textbf{Method} & \textbf{Description} &
+		\multicolumn{2}{ l | }{\textbf{Parameters}} &
+		\textbf{Returns} \\ \hline
+
+		\path{/users/me} & GET &
+		Gets information about the current user &
+		\multicolumn{2}{ l | }{\textit{none}} &
+		\textit{User} object
+		\\ \hline
+
+		\path{/users} & GET &
+		Gets a list of all users.&
+		\textit{q} & Optionally query by user name. &
+		Array of \textit{User} objects.
+		\\ \hline
+
+		\path{/users} & PUT &
+		Update a user. &
+		\textit{user} & A User object. &
+		\textit{User} object.
+		\\ \hline
+
+		\path{/users/accounts} & DELETE &
+		Remove an OAuth provider from the current user &
+		\textit{provider} & Name of provider to remove &
+		\textit{User} object.
+		\\ \hline
+
+		\path{/users/:userId/memberships/:campaignId} & PUT &
+		Join a user to a campaign &
+		\textit{campaignId} & Id of the campaign to join &
+		\textit{User} object.
+		\\ \hline
+
+		\path{/users/:userId/memberships/:campaignId} & DELETE &
+		Remove a user from a campaign &
+		\textit{userId}, \textit{campaignId} & Id of the user to affect, Id of the campaign to leave &
+		\textit{User} object.
+		\\ \hline
+
+		\path{/users/password} & POST &
+		Change the password of the current user &
+		\textit{newPassword}, \textit{verifyPassword}, \textit{currentPassword} &
+		New password, repeated new password, the current password &
+		Message text
+		\\ \hline
+
+		\path{/auth/forgot} & POST &
+		Request a password reset for a user &
+		\textit{username} & The username of the user for whom the password is to be reset. &
+		Message text
+		\\ \hline
+
+
+		\path{/auth/reset/:token} & POST &
+		Reset a password from an email token &
+		\textit{token}, \textit{newPassword}, \textit{verifyPassword} & The unique reset token, the new password, the new password repeated &
+		\textit{User} object.
+		\\ \hline
+
+		\path{auth/signup}& POST &
+		Create a new user account &
+		\multicolumn{2}{ l | }{\textit{User} object.} &
+		\textit{User} object.
+		\\ \hline
+
+		\path{auth/signin}& POST &
+		Authenticate a user &
+		\textit{username}, \textit{password} &
+		The username, the password &
+		\textit{User} object.
+		\\ \hline
+
+		\path{auth/signout} & GET &
+		Sign a user out &
+		\multicolumn{2}{ l | }{\textit{none}} &
+		\textit{none}
+		\\ \hline
+
+	\end{tabularx}
+
+	\subsection{Campaigns}
+	\begin{tabularx}{\textwidth}{ | X | X | X | X | X | X | }
+
+		\hline
+		\textbf{Endpoint} & \textbf{Method} & \textbf{Description} &
+		\multicolumn{2}{ l | }{\textbf{Parameters}} &
+		\textbf{Returns} \\ \hline
+
+		\path{/campaigns} & GET &
+		Get a list of all Campaigns &
+		\textit{mine}, \textit{includeClosed} & Get only the own user's campaigns, include campaigns that have closed (duration is over). &
+		Array of \textit{Campaign} objects.
+		\\ \hline
+
+		\path{/campaigns} & POST &
+		Create a new Campaign &
+		\multicolumn{2}{ l | }{\textit{Campaign} object.} &
+		\textit{Campaign} object.
+		\\ \hline
+
+		\path{/campaigns/:campaignId} & GET &
+		Get a specific campaign by id. &
+		\textit{campaignId} & The id of the Campaign. &
+		\textit{Campaign} object.
+		\\ \hline
+
+		\path{/campaigns/:campaignId} & PUT &
+		Update a specific campaign by id. &
+		\textit{campaignId}, \textit{Campaign} object & The id of the Campaign, the updated Campaign data. &
+		\textit{Campaign} object.
+		\\ \hline
+
+		\path{/campaigns/:campaignId} & DELETE &
+		Delete a specific campaign by id. &
+		\textit{campaignId} & The id of the Campaign. &
+		Message text.
+		\\ \hline
+
+	\end{tabularx}
+
+	\subsection{Points}
+	\begin{tabularx}{\textwidth}{ | X | X | X | X | X | X | }
+
+		\hline
+		\textbf{Endpoint} & \textbf{Method} & \textbf{Description} &
+		\multicolumn{2}{ l | }{\textbf{Parameters}} &
+		\textbf{Returns} \\ \hline
+
+
+		\path{/points} & GET &
+		Get a list of all Points &
+		\textit{campaign} & Optionally filter by a campaign id. &
+		Array of \textit{Point} objects.
+		\\ \hline
+
+		\path{/points} & POST &
+		Create a new Point &
+		\multicolumn{2}{ l | }{\textit{Point} object.} &
+		\textit{Point} object.
+		\\ \hline
+
+		\path{/points/:pointId} & GET &
+		Get a specific Point by id. &
+		\textit{pointId} & The id of the Point. &
+		\textit{Point} object.
+		\\ \hline
+
+		\path{/points/:pointId} & PUT &
+		Update a specific Point by id. &
+		\textit{pointId}, \textit{Point} object & The id of the Point, the updated Point data. &
+		\textit{Point} object.
+		\\ \hline
+
+		\path{/points/:pointId} & DELETE &
+		Delete a specific Point by id. &
+		\textit{pointId} & The id of the Point. &
+		Message text.
+		\\ \hline
+
+		\path{/points/:pointId/upload} & POST &
+		Upload an image for a Point. &
+		\textit{Multipart data}, \textit{name} & Buffer containing the image data, a field containing the name of the field the image is being uploaded for. &
+		Message text.
+		\\ \hline
+
+	\end{tabularx}
 	\end{appendices}
 
 \end{document}
