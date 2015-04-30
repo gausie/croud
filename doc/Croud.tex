@@ -16,8 +16,7 @@
 %\usepackage[margin=1.5in]{geometry}
 \usepackage{todonotes}
 
-\let\oldsection\section
-\renewcommand\section{\clearpage\oldsection}
+\newcommand\ssection{\clearpage\section}
 
 \newcommand{\pitem}[1]{
 	\item{\textbf{#1}}
@@ -32,8 +31,11 @@
 	\maketitle
 
 	\tableofcontents
+	\listoffigures
+	\listoftables
+	\listoflistings
 
-	\section*{Abstract}
+	\ssection*{Abstract}
 	\label{sec:summary}
 		Geographical data collection is a commonly-repeated task in scientific research, political campaigning, land administration and humanitarian projects. At the moment, there are a number of solutions for organisations wishing to go about this type of data collection, from using existing frameworks to commissioning bespoke software. However, these either require significant technical knowledge; are overly generic and are not specifically suited to collecting geographic point data; or are expensive to implement.
 
@@ -43,7 +45,7 @@
 
 		In evaluating the framework, it is shown that it could be applied to collecting data on potholes just as easily as it could be used to help volunteers map out crisis-prone areas of the world.
 
-	\section{Introduction}
+	\ssection{Introduction}
 	\label{sec:introduction}
 		\subsection{Problem}
 		Data collection is a vital and very common task in scientific research and beyond. Computer science, as well as often having internal data gathering requirements of its own, has a part to play in the wider scientific community by providing tools to make the process more accurate, wide-reaching and time-efficient. As is often the case, the need for research tools has historically driven the development of powerful and influential technologies\cite{haggerty_spinoff_1991}. Perhaps the most indicative example of this is the internet: preceded by \emph{ARPANET} over which the first messages were sent between the \emph{University of California, Los Angeles} and the \emph{Stanford Research Institute} in 1969\cite{_arpanet_????}. The first nodes on these early networks were in universities, for whom the ability to send ``electronic mail'' revolutionised the ability to collaborate on research and share information\cite{benfield_internet-based_2006}. Indeed, the internet could be considered computer science's greatest gift to the gathering of data due to the mass and effortless communication available to scientists all over the world\cite{benfield_internet-based_2006}. Of course, the internet is just a transport medium and the technologies built on top have also been of great assistance to scientists: networked email in 1971\cite{_first_????}; the \emph{Hypertext Transfer Protocol} and \emph{World Wide Web} in 1989\cite{_http_????}; and the omni-present wireless internet that is currently available over cell towers.
@@ -93,12 +95,12 @@
 		In the field of CSCW, the categorisation of work is often imagined as ``four quadrants''\cite{johansen_groupware:_1988} separated by the work's distribution over space and time: same place, same time; same place, different time; different time, same place; and different time, different place. This can be applied to crowdsourcing to assist in categorising these specific forms of CSCW as showin in Table~\ref{tab:quad}\cite{erickson_geocentric_2010}.
 
 		\begin{table}[ht]
-			\begin{tabular}{ | l || l | l | }
+			\begin{tabularx}{\textwidth}{ | l || X | X | }
 				\hline
 				                        & \textbf{Same Place}            & \textbf{Different Place} \\ \hhline{|=#=|=|}
 				\textbf{Same Time}      & Audience-centric Crowdsourcing & Event-centric Crowdsourcing \\ \hline
 				\textbf{Different Time} & Geocentric Crowdsourcing       & Global Crowdsourcing \\ \hline
-			\end{tabular}
+			\end{tabularx}
 			\caption{Four quadrant model applied to crowdsourcing\cite{erickson_geocentric_2010}}
 			\label{tab:quad}
 		\end{table}
@@ -211,7 +213,7 @@
 			\end{itemize}
 		\end{enumerate}
 
-	\section{Framework Design}
+	\ssection{Framework Design}
 	\label{sec:architecture}
 		As a result of the analysis and background above, a framework could be produced to provide sufficient functionality to replace the bespoke implementations so far. The framework would need to consist primarily of an API that can receive submitted data, perform all the necessary back-end organisation of that data, and expose a way of interacting with inbuilt data. On top of that, it will be necessary to construct a number of front-ends to interact with the API - a web-based and a mobile application.
 
@@ -221,7 +223,7 @@
 
 		This section contains a detailed and quantifiable list of the requirements for the framework, built from the common functionalities of the analysed projects. To simplify accounting for each requirement in the implementation of the project, each requirement follows a continuous count, despite being split across categories.
 
-		There are three data models around which the framework is based. Firstly, the User is the authenticated account and stable identity for anyone using the service. Although they are structurally the same, there are nonetheless two separate ``attitudes'' of User in the framework - campaign creators and campaign contributors. Throughout this section, where appropriate the requirements for each type will be differentiated with $\star$ for creator and $\dagger$ for contributor.
+		There are three data models around which the framework is based. Firstly, the User is the authenticated account and stable identity for anyone using the service. Although they are structurally the same, there are nonetheless two separate ``attitudes'' of User in the framework - campaign creators and campaign contributors. Throughout this section, where appropriate the requirements for each type will be differentiated with ``$\star$'' for creator and ``$\dagger$'' for contributor.
 
 		Secondly, the Campaign is the name for the metadata around a campaign of data collection. For example, it contains a name for the campaign, a description of the data it is collecting and all other information about the campaign itself.
 
@@ -311,7 +313,7 @@
 			\label{fig:component-diagram}
 		\end{figure}
 
-		In Figure \ref{fig:component-diagram}, the relationship between components in the project is described. The framework follows a server-client architecture.
+		In Figure \ref{fig:component-diagram}, the relationship between components in the project is described. The framework follows a server-client architecture. Each of these systems contain a set of subcomponents described below.
 
 		\subsubsection{Server}
 
@@ -331,6 +333,8 @@
 
 		\subsection{How it works}
 
+		Note that for all of the following sequences, the actions can be carried out on both desktop and mobile using the same steps. This is because the web client can be compiled directly to a mobile application using Apache Cordova\cite{_apache_????}.t
+
 		\subsubsection{Registering}
 		To register, the user follows a link from the home page to a ``Sign up'' form, where they fill information such as their name, required username, email address and password. If the form has been filled in correctly, an account will be created for that user and they will be automatically logged in.
 
@@ -349,7 +353,7 @@
 		\subsubsection{Viewing a Point}
 		When a marker is clicked, a page containing all the information for a Point is displayed. The page contains a map with just the marker visible, and a table of the information submitted along with the co-ordinate. If, for example, the information includes an uploaded picture, the picture will be visible in this table.
 
-	\section{Implementation}
+	\ssection{Implementation}
 	\label{sec:implementation}
 
 		The code is tracked using the \emph{Git} revision control system and is hosted on \emph{Github}. It can be found at \href{http://github.com/gausie/croud}{\nolinkurl{http://github.com/gausie/croud}}. The software is also running and available to be used at \href{http://croud.io}{\nolinkurl{http://croud.io}}.
@@ -377,7 +381,7 @@
 
 		\subsection{Schema}
 
-		As \emph{MongoDB} uses dynamic schemas, these are not necessarily how documents stored in each collection might look. Instead, the schema here is the framework of a model described in JavaScript, and as a result contains some callbacks as values (which would not be valid in plain JSON).
+		As \emph{MongoDB} uses dynamic schemas, these are not necessarily how documents stored in each collection might look. Instead, the schema here is the framework of a model described in JavaScript, and as a result contains some callbacks as values (which would not be valid in plain JSON). In order to avoid repetition, the schemas are not annotated.
 
 		\subsubsection{User}
 
@@ -454,6 +458,8 @@
 }
 		\end{minted}
 
+		This schema for the User model defines: a first and last name; a display name, an email address; a username; a password and salt;  a list of campaign memberships; data to handle social media logins; some data for resetting passwords; and update and creation times for the model.
+
 		\subsubsection{Campaign}
 
 		\begin{minted}[frame=single,fontsize=\scriptsize]{js}
@@ -514,9 +520,12 @@
 }
 		\end{minted}
 
-		The ``fields'' field is a JSON sub-structure built from the data required for each campaign. For example, it could contain a value such as
+		This schema for the Campaign model defines: a name and description for the Campaign; a central location (optimized for MongoDB); a collection of fields; a duration; whether it is private and approval is required; which (if any) field should be used as a marker for Points; the days (if required) after which a Point is marked as stale; the owner; and the date on which it was created.
 
-		\begin{minted}[frame=single,fontsize=\scriptsize]{json}
+		The ``fields'' field is a JSON sub-structure built from the data required for each campaign. For example, a simplified campaign to collect cartographic information in a poorly mapped area could contain a value such as Listing~\ref{lst:campaign-schema-fields}.
+
+		\begin{listing}[H]
+			\begin{minted}[frame=single,fontsize=\scriptsize]{json}
 [
     {
         "options" : [ 
@@ -526,7 +535,7 @@
             }, 
             {
                 "icon" : "search",
-                "name" : "Toll Both"
+                "name" : "Toll Booth"
             }
         ],
         "required" : true,
@@ -539,7 +548,10 @@
         "name" : "Picture"
     }
 ]
-		\end{minted}
+			\end{minted}
+			\caption{These fields would mean a required multiple choice option with the name ``Point of Interest'' and the options ``Water'' and ``Toll Booth''. with ``gamepad'' and ``search'' icons respectively. This would be followed by an optional image field titled ``Picture''.}
+			\label{lst:campaign-schema-fields}
+		\end{listing}
 
 		\subsubsection{Point}
 
@@ -575,20 +587,26 @@
 }
 		\end{minted}
 
-		The ``data'' field is a JSON sub-structure matching the ``fields'' field of the Campaign to which the Point belongs. For example, it could contain a value such as
+		This schema for the Point model defines: the Campaign to which it belongs; its location (optimized for MongoDB); the data contained; whether the point has been approved; the submitter; and the date on which it was created.
 
-		\begin{minted}[frame=single,fontsize=\scriptsize]{json}
+		The ``data'' field is a JSON sub-structure matching the ``fields'' field of the Campaign to which the Point belongs. For example, in submitting to the campaign whose fields are specified in Listing~\ref{lst:campaign-schema-fields}, it could contain a value such as Listing~\ref{lst:point-schema-fields}.
+
+		\begin{listing}[H]
+			\begin{minted}[frame=single,fontsize=\scriptsize]{json}
 {
     "Point of Interest" : {
         "icon" : "gamepad",
         "name" : "Water"
     }
 }
-		\end{minted}
+			\end{minted}
+			\caption{This would mean that a Point had been submitted with the ``Point of Interest'' selected as ``Water''.}
+			\label{lst:point-schema-fields}
+		\end{listing}
 
 		\subsection{Code excerpts}
 
-		This section will contain a few examples of the source code and is not intended to be exhaustive.
+		This section will contain a few examples of the source code and is not intended to be exhaustive. They represent key functionalities across a wide selection of components on both the server and client side codebase.
 
 		\subsubsection{Server}
 
@@ -741,42 +759,45 @@ exports.hasAuthorization = function(req, res, next) {
 	\paragraph{Standards-compliant mobile-ready client}
 	The client is written in a fully standards-compliant fashion and the display completely adapts to mobile. This means that the web version is viewable on a wide range of browsers, usable by users with accessibility requirements such as the use of a screen-reader. It also means that the web version can be viewed on mobiles and tablets with a fluid experience. This is useful also in packaging the client as a native mobile application, as very little changes need to be made and so changes to the codebase can be quickly expanded across the whole ecosystem.
 
-	\section{Evaluation}
+	\ssection{Evaluation}
 	\label{sec:evaluation}
 
-		In evaluating the framework, it is necessary to test two aspects of the framework's usage - the creation of Campaigns, and the submission of points. In this section, a number of key features will be tested by using the software and providing screenshots and comments. First, the client will be used to create two Campaigns that are as distinct as possible in usage scenarios. These campaigns will be
+		The primary goal of this framework is to simplify the creation of geographic crowdsourcing campaigns for non-technical users. Therefore, in evaluating the framework, it is necessary to test the usability of the of the software. Ideally this would be done inviting different campaigners to use the framework, but that wider testing is not within the scope of this project. Instead, two very different campaigns were created and a walkthrough of the steps requires is provided. These two campaigns will be:
 
 		\begin{enumerate}[label=\Alph*.]
-			\item A humanitarian Campaign similar to the \emph{Missing Maps} project. The campaign is designed to collect time-sensitive information about the physical environment, and as a result will have a time limit after which a Point will be marked stale. It will be a private campaign open only to invited members.
-			\item A simple ``fix this pothole'' style project where users casually submit images with location data. The campaign will be open to all to join.
+			\item \label{itm:humanitarian-campaign} A humanitarian Campaign similar to the \emph{Missing Maps} project. The campaign is designed to collect time-sensitive information about the physical environment, and as a result will have a time limit after which a Point will be marked stale. It will be a private campaign open only to invited members.
+			\item  \label{itm:pothole-campaign} A simple ``fix this pothole'' style project where users casually submit images with location data. The campaign will be open to all to join.
 		\end{enumerate}
 
 		Using a second account, the second Campaign will be joined and a point will be submitted.
 
-		\subsection{Preparing users}
+		\subsection{Campaign~\ref{itm:humanitarian-campaign} - Humanitarian}
+		\label{sec:humanitarian-campaign}
 
-		\begin{figure}[ht]
+		\subsubsection{Registering users}
+
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-prep-1}}
 			\caption{Landing page}
 			\label{fig:eval-prep-1}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-prep-2}}
 			\caption{Registration page.}
 			\label{fig:eval-prep-2}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-prep-3}}
 			\caption{Registering \texttt{test1} user.}
 			\label{fig:eval-prep-3}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-prep-4}}
 			\caption{Registering \texttt{test2} user.}
@@ -784,30 +805,30 @@ exports.hasAuthorization = function(req, res, next) {
 		\end{figure}
 
 		\FloatBarrier
-		\subsection{Creating Campaign A}
+		\subsubsection{Creating the Campaign}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-1}}
 			\caption{Navigating to Campaign creation page.}
 			\label{fig:eval-ca-1}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-2}}
 			\caption{Initial state of Campaign creation form.}
 			\label{fig:eval-ca-2}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-3}}
 			\caption{Campaign A form completed. Hampstead Heath is having a humanitarian crisis.}
 			\label{fig:eval-ca-3}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-5}}
 			\caption{Configuration of options for multiple choice field.}
@@ -815,14 +836,14 @@ exports.hasAuthorization = function(req, res, next) {
 		\end{figure}
 
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-6}}
 			\caption{Adding \texttt{test2} to the private Campaign.}
 			\label{fig:eval-ca-6}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-ca-4}}
 			\caption{Campaign A ready to be used.}
@@ -830,47 +851,57 @@ exports.hasAuthorization = function(req, res, next) {
 		\end{figure}
 
 		\FloatBarrier
-		\subsection{Creating Campaign B}
 
-		\begin{figure}[ht]
-			\centering
-			\fbox{\includegraphics[width=4in]{eval-cb-1}}
-			\caption{Campaign B form completed.}
-			\label{fig:eval-cb-1}
-		\end{figure}
+		\subsection{Submitting data}
 
-		\FloatBarrier
-		\subsection{Submitting Points to Campaign A}
-
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-cb-1}}
 			\caption{Selecting Campaign A (``Humanitarian Campaign'').}
 			\label{fig:eval-submita-1}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-submita-2}}
 			\caption{Filled in the Point information.}
 			\label{fig:eval-submita-2}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-submita-3}}
 			\caption{Campaign A now appears with a ``fire'' symbol where the point was placed.}
 			\label{fig:eval-submita-3}
 		\end{figure}
 
-		\begin{figure}[ht]
+		\begin{figure}[H]
 			\centering
 			\fbox{\includegraphics[width=4in]{eval-submita-4}}
 			\caption{Clicking the ``fire'' symbol reveals this full information page for that Point.}
 			\label{fig:eval-submita-4}
 		\end{figure}
 
-	\section{Conclusion}
+		\subsection{Campaign~\ref{itm:pothole-campaign} - Pothole Fixing}
+		\label{sec:pothole-campaign}
+
+		Any steps that are identical to that of Section~\ref{sec:humanitarian-campaign} are omitted.
+
+		\subsubsection{Creating the Campaign}
+
+		\begin{figure}[H]
+			\centering
+			\fbox{\includegraphics[width=4in]{eval-cb-1}}
+			\caption{Campaign B form completed.}
+			\label{fig:eval-cb-1}
+		\end{figure}
+
+		\subsubsection{Submitting data}
+
+		\FloatBarrier
+
+
+	\ssection{Conclusion}
 	\label{sec:conclusion}
 
 		Based on the evaluation in the previous section, it is clear that the framework can indeed be used to start a breadth of different crowdsourcing campaigns with the same interface. The campaigns were quick to create and were quick for users to upload data.
@@ -892,12 +923,13 @@ exports.hasAuthorization = function(req, res, next) {
 			\pitem{More relevant icon set for multiple choice field} At the moment the framework uses \emph{FontAwesome} because it has a large set of icons and is already loaded on the site for iconographic use. However, when projects like \emph{Maki} by \emph{Mapbox} for ``point of interest icon sets'' get bigger and include more icons, the system could easily be switched to use them.
 		\end{itemize}
 
+	\clearpage
 	\bibliographystyle{Croud}
 	\bibliography{Croud}
 
 	\clearpage
 	\begin{appendices}
-	\oldsection{API Documentation}
+	\section{API Documentation}
 	\label{sec:api-docs}
 	\end{appendices}
 
