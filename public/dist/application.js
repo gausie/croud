@@ -17,7 +17,7 @@ var ApplicationConfiguration = (function() {
     'ui.select',
     'leaflet-directive',
     'angularMoment',
-    'angularFileUpload'
+    'ngFileUpload'
   ];
 
   // Add a new vertical module
@@ -231,9 +231,15 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         return;
       }
 
+      if (!this.campaign.location) {
+        $scope.error = 'Location is required';
+        return;
+      }
+
       // Create new Campaign object
       var campaign = new Campaigns ({
         name: this.campaign.name,
+        description: this.campaign.description,
         location: this.campaign.location,
         fields: this.campaign.fields,
         start: this.campaign.start,
@@ -337,7 +343,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
       } else {
         $scope.join();
       }
-    }
+    };
 
     $scope.join = function() {
       var user = new Users($scope.campaign.userToInvite || Authentication.user);
@@ -366,7 +372,7 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
        * When a marker is clicked, show the user a page for the point
        */
       $scope.$on('leafletDirectiveMarker.click', function (e, args) {
-        $location.path('points/' + args.markerName);
+        $location.path('points/' + args.modelName);
       });
 
       /*
@@ -563,7 +569,7 @@ angular.module('core').directive('locationPicker', [
         // Set map marker on click.
         $scope.$on('leafletDirectiveMap.click', function(event, args){
           if (!$scope.static) {
-            var coords = args.leafletEvent.latlng;
+            var coords = args.leafletEvent.latlng.wrap();
             var obj = {
               lat: coords.lat,
               lng: coords.lng,
@@ -815,8 +821,8 @@ angular.module('points').config(['$stateProvider',
 'use strict';
 
 // Points controller
-angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', '$upload', 'Authentication', 'Points', 'Campaigns', 'moment',
-  function($scope, $stateParams, $location, $upload, Authentication, Points, Campaigns, moment) {
+angular.module('points').controller('PointsController', ['$scope', '$stateParams', '$location', 'Upload', 'Authentication', 'Points', 'Campaigns', 'moment',
+  function($scope, $stateParams, $location, Upload, Authentication, Points, Campaigns, moment) {
     $scope.authentication = Authentication;
     $scope.point = {};
 
@@ -875,7 +881,7 @@ angular.module('points').controller('PointsController', ['$scope', '$stateParams
       point.$save(function(response) {
         // Upload images
         files.forEach(function(file){
-          $upload.upload({
+          Upload.upload({
             url: 'points/' + point._id + '/upload',
             file: file.file,
             fields: {
