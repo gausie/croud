@@ -44,5 +44,7 @@
     <h1>{{campaign.name}} <small>by {{campaign.user.displayName}}</small></h1>
   </div>
 
+  <p data-ng-if="campaign.description">{{campaign.description}}</p>
+
   <leaflet center="center" markers="markers" width="100%" height="300px"></leaflet>
 </section>

@@ -16,6 +16,11 @@ var CampaignSchema = new Schema({
     required: 'Please fill Campaign name',
     trim: true
   },
+  description: {
+    type: String,
+    default: '',
+    trim: true
+  },
   location: {
     lng: { type: Number },
     lat: { type: Number },

@@ -85,9 +85,15 @@ angular.module('campaigns').controller('CampaignsController', ['$scope', '$state
         return;
       }
 
+      if (!this.campaign.location) {
+        $scope.error = 'Location is required';
+        return;
+      }
+
       // Create new Campaign object
       var campaign = new Campaigns ({
         name: this.campaign.name,
+        description: this.campaign.description,
         location: this.campaign.location,
         fields: this.campaign.fields,
         start: this.campaign.start,
