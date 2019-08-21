@@ -4,10 +4,10 @@
  * Module dependencies.
  */
 var passport = require('passport'),
+  config = require('./config'),
   User = require('mongoose').model('User'),
-  path = require('path'),
-  config = require('./config');
-  
+  path = require('path');
+
 /**
  * Module init function.
  */

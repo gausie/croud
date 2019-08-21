@@ -27,7 +27,7 @@ describe('Campaign Model Unit Tests:', function() {
       password: 'password'
     });
 
-    user.save(function() { 
+    user.save(function() {
       campaign = new Campaign({
         name: 'Campaign Name',
         user: user
@@ -45,7 +45,7 @@ describe('Campaign Model Unit Tests:', function() {
       });
     });
 
-    it('should be able to show an error when try to save without name', function(done) { 
+    it('should be able to show an error when try to save without name', function(done) {
       campaign.name = '';
 
       return campaign.save(function(err) {
@@ -55,7 +55,7 @@ describe('Campaign Model Unit Tests:', function() {
     });
   });
 
-  afterEach(function(done) { 
+  afterEach(function(done) {
     Campaign.remove().exec();
     User.remove().exec();
 

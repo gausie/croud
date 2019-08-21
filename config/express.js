@@ -15,9 +15,7 @@ var fs = require('fs'),
   cookieParser = require('cookie-parser'),
   helmet = require('helmet'),
   passport = require('passport'),
-  mongoStore = require('connect-mongo')({
-    session: session
-  }),
+  MongoStore = require('connect-mongo')(session),
   flash = require('connect-flash'),
   config = require('./config'),
   consolidate = require('consolidate'),
@@ -86,28 +84,32 @@ module.exports = function(db) {
   app.use(cookieParser());
 
   // Express MongoDB session storage
-  app.use(session({
-    saveUninitialized: true,
-    resave: true,
-    secret: config.sessionSecret,
-    store: new mongoStore({
-      db: db.connection.db,
-      collection: config.sessionCollection
-    })
-  }));
+  db.then(function(dbResult){
+    app.use(session({
+      saveUninitialized: true,
+      resave: true,
+      secret: config.sessionSecret,
+      store: new MongoStore({
+        db: dbResult.connection.db,
+        collection: config.sessionCollection,
+      })
+    }));
 
-  // use passport session
-  app.use(passport.initialize());
-  app.use(passport.session());
+    // use passport session
+    app.use(passport.initialize());
+    app.use(passport.session());
+  }, function(err){
+    console.log(err);
+  });
 
   // connect flash for flash messages
   app.use(flash());
 
   // Use helmet to secure Express headers
-  app.use(helmet.xframe());
+  app.use(helmet.frameguard());
   app.use(helmet.xssFilter());
-  app.use(helmet.nosniff());
-  app.use(helmet.ienoopen());
+  app.use(helmet.noSniff());
+  app.use(helmet.ieNoOpen());
   app.disable('x-powered-by');
 
   // Setting the app router and static folder

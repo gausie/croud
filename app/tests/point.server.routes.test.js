@@ -115,7 +115,7 @@ describe('Point CRUD tests', function() {
           .end(function(pointSaveErr, pointSaveRes) {
             // Set message assertion
             (pointSaveRes.body.message).should.match('Please fill Point name');
-            
+
             // Handle Point save error
             done(pointSaveErr);
           });
@@ -238,7 +238,7 @@ describe('Point CRUD tests', function() {
   });
 
   it('should not be able to delete Point instance if not signed in', function(done) {
-    // Set Point user 
+    // Set Point user
     point.user = user;
 
     // Create new Point model instance

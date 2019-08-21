@@ -6,8 +6,8 @@
 .slider {
 	opacity: 1; /* approximate max height */
 
+  transition-duration: .5s;
 	transition-property: all;
-	transition-duration: .5s;
 }
 
 .slider.ng-hide {

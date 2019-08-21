@@ -115,7 +115,7 @@ describe('Campaign CRUD tests', function() {
           .end(function(campaignSaveErr, campaignSaveRes) {
             // Set message assertion
             (campaignSaveRes.body.message).should.match('Please fill Campaign name');
-            
+
             // Handle Campaign save error
             done(campaignSaveErr);
           });
@@ -238,7 +238,7 @@ describe('Campaign CRUD tests', function() {
   });
 
   it('should not be able to delete Campaign instance if not signed in', function(done) {
-    // Set Campaign user 
+    // Set Campaign user
     campaign.user = user;
 
     // Create new Campaign model instance
